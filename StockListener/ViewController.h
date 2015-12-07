@@ -7,9 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "StockPlayerManager.h"
+@interface ViewController : UIViewController {
+    StockPlayerManager* player;
+}
 
-@interface ViewController : UIViewController
-
+- (void)remoteControlReceivedWithEvent:(UIEvent *)receivedEvent;
 
 @end
 
