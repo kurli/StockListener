@@ -11,16 +11,11 @@
 #import <AVFoundation/AVFoundation.h>
 #import "GetStockValueTask.h"
 
-@interface StockInfo : NSObject <NSCopying>
+@class StockInfo;
 
-@property (nonatomic, strong) NSString* name;
-@property (nonatomic, strong) NSString* sid;
-@property (atomic, unsafe_unretained) float currentPrice;
-@property (atomic, strong) NSString* updateTime;
-@property (atomic, unsafe_unretained) float lastChangeRate;
-@property (atomic, unsafe_unretained) int lastStep;
-@property (atomic, unsafe_unretained) float changeRate;
-
+@protocol StockPlayerDelegate <NSObject>
+-(void) onPlaying:(StockInfo*)info;
+-(void) onPLayPaused;
 @end
 
 @interface StockPlayerManager : NSObject <FSAudioControllerDelegate, GetStockValueDoneDelegate, AVSpeechSynthesizerDelegate> {
@@ -30,7 +25,17 @@
 
 @property (nonatomic, strong) NSArray* stockPlayList;
 
+@property (nonatomic, assign) id <StockPlayerDelegate> delegate;
+
 -(void) play;
 
--(void) pauseOnPauseClidked;
+-(void) pause;
+
+-(BOOL) isPlaying;
+
+-(void) next;
+
+-(void) pre;
+
+-(int) getCurrentPlayIndex;
 @end

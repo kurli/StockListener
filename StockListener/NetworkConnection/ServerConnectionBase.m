@@ -10,6 +10,7 @@
 #import "AppDelegate.h"
 #import "zlib.h"
 #import "StockPlayerManager.h"
+#import "StockInfo.h"
 
 #define CONNECTION_TIMEOUT 500
 

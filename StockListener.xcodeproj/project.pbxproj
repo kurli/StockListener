@@ -47,6 +47,10 @@
 		945DF5D41C074A0C00C81F31 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 945DF5D31C074A0C00C81F31 /* Images.xcassets */; };
 		945DF5D71C074A0C00C81F31 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 945DF5D51C074A0C00C81F31 /* LaunchScreen.xib */; };
 		945DF5E31C074A0C00C81F31 /* StockListenerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 945DF5E21C074A0C00C81F31 /* StockListenerTests.m */; };
+		946E5DDD1C17238600CA896E /* SearchStockController.m in Sources */ = {isa = PBXBuildFile; fileRef = 946E5DDC1C17238600CA896E /* SearchStockController.m */; };
+		946E5DE11C17239B00CA896E /* DatabaseHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 946E5DE01C17239B00CA896E /* DatabaseHelper.m */; };
+		946E5DE41C172A1A00CA896E /* StockInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 946E5DE31C172A1A00CA896E /* StockInfo.m */; };
+		946E5DE71C1738E300CA896E /* StockRefresher.m in Sources */ = {isa = PBXBuildFile; fileRef = 946E5DE61C1738E300CA896E /* StockRefresher.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -130,6 +134,14 @@
 		945DF5DC1C074A0C00C81F31 /* StockListenerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StockListenerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		945DF5E11C074A0C00C81F31 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		945DF5E21C074A0C00C81F31 /* StockListenerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StockListenerTests.m; sourceTree = "<group>"; };
+		946E5DDB1C17238600CA896E /* SearchStockController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SearchStockController.h; path = StockListener/StockMainView/SearchStockController.h; sourceTree = "<group>"; };
+		946E5DDC1C17238600CA896E /* SearchStockController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SearchStockController.m; path = StockListener/StockMainView/SearchStockController.m; sourceTree = "<group>"; };
+		946E5DDF1C17239B00CA896E /* DatabaseHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DatabaseHelper.h; sourceTree = "<group>"; };
+		946E5DE01C17239B00CA896E /* DatabaseHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DatabaseHelper.m; sourceTree = "<group>"; };
+		946E5DE21C172A1A00CA896E /* StockInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StockInfo.h; sourceTree = "<group>"; };
+		946E5DE31C172A1A00CA896E /* StockInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StockInfo.m; sourceTree = "<group>"; };
+		946E5DE51C1738E300CA896E /* StockRefresher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StockRefresher.h; sourceTree = "<group>"; };
+		946E5DE61C1738E300CA896E /* StockRefresher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StockRefresher.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -303,6 +315,8 @@
 				940CC21F1C0AE66800F84ADB /* StockPlayer */,
 				94029B6B1C08D844004B5C81 /* Worker */,
 				940CC2251C0AEA2700F84ADB /* Resources */,
+				946E5DDE1C17239B00CA896E /* DB */,
+				946E5DDA1C17230B00CA896E /* StockMainView */,
 				945DF5C51C074A0C00C81F31 /* StockListener */,
 				945DF5DF1C074A0C00C81F31 /* StockListenerTests */,
 				945DF5C41C074A0C00C81F31 /* Products */,
@@ -357,6 +371,29 @@
 				945DF5E11C074A0C00C81F31 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		946E5DDA1C17230B00CA896E /* StockMainView */ = {
+			isa = PBXGroup;
+			children = (
+				946E5DDB1C17238600CA896E /* SearchStockController.h */,
+				946E5DDC1C17238600CA896E /* SearchStockController.m */,
+			);
+			name = StockMainView;
+			sourceTree = "<group>";
+		};
+		946E5DDE1C17239B00CA896E /* DB */ = {
+			isa = PBXGroup;
+			children = (
+				946E5DDF1C17239B00CA896E /* DatabaseHelper.h */,
+				946E5DE01C17239B00CA896E /* DatabaseHelper.m */,
+				946E5DE21C172A1A00CA896E /* StockInfo.h */,
+				946E5DE31C172A1A00CA896E /* StockInfo.m */,
+				946E5DE51C1738E300CA896E /* StockRefresher.h */,
+				946E5DE61C1738E300CA896E /* StockRefresher.m */,
+			);
+			name = DB;
+			path = StockListener/DB;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -476,6 +513,7 @@
 				940CC2101C09BFAD00F84ADB /* id3_parser.cpp in Sources */,
 				940CC2161C09BFAD00F84ADB /* FSParsePlaylistRequest.m in Sources */,
 				945DF5CC1C074A0C00C81F31 /* AppDelegate.m in Sources */,
+				946E5DE11C17239B00CA896E /* DatabaseHelper.m in Sources */,
 				940CC2121C09BFAD00F84ADB /* stream_configuration.cpp in Sources */,
 				94029B711C08D844004B5C81 /* KingdaTask.m in Sources */,
 				94029B721C08D844004B5C81 /* KingdaWorker.m in Sources */,
@@ -484,10 +522,13 @@
 				94029B791C08D9D6004B5C81 /* GetStockValueTask.m in Sources */,
 				940CC20F1C09BFAD00F84ADB /* http_stream.cpp in Sources */,
 				945DF5C91C074A0C00C81F31 /* main.m in Sources */,
+				946E5DDD1C17238600CA896E /* SearchStockController.m in Sources */,
 				940CC2151C09BFAD00F84ADB /* FSCheckContentTypeRequest.m in Sources */,
 				940CC2111C09BFAD00F84ADB /* input_stream.cpp in Sources */,
 				940CC2171C09BFAD00F84ADB /* FSParseRssPodcastFeedRequest.m in Sources */,
+				946E5DE71C1738E300CA896E /* StockRefresher.m in Sources */,
 				940CC20E1C09BFAD00F84ADB /* file_stream.cpp in Sources */,
+				946E5DE41C172A1A00CA896E /* StockInfo.m in Sources */,
 				940CC20C1C09BFAD00F84ADB /* caching_stream.cpp in Sources */,
 				94029B701C08D844004B5C81 /* MBProgressHUD.m in Sources */,
 			);

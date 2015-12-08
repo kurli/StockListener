@@ -8,7 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "StockPlayerManager.h"
-@interface ViewController : UIViewController {
+#import "DatabaseHelper.h"
+
+@interface ViewController : UIViewController <UITableViewDelegate,UITableViewDataSource,UISearchBarDelegate,UISearchResultsUpdating, OnStockListChangedDelegate, StockPlayerDelegate> {
     StockPlayerManager* player;
 }
 

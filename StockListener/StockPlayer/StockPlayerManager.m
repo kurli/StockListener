@@ -12,43 +12,27 @@
 #import "FSAudioController.h"
 #import "FSPlaylistItem.h"
 #import "KingdaWorker.h"
+#import "StockInfo.h"
 
 #define UP_SOUND @"up.mp3"
 #define DOWN_SOUND @"down.mp3"
 #define MUSIC_SOUND @"test.mp3"
 
+#define REFRESH_RATE 10
+#define SPEACH_COUNTER 3
 
-#define REFRESH_RATE 15
-#define SPEACH_RATE 35
 @interface StockPlayerManager() {
     int _currentPlayIndex;
     BOOL _continueRefresh;
+    int speachCounter;
 }
 
 @property (nonatomic,strong) NSTimer *stockRefreshTimer;
-@property (nonatomic,strong) NSTimer *stockSpeachTimer;
 
 @property (nonatomic,strong) FSAudioController *audioController;
 @property (nonatomic,strong) FSAudioController *audioController2;
 @property (nonatomic,strong) AVSpeechSynthesizer *speechPlayer;
 @property (nonatomic,strong) NSMutableArray* playList;
-
-@end
-
-@implementation StockInfo
-
-@synthesize sid;
-@synthesize name;
-
-- (id)copyWithZone:(NSZone *)zone {
-    StockInfo* info = [[StockInfo allocWithZone:zone] init];
-    info.sid = [self.sid copy];
-    info.name = [self.name copy];
-    info.currentPrice = self.currentPrice;
-    info.lastChangeRate = self.lastChangeRate;
-    info.changeRate = self.changeRate;
-    return info;
-}
 
 @end
 
@@ -59,7 +43,7 @@
 - (id) init {
     if (self = [super init]) {
         _currentPlayIndex = 0;
-        _continueRefresh = YES;
+        _continueRefresh = NO;
         _configuration = [[FSStreamConfiguration alloc] init];
         _configuration.usePrebufferSizeCalculationInSeconds = YES;
         self.playList =[[NSMutableArray alloc] init];
@@ -74,6 +58,7 @@
                                                  selector:@selector(applicationWillEnterForegroundNotification:)
                                                      name:UIApplicationWillEnterForegroundNotification
                                                    object:nil];
+        speachCounter = 0;
     }
     return self;
 }
@@ -85,6 +70,12 @@
  */
 
 - (void)stockRefreshFired {
+    speachCounter++;
+    if (speachCounter == SPEACH_COUNTER) {
+        [self stockSpeachFired];
+        speachCounter = 0;
+        return;
+    }
     [self playCurrentStock];
 }
 
@@ -97,13 +88,13 @@
     }
     StockInfo* info = [self.stockPlayList objectAtIndex:_currentPlayIndex];
 
-    GetStockValueTask* task = [[GetStockValueTask alloc] initWithStock:info];
-    task.onCompleteBlock = ^(StockInfo* info) {
+//    GetStockValueTask* task = [[GetStockValueTask alloc] initWithStock:info];
+//    task.onCompleteBlock = ^(StockInfo* info) {
         float value = info.changeRate * 100;
         NSString* proceStr = [NSString stringWithFormat:@"%.3f, 百分之%.2f", info.currentPrice, value];
         [self speak:proceStr];
-    };
-    [[KingdaWorker getInstance] queue: task];
+//    };
+//    [[KingdaWorker getInstance] queue: task];
 }
 
 /*
@@ -344,13 +335,6 @@
         if (_stockRefreshTimer == nil) {
             _stockRefreshTimer = [NSTimer scheduledTimerWithTimeInterval:REFRESH_RATE target:self selector:@selector(stockRefreshFired) userInfo:nil repeats:YES];
         }
-        if (_stockSpeachTimer == nil) {
-            _stockSpeachTimer = [NSTimer scheduledTimerWithTimeInterval:SPEACH_RATE
-                                                                 target:self
-                                                               selector:@selector(stockSpeachFired)
-                                                               userInfo:nil
-                                                                repeats:YES];
-        }
     } else {
         [self stopRefresh];
     }
@@ -360,8 +344,6 @@
     _continueRefresh = NO;
     [_stockRefreshTimer invalidate];
     _stockRefreshTimer = nil;
-    [_stockSpeachTimer invalidate];
-    _stockSpeachTimer = nil;
 }
 
 - (void) playCurrentStock {
@@ -382,29 +364,58 @@
  * =======================================
  */
 - (void) play {
+    _continueRefresh = true;
+    if ([self.stockPlayList count] == 0) {
+        return;
+    }
+    if (_currentPlayIndex < 0 || _currentPlayIndex >= [self.stockPlayList count]) {
+        _currentPlayIndex = 0;
+    }
+    StockInfo* info = [self.stockPlayList objectAtIndex:_currentPlayIndex];
+    info.currentPrice = 0;
     [self playCurrentStock];
-}
-
--(void) pauseOnPauseClidked {
-    if (_continueRefresh) {
-        _continueRefresh = false;
-        [self.audioController stop];
-        self.audioController2 = self.audioController;
-        self.audioController = nil;
-        [self stopRefresh];
-    } else {
-        _continueRefresh = true;
-        if ([self.stockPlayList count] == 0) {
-            return;
-        }
-        if (_currentPlayIndex < 0 || _currentPlayIndex >= [self.stockPlayList count]) {
-            _currentPlayIndex = 0;
-        }
-        StockInfo* info = [self.stockPlayList objectAtIndex:_currentPlayIndex];
-        info.currentPrice = 0;
-        [self playCurrentStock];
+    
+    if (self.delegate) {
+        [self.delegate onPlaying:[self.stockPlayList objectAtIndex:_currentPlayIndex]];
     }
 }
 
+-(void) pause {
+    _continueRefresh = false;
+    [self.audioController stop];
+    self.audioController2 = self.audioController;
+    self.audioController = nil;
+    [self stopRefresh];
+    
+    if (self.delegate) {
+        [self.delegate onPLayPaused];
+    }
+}
+
+-(BOOL) isPlaying {
+    return _continueRefresh;
+}
+
+-(void) next {
+    _currentPlayIndex++;
+    if (_currentPlayIndex >= [self.stockPlayList count]) {
+        _currentPlayIndex = 0;
+    }
+    [self pause];
+    [self play];
+}
+
+-(void) pre {
+    _currentPlayIndex--;
+    if (_currentPlayIndex < 0) {
+        _currentPlayIndex = (int)[self.stockPlayList count] -1;
+    }
+    [self pause];
+    [self play];
+}
+
+-(int) getCurrentPlayIndex {
+    return _currentPlayIndex;
+}
 
 @end

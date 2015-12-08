@@ -9,6 +9,7 @@
 #import "GetStockValueTask.h"
 #import <CommonCrypto/CommonDigest.h>
 #import "StockPlayerManager.h"
+#import "StockInfo.h"
 
 //#define ENABLE_TEST 
 
