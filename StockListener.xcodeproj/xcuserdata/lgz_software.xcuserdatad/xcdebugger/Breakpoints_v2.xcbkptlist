@@ -10,12 +10,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "StockListener/StockPlayer/StockPlayerManager.m"
-            timestampString = "471281658.62006"
+            timestampString = "471296068.857891"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "401"
-            endingLineNumber = "401"
-            landmarkName = "-pre"
+            startingLineNumber = "346"
+            endingLineNumber = "346"
+            landmarkName = "-next"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -26,12 +26,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "StockListener/StockPlayer/StockPlayerManager.m"
-            timestampString = "471281658.62006"
+            timestampString = "471296068.857891"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "367"
-            endingLineNumber = "367"
-            landmarkName = "-play"
+            startingLineNumber = "355"
+            endingLineNumber = "355"
+            landmarkName = "-pre"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

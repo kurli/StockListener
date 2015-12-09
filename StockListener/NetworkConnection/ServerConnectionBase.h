@@ -12,7 +12,7 @@
 @class StockInfo;
 @interface ServerConnectionBase : KingdaTask
 
--(void) post: (StockInfo*)sid;
+-(void) post: (NSString*)ids;
 
 -(void) onComplete:(NSString*) data;
 

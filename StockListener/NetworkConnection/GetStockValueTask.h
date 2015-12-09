@@ -12,6 +12,7 @@
 @class StockInfo;
 @protocol GetStockValueDoneDelegate <NSObject>
 -(void)onStockValueGot:(StockInfo*)info andError:(NSString*)errorInfo;
+-(void)onStockValuesRefreshed:(NSArray*)infos;
 @end
 
 @interface GetStockValueTask : ServerConnectionBase {
@@ -20,6 +21,7 @@
 @property (copy) void (^onCompleteBlock)(StockInfo*);
 @property (nonatomic, assign) id <GetStockValueDoneDelegate> delegate;
 
+-(id) initWithStocks:(NSArray*) infos;
 -(id) initWithStock:(StockInfo*) info;
 
 @end

@@ -15,7 +15,7 @@
 
 @interface GetStockValueTask()
 
-@property (nonatomic, strong) StockInfo* info;
+@property (nonatomic, strong) NSMutableString* ids;
 #ifdef ENABLE_TEST
 @property (nonatomic, strong) NSArray* arrayTest;
 #endif
@@ -25,7 +25,21 @@
 
 -(id) initWithStock:(StockInfo*) info {
     if ((self = [super init]) != nil) {
-        self.info = [info copy];
+        self.ids = [[NSMutableString alloc] init];
+        [self.ids appendString:info.name];
+#ifdef ENABLE_TEST
+        self.arrayTest = [[NSArray alloc] initWithObjects:@"27.47", @"27.1", @"27.96", @"28.23", @"28.38", @"28.5", @"28.45", @"28.15", @"27.66", @"27.95", @"27.22", @"26.84", @"26", @"25.75", @"24.76", nil];
+#endif
+    }
+    return self;
+}
+
+-(id) initWithStocks:(NSArray*) infos {
+    if ((self = [super init]) != nil) {
+        self.ids = [[NSMutableString alloc] init];
+        for (StockInfo* info in infos) {
+            [self.ids appendFormat:@"%@,", info.sid];
+        }
         #ifdef ENABLE_TEST
         self.arrayTest = [[NSArray alloc] initWithObjects:@"27.47", @"27.1", @"27.96", @"28.23", @"28.38", @"28.5", @"28.45", @"28.15", @"27.66", @"27.95", @"27.22", @"26.84", @"26", @"25.75", @"24.76", nil];
         #endif
@@ -34,58 +48,81 @@
 }
 
 -(void) run {
-    [self post:self.info];
+    [self post:self.ids];
 }
 
--(BOOL) parseValueForSina:(NSString*)str {
+-(StockInfo*) parseValueForSina:(NSString*)str {
     if (str == nil) {
-        return NO;
+        return nil;
     }
-    if (self.info == nil) {
-        return NO;
-    }
-    NSString* flag = [NSString stringWithFormat:@"var hq_str_%@=", self.info.sid];
-    NSRange range = [str rangeOfString:flag];
+
+    NSRange range = [str rangeOfString:@"var hq_str_"];
     if (range.location == NSNotFound) {
-        return NO;
+        return nil;
     }
-    range.location = range.length + 1;
-    range.length = [str length] - (range.length + 1) - 1;
-    NSString* subStr = [str substringWithRange:range];
+    NSRange equalRange = [str rangeOfString:@"="];
+    if (equalRange.location == NSNotFound) {
+        return nil;
+    }
+    NSRange sIDRange = NSMakeRange(range.location + range.length, equalRange.location - range.length - range.location);
+    
+    NSString* sid = [str substringWithRange:sIDRange];
+    
+    range.location = sIDRange.location + sIDRange.length + 2;
+    NSString* subStr = [str substringFromIndex:range.location];
     NSArray* array = [subStr componentsSeparatedByString:@","];
     if ([array count] < 32) {
-        return NO;
+        return nil;
     }
+    StockInfo* info = [[StockInfo alloc] init];
+    info.sid = sid;
     NSString* price = [array objectAtIndex:3];
-    self.info.currentPrice = [price floatValue];
+    info.currentPrice = [price floatValue];
     float lastDayValue = [[array objectAtIndex:2] floatValue];
-    self.info.changeRate = (self.info.currentPrice - lastDayValue) / lastDayValue;
+    info.changeRate = (info.currentPrice - lastDayValue) / lastDayValue;
     #ifdef ENABLE_TEST
     static int count =0;
     count = count % [self.arrayTest count];
-    self.info.currentPrice = [[self.arrayTest objectAtIndex:count] floatValue];
+    info.currentPrice = [[self.arrayTest objectAtIndex:count] floatValue];
     count++;
-    self.info.changeRate = (self.info.currentPrice - 28) / 27.51;
+    info.changeRate = (info.currentPrice - 28) / 27.51;
     #endif
     NSString* updateTime = [array objectAtIndex:31];
-    self.info.updateTime = updateTime;
-    self.info.name = [array objectAtIndex:0];
-    return YES;
+    info.updateTime = updateTime;
+    info.name = [array objectAtIndex:0];
+    return info;
 }
 
 -(void) onComplete:(NSString *)data {
-    BOOL succeed = [self parseValueForSina:data];
-    NSString* error = nil;
-    if (!succeed) {
-        error = @"网络错误";
+    NSArray* array = [data componentsSeparatedByString:@";"];
+    if ([array count] == 0) {
+        return;
     }
+    NSMutableArray* stockArray = [[NSMutableArray alloc] init];
+    for (NSString* str in array) {
+        StockInfo* info = [self parseValueForSina:str];
+        if (info != nil) {
+            [stockArray addObject:info];
+        }
+    }
+
     if (self.delegate) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.delegate onStockValueGot:self.info andError:error];
+            StockInfo* info = nil;
+            if ([stockArray count] != 0) {
+                info = [stockArray objectAtIndex:0];
+            }
+            [self.delegate onStockValueGot:info andError:nil];
+            [self.delegate onStockValuesRefreshed:stockArray];
         });
-    } else if (self.onCompleteBlock) {
+    }
+    if (self.onCompleteBlock) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            self.onCompleteBlock(self.info);
+            StockInfo* info = nil;
+            if ([stockArray count] != 0) {
+                info = [stockArray objectAtIndex:0];
+            }
+            self.onCompleteBlock(info);
         });
     }
 }

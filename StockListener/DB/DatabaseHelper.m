@@ -27,6 +27,7 @@
     if (self = [super init]) {
         [self reloadStockList];
         self.stockRefresher = [[StockRefresher alloc] init];
+        [self.stockRefresher startRefresh:self];
     }
     return self;
 }

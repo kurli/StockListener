@@ -9,21 +9,21 @@
 #import <Foundation/Foundation.h>
 #import "FSAudioController.h"
 #import <AVFoundation/AVFoundation.h>
-#import "GetStockValueTask.h"
 
 @class StockInfo;
+@class DatabaseHelper;
 
 @protocol StockPlayerDelegate <NSObject>
 -(void) onPlaying:(StockInfo*)info;
 -(void) onPLayPaused;
 @end
 
-@interface StockPlayerManager : NSObject <FSAudioControllerDelegate, GetStockValueDoneDelegate, AVSpeechSynthesizerDelegate> {
+@interface StockPlayerManager : NSObject <FSAudioControllerDelegate, AVSpeechSynthesizerDelegate> {
 
     FSStreamConfiguration *_configuration;
 }
 
-@property (nonatomic, strong) NSArray* stockPlayList;
+@property (nonatomic, strong) DatabaseHelper* dbHelper;
 
 @property (nonatomic, assign) id <StockPlayerDelegate> delegate;
 
@@ -37,5 +37,4 @@
 
 -(void) pre;
 
--(int) getCurrentPlayIndex;
 @end

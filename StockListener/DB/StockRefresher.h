@@ -7,9 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "GetStockValueTask.h"
 
-@interface StockRefresher : NSObject
+#define STOCK_VALUE_REFRESHED_NOTIFICATION @"STOCK_VALUE_CHANGED_NOTIFICATION"
 
--(void) startRefresh:(NSArray*) stockList;
+@class DatabaseHelper;
+@interface StockRefresher : NSObject <GetStockValueDoneDelegate>
+
+-(void) startRefresh:(DatabaseHelper*) helper;
 
 @end

@@ -17,4 +17,6 @@
 @property (atomic, unsafe_unretained) float lastChangeRate;
 @property (atomic, unsafe_unretained) int lastStep;
 @property (atomic, unsafe_unretained) float changeRate;
+
+-(void) assign:(StockInfo*) info;
 @end

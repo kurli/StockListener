@@ -25,7 +25,16 @@
     info.currentPrice = self.currentPrice;
     info.lastChangeRate = self.lastChangeRate;
     info.changeRate = self.changeRate;
+    info.lastStep = self.lastStep;
     return info;
+}
+
+-(void) assign:(StockInfo*) info {
+    self.name = info.name;
+    self.currentPrice = info.currentPrice;
+    self.lastChangeRate = info.lastChangeRate;
+    self.changeRate = info.changeRate;
+    self.lastStep = info.lastStep;
 }
 
 -(void)encodeWithCoder:(NSCoder *)aCoder {

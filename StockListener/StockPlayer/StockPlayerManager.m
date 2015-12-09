@@ -11,15 +11,15 @@
 #import "FSAudioStream.h"
 #import "FSAudioController.h"
 #import "FSPlaylistItem.h"
-#import "KingdaWorker.h"
 #import "StockInfo.h"
+#import "StockRefresher.h"
+#import "DatabaseHelper.h"
 
 #define UP_SOUND @"up.mp3"
 #define DOWN_SOUND @"down.mp3"
 #define MUSIC_SOUND @"test.mp3"
 
-#define REFRESH_RATE 10
-#define SPEACH_COUNTER 3
+#define SPEACH_COUNTER 6
 
 @interface StockPlayerManager() {
     int _currentPlayIndex;
@@ -27,12 +27,11 @@
     int speachCounter;
 }
 
-@property (nonatomic,strong) NSTimer *stockRefreshTimer;
-
 @property (nonatomic,strong) FSAudioController *audioController;
 @property (nonatomic,strong) FSAudioController *audioController2;
 @property (nonatomic,strong) AVSpeechSynthesizer *speechPlayer;
 @property (nonatomic,strong) NSMutableArray* playList;
+@property (nonatomic,strong) StockInfo* currentPlayStock;
 
 @end
 
@@ -48,15 +47,9 @@
         _configuration.usePrebufferSizeCalculationInSeconds = YES;
         self.playList =[[NSMutableArray alloc] init];
         
-        [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
         [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(applicationDidEnterBackgroundNotification:)
-                                                     name:UIApplicationDidEnterBackgroundNotification
-                                                   object:nil];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(applicationWillEnterForegroundNotification:)
-                                                     name:UIApplicationWillEnterForegroundNotification
+                                                 selector:@selector(onStockValueRefreshed)
+                                                     name:STOCK_VALUE_REFRESHED_NOTIFICATION
                                                    object:nil];
         speachCounter = 0;
     }
@@ -65,36 +58,24 @@
 
 /*
  * =======================================
- * Timers
+ * Observer
  * =======================================
  */
 
-- (void)stockRefreshFired {
+- (void)onStockValueRefreshed {
+    if ([self.dbHelper.stockList count] == 0) {
+        return;
+    }
+    if (_continueRefresh == NO || speachCounter < 0) {
+        return;
+    }
     speachCounter++;
     if (speachCounter == SPEACH_COUNTER) {
+        speachCounter = -100;
         [self stockSpeachFired];
-        speachCounter = 0;
         return;
     }
-    [self playCurrentStock];
-}
-
-- (void)stockSpeachFired {
-    if ([self.stockPlayList count] == 0) {
-        return;
-    }
-    if (_currentPlayIndex < 0 || _currentPlayIndex >= [self.stockPlayList count]) {
-        _currentPlayIndex = 0;
-    }
-    StockInfo* info = [self.stockPlayList objectAtIndex:_currentPlayIndex];
-
-//    GetStockValueTask* task = [[GetStockValueTask alloc] initWithStock:info];
-//    task.onCompleteBlock = ^(StockInfo* info) {
-        float value = info.changeRate * 100;
-        NSString* proceStr = [NSString stringWithFormat:@"%.3f, 百分之%.2f", info.currentPrice, value];
-        [self speak:proceStr];
-//    };
-//    [[KingdaWorker getInstance] queue: task];
+    [self onStockValueGot];
 }
 
 /*
@@ -112,7 +93,10 @@
         _audioController.onStateChange = ^(FSAudioStreamState state) {
             switch (state) {
                 case kFsAudioStreamPlaybackCompleted:{
-                    NSLog(@"Completed");
+//                    NSLog(@"Completed");
+                    if (weakSelf == nil) {
+                        break;
+                    }
                     if ([weakSelf.playList count] > 0) {
                         NSString* url = [weakSelf.playList objectAtIndex:0];
                         weakSelf.audioController.url = [weakSelf parseLocalFileUrl:url];
@@ -140,8 +124,10 @@
     }
     return _speechPlayer;
 }
+
 - (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didFinishSpeechUtterance:(AVSpeechUtterance *)utterance {
     [self playMusic:[NSString stringWithFormat:@"file://%@", MUSIC_SOUND ]];
+    speachCounter = 0;
 }
 
 /*
@@ -161,77 +147,51 @@
     // Should we display the preloading status somehow?
 }
 
-- (void)applicationDidEnterBackgroundNotification:(NSNotification *)notification
-{
-    NSLog(@"Application entering background");
-}
-
-- (void)applicationWillEnterForegroundNotification:(NSNotification *)notification
-{
-    NSLog(@"Application entering foreground");
-}
-
--(void)onStockValueGot:(StockInfo*)info andError:(NSString*)errorInfo {
-    NSLog(@"StockValueGot");
-    if ([self.stockPlayList count] == 0) {
-        NSLog(@"stockPlayList = 0");
-        return;
-    }
-    if (_currentPlayIndex < 0 || _currentPlayIndex >= [self.stockPlayList count]) {
-        NSLog(@"invalid currentPlayIndex");
-        return;
-    }
-    StockInfo* currentInfo = [self.stockPlayList objectAtIndex:_currentPlayIndex];
-    if ([currentInfo.sid isEqualToString:info.sid]) {
-        if (_continueRefresh) {
-            currentInfo.name = info.name;
-            currentInfo.changeRate = info.changeRate;
-            [self stockValueChanged:info.currentPrice andTime:info.updateTime];
-        }
-    } else {
-        for (StockInfo* tmp in self.stockPlayList) {
-            if ([tmp.sid isEqualToString:info.sid]) {
-                tmp.currentPrice = info.currentPrice;
-                tmp.name = info.name;
-                tmp.changeRate = info.changeRate;
-            }
-        }
-    }
-}
 /*
  * =======================================
  * Private
  * =======================================
  */
 
-- (void) stockValueChanged:(float)newValue andTime:(NSString*)time {
-    if ([self.stockPlayList count] == 0) {
+-(void)onStockValueGot{
+    StockInfo* latestInfo = nil;
+    if (self.currentPlayStock == nil) {
         return;
     }
-    if (_currentPlayIndex < 0 || _currentPlayIndex >= [self.stockPlayList count]) {
+    for (StockInfo* info in self.dbHelper.stockList) {
+        if ([info.sid isEqualToString:self.currentPlayStock.sid]) {
+            latestInfo = info;
+        }
+    }
+    if (latestInfo == nil) {
         return;
     }
-    StockInfo* currentInfo = [self.stockPlayList objectAtIndex:_currentPlayIndex];
-    float value = currentInfo.changeRate * 100;
-    [self setLockScreenTitle:[NSString stringWithFormat:@"%@  %.3f (%.2f%%)", currentInfo.name, newValue, value] andTime:time andRate:currentInfo.changeRate];
+    _currentPlayStock.name = latestInfo.name;
+    _currentPlayStock.changeRate = latestInfo.changeRate;
+    [self stockValueChanged:latestInfo.currentPrice andTime:latestInfo.updateTime andLatestInfo:latestInfo];
+}
 
-    if (currentInfo.currentPrice == 0) {
-        currentInfo.currentPrice = newValue;
+- (void) stockValueChanged:(float)newValue andTime:(NSString*)time andLatestInfo:(StockInfo*) latestInfo {
+    float value = _currentPlayStock.changeRate * 100;
+    [self setLockScreenTitle:[NSString stringWithFormat:@"%@  %.3f (%.2f%%)", _currentPlayStock.name, newValue, value] andTime:time andRate:_currentPlayStock.changeRate];
+
+    if (_currentPlayStock.currentPrice == 0) {
+        _currentPlayStock = [latestInfo copy];
         [self playMusic:[NSString stringWithFormat:@"file://%@", MUSIC_SOUND ]];
         return;
     }
-    float currentChangeRate = (newValue - currentInfo.currentPrice) / currentInfo.currentPrice;
+    float currentChangeRate = (newValue - _currentPlayStock.currentPrice) / _currentPlayStock.currentPrice;
     currentChangeRate*=100;
     int step = 1;
-    if (currentInfo.lastChangeRate == 0) {
+    if (_currentPlayStock.lastChangeRate == 0) {
         step = 1;
-        currentInfo.lastStep = 1;
+        latestInfo.lastStep = 1;
     } else {
-        float rt0 = currentInfo.lastChangeRate < 0 ? currentInfo.lastChangeRate * -1 : currentInfo.lastChangeRate;
+        float rt0 = _currentPlayStock.lastChangeRate < 0 ? _currentPlayStock.lastChangeRate * -1 : _currentPlayStock.lastChangeRate;
         float rt1 = currentChangeRate < 0 ? currentChangeRate * -1 : currentChangeRate;
         float tmpDrt = rt1 / rt0;
 
-        float t = tmpDrt * currentInfo.lastStep;
+        float t = tmpDrt * _currentPlayStock.lastStep;
         if (((int)(t*10) % 10) >= 5) {
             t += 1;
         }
@@ -243,15 +203,17 @@
     if (step > 5) {
         step = 5;
     }
-    NSLog(@"lastPrice: %f currentPrice:%f c_rate:%f last_rate:%f", currentInfo.currentPrice, newValue, currentChangeRate, currentInfo.lastChangeRate);
+    NSLog(@"lastPrice: %f currentPrice:%f c_rate:%f last_rate:%f step:%d", _currentPlayStock.currentPrice, newValue, currentChangeRate, _currentPlayStock.lastChangeRate, step);
     if (currentChangeRate > 0) {
         [self playStockValueUp:step];
     } else if (currentChangeRate < 0) {
         [self playStockValueDown:step];
     }
-    currentInfo.lastChangeRate = currentChangeRate;
-    currentInfo.currentPrice = newValue;
-    currentInfo.lastStep = step;
+    latestInfo.lastChangeRate = currentChangeRate;
+    latestInfo.currentPrice = newValue;
+    latestInfo.lastStep = step;
+    _currentPlayStock = [latestInfo copy];
+    NSLog(@"step:%d", _currentPlayStock.lastStep);
 }
 
 -(void) playStockValueUp: (int)step {
@@ -282,7 +244,7 @@
     songInfo[MPMediaItemPropertyTitle] = str;
     songInfo[MPMediaItemPropertyArtist] = time;
     int value = rate * 1000 + 100;
-    NSLog(@"rate=%f value = %d", rate, value);
+//    NSLog(@"rate=%f value = %d", rate, value);
     [songInfo setObject:[NSNumber numberWithFloat:200] forKey:MPMediaItemPropertyPlaybackDuration];
     [songInfo setObject:[NSNumber numberWithFloat:value] forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
     [songInfo setObject:[NSNumber numberWithFloat:0] forKey:MPNowPlayingInfoPropertyPlaybackRate];
@@ -327,35 +289,16 @@
     [self.audioController play];
 }
 
--(void) playStock:(StockInfo*)info {
-    GetStockValueTask* task = [[GetStockValueTask alloc] initWithStock:info];
-    task.delegate = self;
-    [[KingdaWorker getInstance] queue: task];
-    if (_continueRefresh) {
-        if (_stockRefreshTimer == nil) {
-            _stockRefreshTimer = [NSTimer scheduledTimerWithTimeInterval:REFRESH_RATE target:self selector:@selector(stockRefreshFired) userInfo:nil repeats:YES];
-        }
-    } else {
-        [self stopRefresh];
-    }
-}
-
--(void) stopRefresh {
-    _continueRefresh = NO;
-    [_stockRefreshTimer invalidate];
-    _stockRefreshTimer = nil;
-}
-
-- (void) playCurrentStock {
-    if ([self.stockPlayList count] == 0) {
-        return;
-    }
-    if (_currentPlayIndex < 0 || _currentPlayIndex >= [self.stockPlayList count]) {
+- (void)stockSpeachFired {
+    if (_currentPlayIndex < 0 || _currentPlayIndex >= [self.dbHelper.stockList count]) {
         _currentPlayIndex = 0;
     }
-    StockInfo* info = [self.stockPlayList objectAtIndex:_currentPlayIndex];
-//    info.currentPrice = 0;
-    [self playStock:info];
+    StockInfo* info = [self.dbHelper.stockList objectAtIndex:_currentPlayIndex];
+    
+    float value = info.changeRate * 100;
+    NSString* proceStr = [NSString stringWithFormat:@"%.3f, 百分之%.2f", info.currentPrice, value];
+    [self speak:proceStr];
+    [self setLockScreenTitle:[NSString stringWithFormat:@"%@  %.3f (%.2f%%)", _currentPlayStock.name, info.currentPrice, value] andTime:info.updateTime andRate:_currentPlayStock.changeRate];
 }
 
 /*
@@ -364,28 +307,31 @@
  * =======================================
  */
 - (void) play {
-    _continueRefresh = true;
-    if ([self.stockPlayList count] == 0) {
+    if ([self.dbHelper.stockList count] == 0) {
+        _continueRefresh = false;
         return;
     }
-    if (_currentPlayIndex < 0 || _currentPlayIndex >= [self.stockPlayList count]) {
+    _continueRefresh = true;
+
+    if (_currentPlayIndex < 0 || _currentPlayIndex >= [self.dbHelper.stockList count]) {
         _currentPlayIndex = 0;
     }
-    StockInfo* info = [self.stockPlayList objectAtIndex:_currentPlayIndex];
-    info.currentPrice = 0;
-    [self playCurrentStock];
+    self.currentPlayStock = [[self.dbHelper.stockList objectAtIndex:_currentPlayIndex] copy];
+    
+//    [self playMusic:[NSString stringWithFormat:@"file://%@", MUSIC_SOUND ]];
+    [self onStockValueGot];
     
     if (self.delegate) {
-        [self.delegate onPlaying:[self.stockPlayList objectAtIndex:_currentPlayIndex]];
+        [self.delegate onPlaying:self.currentPlayStock];
     }
 }
 
 -(void) pause {
+    [self.playList removeAllObjects];
     _continueRefresh = false;
     [self.audioController stop];
     self.audioController2 = self.audioController;
     self.audioController = nil;
-    [self stopRefresh];
     
     if (self.delegate) {
         [self.delegate onPLayPaused];
@@ -398,7 +344,7 @@
 
 -(void) next {
     _currentPlayIndex++;
-    if (_currentPlayIndex >= [self.stockPlayList count]) {
+    if (_currentPlayIndex >= [self.dbHelper.stockList count]) {
         _currentPlayIndex = 0;
     }
     [self pause];
@@ -408,14 +354,10 @@
 -(void) pre {
     _currentPlayIndex--;
     if (_currentPlayIndex < 0) {
-        _currentPlayIndex = (int)[self.stockPlayList count] -1;
+        _currentPlayIndex = (int)[self.dbHelper.stockList count] -1;
     }
     [self pause];
     [self play];
-}
-
--(int) getCurrentPlayIndex {
-    return _currentPlayIndex;
 }
 
 @end

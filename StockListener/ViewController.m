@@ -8,7 +8,6 @@
 
 #import "ViewController.h"
 #import "KingdaWorker.h"
-#import "FSAudioController.h"
 #import "DatabaseHelper.h"
 #import "SearchStockController.h"
 #import "StockInfo.h"
@@ -50,10 +49,19 @@
     
     player = [[StockPlayerManager alloc] init];
     [player setDelegate:self];
-
-    [player setStockPlayList:self.dbHelper.stockList];
+    [player setDbHelper:_dbHelper];
     
+    [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(outputDeviceChanged:)name:AVAudioSessionRouteChangeNotification object:[AVAudioSession sharedInstance]];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationDidEnterBackgroundNotification:)
+                                                 name:UIApplicationDidEnterBackgroundNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationWillEnterForegroundNotification:)
+                                                 name:UIApplicationWillEnterForegroundNotification
+                                               object:nil];
 }
 
 - (void)outputDeviceChanged:(NSNotification *)aNotification
@@ -195,4 +203,13 @@
     [self.playButton setTitle:@"Play" forState:UIControlStateNormal];
 }
 
+- (void)applicationDidEnterBackgroundNotification:(NSNotification *)notification
+{
+    NSLog(@"Application entering background");
+}
+
+- (void)applicationWillEnterForegroundNotification:(NSNotification *)notification
+{
+    NSLog(@"Application entering foreground");
+}
 @end
