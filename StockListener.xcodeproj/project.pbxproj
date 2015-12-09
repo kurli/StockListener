@@ -51,6 +51,7 @@
 		946E5DE11C17239B00CA896E /* DatabaseHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 946E5DE01C17239B00CA896E /* DatabaseHelper.m */; };
 		946E5DE41C172A1A00CA896E /* StockInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 946E5DE31C172A1A00CA896E /* StockInfo.m */; };
 		946E5DE71C1738E300CA896E /* StockRefresher.m in Sources */ = {isa = PBXBuildFile; fileRef = 946E5DE61C1738E300CA896E /* StockRefresher.m */; };
+		946E5DE91C18872400CA896E /* StockTableItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 946E5DE81C18872400CA896E /* StockTableItemView.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -142,6 +143,7 @@
 		946E5DE31C172A1A00CA896E /* StockInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StockInfo.m; sourceTree = "<group>"; };
 		946E5DE51C1738E300CA896E /* StockRefresher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StockRefresher.h; sourceTree = "<group>"; };
 		946E5DE61C1738E300CA896E /* StockRefresher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StockRefresher.m; sourceTree = "<group>"; };
+		946E5DE81C18872400CA896E /* StockTableItemView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = StockTableItemView.xib; path = StockListener/StockMainView/StockTableItemView.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -378,6 +380,7 @@
 			children = (
 				946E5DDB1C17238600CA896E /* SearchStockController.h */,
 				946E5DDC1C17238600CA896E /* SearchStockController.m */,
+				946E5DE81C18872400CA896E /* StockTableItemView.xib */,
 			);
 			name = StockMainView;
 			sourceTree = "<group>";
@@ -482,6 +485,7 @@
 				940CC2321C0B8AE400F84ADB /* up.mp3 in Resources */,
 				940CC2261C0AEA2700F84ADB /* test-2sec.mp3 in Resources */,
 				940CC2331C0B8AE400F84ADB /* down.mp3 in Resources */,
+				946E5DE91C18872400CA896E /* StockTableItemView.xib in Resources */,
 				945DF5D71C074A0C00C81F31 /* LaunchScreen.xib in Resources */,
 				945DF5D41C074A0C00C81F31 /* Images.xcassets in Resources */,
 			);

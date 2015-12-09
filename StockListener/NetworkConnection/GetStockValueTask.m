@@ -11,7 +11,7 @@
 #import "StockPlayerManager.h"
 #import "StockInfo.h"
 
-//#define ENABLE_TEST 
+#define ENABLE_TEST
 
 @interface GetStockValueTask()
 
@@ -28,7 +28,7 @@
         self.ids = [[NSMutableString alloc] init];
         [self.ids appendString:info.name];
 #ifdef ENABLE_TEST
-        self.arrayTest = [[NSArray alloc] initWithObjects:@"27.47", @"27.1", @"27.96", @"28.23", @"28.38", @"28.5", @"28.45", @"28.15", @"27.66", @"27.95", @"27.22", @"26.84", @"26", @"25.75", @"24.76", nil];
+        self.arrayTest = [[NSArray alloc] initWithObjects:@"27.47", @"27.1", @"27.96", @"28.23", @"28.38", @"28.5", @"28.45", @"28.15", @"27.66", @"27.95", @"27.22", @"26.84", @"26", @"25.75", @"24.76", @"25", @"25.5", @"26", @"27", nil];
 #endif
     }
     return self;
@@ -41,7 +41,7 @@
             [self.ids appendFormat:@"%@,", info.sid];
         }
         #ifdef ENABLE_TEST
-        self.arrayTest = [[NSArray alloc] initWithObjects:@"27.47", @"27.1", @"27.96", @"28.23", @"28.38", @"28.5", @"28.45", @"28.15", @"27.66", @"27.95", @"27.22", @"26.84", @"26", @"25.75", @"24.76", nil];
+        self.arrayTest = [[NSArray alloc] initWithObjects:@"27.47", @"27.1", @"27.96", @"28.23", @"28.38", @"28.5", @"28.45", @"28.15", @"27.66", @"27.95", @"27.22", @"26.84", @"26", @"25.75", @"24.76", @"25", @"25.5", @"26", @"27", nil];
         #endif
     }
     return self;
@@ -85,7 +85,7 @@
     count = count % [self.arrayTest count];
     info.currentPrice = [[self.arrayTest objectAtIndex:count] floatValue];
     count++;
-    info.changeRate = (info.currentPrice - 28) / 27.51;
+    info.changeRate = (info.currentPrice - 27.51) / 27.51;
     #endif
     NSString* updateTime = [array objectAtIndex:31];
     info.updateTime = updateTime;

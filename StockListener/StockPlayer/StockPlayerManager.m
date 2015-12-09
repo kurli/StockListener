@@ -28,16 +28,15 @@
 }
 
 @property (nonatomic,strong) FSAudioController *audioController;
-@property (nonatomic,strong) FSAudioController *audioController2;
+@property (nonatomic,strong) FSAudioController *musicController;
 @property (nonatomic,strong) AVSpeechSynthesizer *speechPlayer;
 @property (nonatomic,strong) NSMutableArray* playList;
 @property (nonatomic,strong) StockInfo* currentPlayStock;
+@property (nonatomic,assign) BOOL musicPaused;
 
 @end
 
 @implementation StockPlayerManager
-
-@synthesize audioController2;
 
 - (id) init {
     if (self = [super init]) {
@@ -66,12 +65,13 @@
     if ([self.dbHelper.stockList count] == 0) {
         return;
     }
-    if (_continueRefresh == NO || speachCounter < 0) {
+    if (_continueRefresh == NO) {
         return;
     }
+    NSLog(@"onStockValueRefreshed");
     speachCounter++;
     if (speachCounter == SPEACH_COUNTER) {
-        speachCounter = -100;
+        NSLog(@"onStockValueRefreshed speak");
         [self stockSpeachFired];
         return;
     }
@@ -90,22 +90,14 @@
         _audioController.delegate = self;
         self.audioController.configuration = _configuration;
         __weak StockPlayerManager *weakSelf = self;
+        [weakSelf.audioController setVolume:1];
         _audioController.onStateChange = ^(FSAudioStreamState state) {
             switch (state) {
                 case kFsAudioStreamPlaybackCompleted:{
-//                    NSLog(@"Completed");
-                    if (weakSelf == nil) {
-                        break;
-                    }
-                    if ([weakSelf.playList count] > 0) {
-                        NSString* url = [weakSelf.playList objectAtIndex:0];
-                        weakSelf.audioController.url = [weakSelf parseLocalFileUrl:url];
-                        [weakSelf.audioController setVolume:1];
-                        [weakSelf.audioController play];
-                        [weakSelf.playList removeObjectAtIndex:0];
-                        break;
-                    }
-                    [weakSelf playMusic:[NSString stringWithFormat:@"file://%@", MUSIC_SOUND ]];
+                    NSLog(@"Stock play completed");
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [weakSelf playStockSound];
+                    });
                     break;
                 }
                 default:
@@ -114,6 +106,29 @@
         };
     }
     return _audioController;
+}
+
+- (FSAudioController *)musicController
+{
+    if (!_musicController) {
+        _musicController = [[FSAudioController alloc] init];
+        _musicController.delegate = self;
+        self.musicController.configuration = _configuration;
+        self.musicController.url = [self parseLocalFileUrl:[NSString stringWithFormat:@"file://%@", MUSIC_SOUND ]];
+        [self.musicController setVolume:0.3];
+        __weak StockPlayerManager *weakSelf = self;
+        _musicController.onStateChange = ^(FSAudioStreamState state) {
+            switch (state) {
+                case kFsAudioStreamPlaybackCompleted:{
+                    [weakSelf playMusic];
+                    break;
+                }
+                default:
+                    break;
+            }
+        };
+    }
+    return _musicController;
 }
 
 - (AVSpeechSynthesizer *)speechPlayer
@@ -126,8 +141,8 @@
 }
 
 - (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didFinishSpeechUtterance:(AVSpeechUtterance *)utterance {
-    [self playMusic:[NSString stringWithFormat:@"file://%@", MUSIC_SOUND ]];
     speachCounter = 0;
+    [self playMusic];
 }
 
 /*
@@ -171,13 +186,35 @@
     [self stockValueChanged:latestInfo.currentPrice andTime:latestInfo.updateTime andLatestInfo:latestInfo];
 }
 
+- (NSString*) valueToStr:(float)value {
+    NSString* str = [NSString stringWithFormat:@"%.3f", value];
+    int index = (int)[str length] - 1;
+    for (; index >= 0; index--) {
+        char c = [str characterAtIndex:index];
+        if (c !='0') {
+            break;
+        }
+    }
+    if (index <= 0) {
+        return @"0";
+    }
+    if ([str characterAtIndex:index] == '.') {
+        index--;
+    }
+    if (index <= 0) {
+        return @"0";
+    }
+    str = [str substringToIndex:index+1];
+    return str;
+}
+
 - (void) stockValueChanged:(float)newValue andTime:(NSString*)time andLatestInfo:(StockInfo*) latestInfo {
     float value = _currentPlayStock.changeRate * 100;
-    [self setLockScreenTitle:[NSString stringWithFormat:@"%@  %.3f (%.2f%%)", _currentPlayStock.name, newValue, value] andTime:time andRate:_currentPlayStock.changeRate];
+    [self setLockScreenTitle:[NSString stringWithFormat:@"%@  %@ (%.2f%%)", _currentPlayStock.name, [self valueToStr:newValue], value] andTime:time andRate:_currentPlayStock.changeRate];
 
     if (_currentPlayStock.currentPrice == 0) {
         _currentPlayStock = [latestInfo copy];
-        [self playMusic:[NSString stringWithFormat:@"file://%@", MUSIC_SOUND ]];
+        [self playMusic];
         return;
     }
     float currentChangeRate = (newValue - _currentPlayStock.currentPrice) / _currentPlayStock.currentPrice;
@@ -203,17 +240,19 @@
     if (step > 5) {
         step = 5;
     }
-    NSLog(@"lastPrice: %f currentPrice:%f c_rate:%f last_rate:%f step:%d", _currentPlayStock.currentPrice, newValue, currentChangeRate, _currentPlayStock.lastChangeRate, step);
+//    NSLog(@"lastPrice: %f currentPrice:%f c_rate:%f last_rate:%f step:%d", _currentPlayStock.currentPrice, newValue, currentChangeRate, _currentPlayStock.lastChangeRate, step);
     if (currentChangeRate > 0) {
         [self playStockValueUp:step];
     } else if (currentChangeRate < 0) {
         [self playStockValueDown:step];
+    } else {
+        [self playMusic];
     }
     latestInfo.lastChangeRate = currentChangeRate;
     latestInfo.currentPrice = newValue;
     latestInfo.lastStep = step;
     _currentPlayStock = [latestInfo copy];
-    NSLog(@"step:%d", _currentPlayStock.lastStep);
+//    NSLog(@"step:%d", _currentPlayStock.lastStep);
 }
 
 -(void) playStockValueUp: (int)step {
@@ -231,9 +270,7 @@
 }
 
 - (void)speak: (NSString*)str {
-    [self.audioController stop];
-    self.audioController2 = self.audioController;
-    self.audioController = nil;
+    [self pauseMusic];
     AVSpeechUtterance* u=[[AVSpeechUtterance alloc]initWithString:str];
     u.voice=[AVSpeechSynthesisVoice voiceWithLanguage:@"zh-TW"];
     [self.speechPlayer speakUtterance:u];
@@ -266,27 +303,47 @@
 }
 
 - (void) playStockSound {
-    if ([self.audioController isPlaying]) {
-        NSString* url = [self.audioController.url absoluteString];
-        if ([url containsString:MUSIC_SOUND]) {
-            [self.audioController stop];
-            self.audioController2 = self.audioController;
-            self.audioController = nil;
-        }
+    if (!_continueRefresh) {
+        return;
     }
     if ([self.playList count] > 0) {
         NSString* url = [self.playList objectAtIndex:0];
         self.audioController.url = [self parseLocalFileUrl:url];
-        [self.audioController setVolume:1];
+        [self pauseMusic];
         [self.audioController play];
         [self.playList removeObjectAtIndex:0];
+    } else {
+        [self playMusic];
     }
 }
 
-- (void) playMusic:(NSString*)url {
-    self.audioController.url = [self parseLocalFileUrl:url];
-    [self.audioController setVolume:0.3];
-    [self.audioController play];
+- (void) playMusic {
+    if ([self.playList count] > 0) {
+        NSLog(@"play music skipped");
+        return;
+    }
+    if (!_continueRefresh) {
+        return;
+    }
+    if (self.musicPaused) {
+        NSLog(@"Play music after paused");
+        [self.musicController pause];
+        self.musicPaused = NO;
+        return;
+    }
+    if (![self.musicController isPlaying]) {
+        NSLog(@"Play music with play");
+        [self.musicController play];
+    }
+    self.musicPaused = NO;
+}
+
+- (void) pauseMusic {
+    NSLog(@"pause music");
+    if (!self.musicPaused) {
+        [self.musicController pause];
+        self.musicPaused = YES;
+    }
 }
 
 - (void)stockSpeachFired {
@@ -296,9 +353,9 @@
     StockInfo* info = [self.dbHelper.stockList objectAtIndex:_currentPlayIndex];
     
     float value = info.changeRate * 100;
-    NSString* proceStr = [NSString stringWithFormat:@"%.3f, 百分之%.2f", info.currentPrice, value];
+    NSString* proceStr = [NSString stringWithFormat:@"%@, 百分之%.2f", [self valueToStr:info.currentPrice], value];
     [self speak:proceStr];
-    [self setLockScreenTitle:[NSString stringWithFormat:@"%@  %.3f (%.2f%%)", _currentPlayStock.name, info.currentPrice, value] andTime:info.updateTime andRate:_currentPlayStock.changeRate];
+    [self setLockScreenTitle:[NSString stringWithFormat:@"%@  %@ (%.2f%%)", _currentPlayStock.name, [self valueToStr:info.currentPrice], value] andTime:info.updateTime andRate:_currentPlayStock.changeRate];
 }
 
 /*
@@ -318,7 +375,7 @@
     }
     self.currentPlayStock = [[self.dbHelper.stockList objectAtIndex:_currentPlayIndex] copy];
     
-//    [self playMusic:[NSString stringWithFormat:@"file://%@", MUSIC_SOUND ]];
+    [self playMusic];
     [self onStockValueGot];
     
     if (self.delegate) {
@@ -329,9 +386,7 @@
 -(void) pause {
     [self.playList removeAllObjects];
     _continueRefresh = false;
-    [self.audioController stop];
-    self.audioController2 = self.audioController;
-    self.audioController = nil;
+    [self pauseMusic];
     
     if (self.delegate) {
         [self.delegate onPLayPaused];
