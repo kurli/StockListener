@@ -12,7 +12,7 @@
 #import "DatabaseHelper.h"
 #import "StockInfo.h"
 
-#define REFRESH_RATE 5
+#define REFRESH_RATE 10
 
 @interface StockRefresher()
 
@@ -29,6 +29,11 @@
     }
     self.dbHelper = dbhelper;
     [self stockRefreshFired];
+}
+
+-(void) stopRefreshStock {
+    [_stockRefreshTimer invalidate];
+    [self setStockRefreshTimer:nil];
 }
 
 - (void)stockRefreshFired {

@@ -413,6 +413,9 @@
     }
     self.currentPlayStock = [[self.dbHelper.stockList objectAtIndex:_currentPlayIndex] copy];
     
+    speachCounter = 0;
+    _nowSpeaking = NO;
+    
     [self playMusic];
 //    [self onStockValueGot];
     
@@ -449,6 +452,18 @@
     if (_currentPlayIndex < 0) {
         _currentPlayIndex = (int)[self.dbHelper.stockList count] -1;
     }
+    [self pause];
+    [self play];
+}
+
+-(void) playByIndex:(int)index {
+    if (index < 0) {
+        index = 0;
+    }
+    if (index >= [self.dbHelper.stockList count]) {
+        index = 0;
+    }
+    _currentPlayIndex = index;
     [self pause];
     [self play];
 }

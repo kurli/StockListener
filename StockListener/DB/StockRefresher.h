@@ -16,4 +16,6 @@
 
 -(void) startRefresh:(DatabaseHelper*) helper;
 
+-(void) stopRefreshStock;
+
 @end

@@ -37,4 +37,6 @@
 
 -(void) pre;
 
+-(void) playByIndex:(int)index;
+
 @end

@@ -53,6 +53,7 @@
 		946E5DE71C1738E300CA896E /* StockRefresher.m in Sources */ = {isa = PBXBuildFile; fileRef = 946E5DE61C1738E300CA896E /* StockRefresher.m */; };
 		946E5DE91C18872400CA896E /* StockTableItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 946E5DE81C18872400CA896E /* StockTableItemView.xib */; };
 		946E5DEC1C18A30000CA896E /* StockTableItemViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 946E5DEB1C18A30000CA896E /* StockTableItemViewController.m */; };
+		946E5DEE1C19DD0500CA896E /* headset.png in Resources */ = {isa = PBXBuildFile; fileRef = 946E5DED1C19DD0500CA896E /* headset.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -147,6 +148,7 @@
 		946E5DE81C18872400CA896E /* StockTableItemView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = StockTableItemView.xib; path = StockListener/StockMainView/StockTableItemView.xib; sourceTree = "<group>"; };
 		946E5DEA1C18A30000CA896E /* StockTableItemViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StockTableItemViewController.h; path = StockListener/StockMainView/StockTableItemViewController.h; sourceTree = "<group>"; };
 		946E5DEB1C18A30000CA896E /* StockTableItemViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StockTableItemViewController.m; path = StockListener/StockMainView/StockTableItemViewController.m; sourceTree = "<group>"; };
+		946E5DED1C19DD0500CA896E /* headset.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = headset.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -295,6 +297,7 @@
 		940CC2251C0AEA2700F84ADB /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				946E5DED1C19DD0500CA896E /* headset.png */,
 				940CC2301C0B8AE400F84ADB /* up.mp3 */,
 				940CC2311C0B8AE400F84ADB /* down.mp3 */,
 				940CC2231C0AEA2700F84ADB /* test-2sec.mp3 */,
@@ -487,6 +490,7 @@
 			files = (
 				945DF5D21C074A0C00C81F31 /* Main.storyboard in Resources */,
 				940CC2271C0AEA2700F84ADB /* test.mp3 in Resources */,
+				946E5DEE1C19DD0500CA896E /* headset.png in Resources */,
 				940CC2321C0B8AE400F84ADB /* up.mp3 in Resources */,
 				940CC2261C0AEA2700F84ADB /* test-2sec.mp3 in Resources */,
 				940CC2331C0B8AE400F84ADB /* down.mp3 in Resources */,

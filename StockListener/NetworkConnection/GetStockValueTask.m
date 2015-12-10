@@ -26,7 +26,7 @@
 -(id) initWithStock:(StockInfo*) info {
     if ((self = [super init]) != nil) {
         self.ids = [[NSMutableString alloc] init];
-        [self.ids appendString:info.name];
+        [self.ids appendString:info.sid];
 #ifdef ENABLE_TEST
         self.arrayTest = [[NSArray alloc] initWithObjects:@"27.47", @"27.1", @"27.96", @"28.23", @"28.38", @"28.5", @"28.45", @"28.15", @"27.66", @"27.95", @"27.22", @"26.84", @"26", @"25.75", @"24.76", @"25", @"25.5", @"26", @"27", nil];
 #endif

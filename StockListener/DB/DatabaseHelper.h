@@ -22,5 +22,7 @@
 
 -(void) addStockBySID:(NSString*)sid;
 -(void) removeStockBySID:(NSString*)sid;
+- (void) startRefreshStock;
+- (void) stopRefreshStock;
 
 @end

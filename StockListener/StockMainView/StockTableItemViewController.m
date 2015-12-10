@@ -8,12 +8,21 @@
 
 #import "StockTableItemViewController.h"
 #import "StockInfo.h"
+#import "StockPlayerManager.h"
 
 #define NAME 101
 #define PRICE 102
 #define RATE 103
+#define SID 104
+#define DELETE 105
+#define HEADSET 106
+
+#define HEADSET_HIDE 0.2
+#define HEADSET_SHOW 1
 
 @implementation StockTableItemViewController
+
+@synthesize nowPLayingSID;
 
 - (NSString*) valueToStr:(NSString*)str {
 //    NSString* str = [NSString stringWithFormat:@"%.3f", value];
@@ -37,6 +46,26 @@
     return str;
 }
 
+#define IOS_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
+
+-(void) headsetClicked:(id)headsetImg {
+    UIButton *button = (UIButton *)headsetImg;
+    UIView *contentView;
+    if (IOS_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
+        contentView = [button superview];
+    } else if (IOS_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+        contentView = [[button superview] superview];
+    } else {
+        contentView = [button superview];
+    }
+    UITableViewCell *cell = (UITableViewCell*)[contentView superview];
+    if ([cell isKindOfClass:[UITableViewCell class]] == false) {
+        return;
+    }
+    NSIndexPath *indexPath = [_tableView indexPathForCell:cell];
+    [self.player playByIndex:(int)indexPath.row];
+}
+
 -(UITableViewCell*) getTableViewCell:(UITableView*)tableView andInfo:(StockInfo*)info {
     static NSString *flag=@"StockTableViewCellFlag";
     UITableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:flag];
@@ -47,6 +76,20 @@
     UILabel* nameLabel = [cell viewWithTag:NAME];
     UILabel* priceLabel = [cell viewWithTag:PRICE];
     UILabel* rateLabel = [cell viewWithTag:RATE];
+    UILabel* sid = [cell viewWithTag:SID];
+    UIButton* headSetImg = [cell viewWithTag:HEADSET];
+    
+    [headSetImg addTarget:self action:@selector(headsetClicked:) forControlEvents:UIControlEventTouchUpInside];
+    
+    if (nowPLayingSID != nil) {
+        if ([nowPLayingSID isEqualToString:info.sid]) {
+            [headSetImg setAlpha:HEADSET_SHOW];
+        } else {
+            [headSetImg setAlpha:HEADSET_HIDE];
+        }
+    } else {
+        [headSetImg setAlpha:HEADSET_HIDE];
+    }
 
     [nameLabel setText:info.name];
 
@@ -58,6 +101,8 @@
     rateStr = [self valueToStr:rateStr];
     [rateLabel setText:rateStr];
     
+    [sid setText:info.sid];
+    
     float changeRate = [rateStr floatValue];
     if (changeRate > 0) {
         [priceLabel setTextColor:[UIColor redColor]];
@@ -67,6 +112,9 @@
         [priceLabel setTextColor:[UIColor colorWithRed:0 green:0.7 blue:0 alpha:1]];
         [rateLabel setTextColor:[UIColor colorWithRed:0 green:0.7 blue:0 alpha:1]];
     }
+    
+    
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     return cell;
 }

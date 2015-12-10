@@ -98,5 +98,12 @@
     }
 }
 
+- (void) startRefreshStock {
+    [self.stockRefresher startRefresh:self];
+}
+
+- (void) stopRefreshStock {
+    [self.stockRefresher stopRefreshStock];
+}
 
 @end

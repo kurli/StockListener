@@ -55,6 +55,8 @@
     
     _searchStockController = [[SearchStockController alloc] init];
     _stockTableItemViewController = [[StockTableItemViewController alloc] init];
+    [_stockTableItemViewController setTableView:self.tableView];
+    [_stockTableItemViewController setPlayer:player];
     
     [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(outputDeviceChanged:)name:AVAudioSessionRouteChangeNotification object:[AVAudioSession sharedInstance]];
@@ -123,6 +125,14 @@
     }
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (self.searchController.active) {
+        return 44;
+    } else {
+        return 60;
+    }
+}
+
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     if (self.searchController.active) {
         static NSString *flag=@"searchCellFlag";
@@ -149,11 +159,11 @@
         [self addBySID:[self.searchStockController.searchList objectAtIndex:indexPath.row]];
         [self.searchController setActive:NO];
     } else {
-        if (indexPath.row >= [self.dbHelper.stockList count]) {
-            return;
-        }
-        StockInfo* info = [self.dbHelper.stockList objectAtIndex:indexPath.row];
-        [self.dbHelper removeStockBySID:info.sid];
+//        if (indexPath.row >= [self.dbHelper.stockList count]) {
+//            return;
+//        }
+//        StockInfo* info = [self.dbHelper.stockList objectAtIndex:indexPath.row];
+//        [self.dbHelper removeStockBySID:info.sid];
     }
 }
 
@@ -200,21 +210,27 @@
 -(void) onPlaying:(StockInfo*)info {
     [self.stockTitle setText:info.name];
     [self.playButton setTitle:@"Pause" forState:UIControlStateNormal];
+    [self.stockTableItemViewController setNowPLayingSID:info.sid];
+    [self.tableView reloadData];
 }
 
 -(void) onPLayPaused {
     [self.stockTitle setText:@"听股市"];
     [self.playButton setTitle:@"Play" forState:UIControlStateNormal];
+    [self.stockTableItemViewController setNowPLayingSID:nil];
+    [self.tableView reloadData];
 }
 
 - (void)applicationDidEnterBackgroundNotification:(NSNotification *)notification
 {
-    NSLog(@"Application entering background");
+    if (![player isPlaying]) {
+        [self.dbHelper stopRefreshStock];
+    }
 }
 
 - (void)applicationWillEnterForegroundNotification:(NSNotification *)notification
 {
-    NSLog(@"Application entering foreground");
+    [self.dbHelper startRefreshStock];
 }
 
 - (void)onStockValueRefreshed {

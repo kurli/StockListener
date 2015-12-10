@@ -10,9 +10,12 @@
 #import <UIKit/UIKit.h>
 
 @class StockInfo;
-
+@class StockPlayerManager;
 @interface StockTableItemViewController : NSObject
 
+@property (nonatomic, strong) NSString* nowPLayingSID;
+@property (nonatomic, assign) UITableView* tableView;
+@property (nonatomic, strong) StockPlayerManager* player;
 
 -(UITableViewCell*) getTableViewCell:(UITableView*)tableView andInfo:(StockInfo*)info;
 @end

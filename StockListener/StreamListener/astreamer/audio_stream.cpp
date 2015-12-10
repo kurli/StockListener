@@ -1315,6 +1315,10 @@ void Audio_Stream::decodeSinglePacket(CFRunLoopTimerRef timer, void *info)
         return;
     }
     
+    if (THIS->m_audioConverter == 0) {
+        AS_TRACE("decoder bail out: audioConverter nil!");
+        return;
+    }
     AudioBufferList outputBufferList;
     outputBufferList.mNumberBuffers = 1;
     outputBufferList.mBuffers[0].mNumberChannels = THIS->m_dstFormat.mChannelsPerFrame;
