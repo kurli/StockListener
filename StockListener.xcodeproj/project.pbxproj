@@ -52,6 +52,7 @@
 		946E5DE41C172A1A00CA896E /* StockInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 946E5DE31C172A1A00CA896E /* StockInfo.m */; };
 		946E5DE71C1738E300CA896E /* StockRefresher.m in Sources */ = {isa = PBXBuildFile; fileRef = 946E5DE61C1738E300CA896E /* StockRefresher.m */; };
 		946E5DE91C18872400CA896E /* StockTableItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 946E5DE81C18872400CA896E /* StockTableItemView.xib */; };
+		946E5DEC1C18A30000CA896E /* StockTableItemViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 946E5DEB1C18A30000CA896E /* StockTableItemViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -144,6 +145,8 @@
 		946E5DE51C1738E300CA896E /* StockRefresher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StockRefresher.h; sourceTree = "<group>"; };
 		946E5DE61C1738E300CA896E /* StockRefresher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StockRefresher.m; sourceTree = "<group>"; };
 		946E5DE81C18872400CA896E /* StockTableItemView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = StockTableItemView.xib; path = StockListener/StockMainView/StockTableItemView.xib; sourceTree = "<group>"; };
+		946E5DEA1C18A30000CA896E /* StockTableItemViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StockTableItemViewController.h; path = StockListener/StockMainView/StockTableItemViewController.h; sourceTree = "<group>"; };
+		946E5DEB1C18A30000CA896E /* StockTableItemViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StockTableItemViewController.m; path = StockListener/StockMainView/StockTableItemViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -381,6 +384,8 @@
 				946E5DDB1C17238600CA896E /* SearchStockController.h */,
 				946E5DDC1C17238600CA896E /* SearchStockController.m */,
 				946E5DE81C18872400CA896E /* StockTableItemView.xib */,
+				946E5DEA1C18A30000CA896E /* StockTableItemViewController.h */,
+				946E5DEB1C18A30000CA896E /* StockTableItemViewController.m */,
 			);
 			name = StockMainView;
 			sourceTree = "<group>";
@@ -515,6 +520,7 @@
 				940CC2141C09BFAD00F84ADB /* FSAudioStream.mm in Sources */,
 				940CC20B1C09BFAC00F84ADB /* audio_stream.cpp in Sources */,
 				940CC2101C09BFAD00F84ADB /* id3_parser.cpp in Sources */,
+				946E5DEC1C18A30000CA896E /* StockTableItemViewController.m in Sources */,
 				940CC2161C09BFAD00F84ADB /* FSParsePlaylistRequest.m in Sources */,
 				945DF5CC1C074A0C00C81F31 /* AppDelegate.m in Sources */,
 				946E5DE11C17239B00CA896E /* DatabaseHelper.m in Sources */,

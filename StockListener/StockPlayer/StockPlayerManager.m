@@ -21,6 +21,8 @@
 
 #define SPEACH_COUNTER 6
 
+//#define NSLog(a)
+
 @interface StockPlayerManager() {
     int _currentPlayIndex;
     BOOL _continueRefresh;
@@ -30,9 +32,10 @@
 @property (nonatomic,strong) FSAudioController *audioController;
 @property (nonatomic,strong) FSAudioController *musicController;
 @property (nonatomic,strong) AVSpeechSynthesizer *speechPlayer;
-@property (nonatomic,strong) NSMutableArray* playList;
+@property (atomic,strong) NSMutableArray* playList;
 @property (nonatomic,strong) StockInfo* currentPlayStock;
 @property (nonatomic,assign) BOOL musicPaused;
+@property (nonatomic,assign) BOOL nowSpeaking;
 
 @end
 
@@ -45,6 +48,8 @@
         _configuration = [[FSStreamConfiguration alloc] init];
         _configuration.usePrebufferSizeCalculationInSeconds = YES;
         self.playList =[[NSMutableArray alloc] init];
+        self.musicPaused = NO;
+        self.nowSpeaking = NO;
         
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(onStockValueRefreshed)
@@ -68,10 +73,14 @@
     if (_continueRefresh == NO) {
         return;
     }
-    NSLog(@"onStockValueRefreshed");
+    if (_nowSpeaking == YES) {
+        return;
+    }
+    if ([self.playList count] > 0) {
+        [self.playList removeAllObjects];
+    }
     speachCounter++;
     if (speachCounter == SPEACH_COUNTER) {
-        NSLog(@"onStockValueRefreshed speak");
         [self stockSpeachFired];
         return;
     }
@@ -94,8 +103,8 @@
         _audioController.onStateChange = ^(FSAudioStreamState state) {
             switch (state) {
                 case kFsAudioStreamPlaybackCompleted:{
-                    NSLog(@"Stock play completed");
                     dispatch_async(dispatch_get_main_queue(), ^{
+                    NSLog(@"Stock play completed");
                         [weakSelf playStockSound];
                     });
                     break;
@@ -120,7 +129,10 @@
         _musicController.onStateChange = ^(FSAudioStreamState state) {
             switch (state) {
                 case kFsAudioStreamPlaybackCompleted:{
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                    NSLog(@"Play music completed");
                     [weakSelf playMusic];
+                    });
                     break;
                 }
                 default:
@@ -141,7 +153,23 @@
 }
 
 - (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didFinishSpeechUtterance:(AVSpeechUtterance *)utterance {
+    NSLog(@"didFinishSpeech");
     speachCounter = 0;
+    _nowSpeaking = NO;
+    [self playMusic];
+}
+
+- (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didPauseSpeechUtterance:(AVSpeechUtterance *)utterance {
+    NSLog(@"didPauseSpeach");
+    speachCounter = 0;
+    _nowSpeaking = NO;
+    [self playMusic];
+}
+
+- (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didCancelSpeechUtterance:(AVSpeechUtterance *)utterance {
+    NSLog(@"didCancelSpeach");
+    speachCounter = 0;
+    _nowSpeaking = NO;
     [self playMusic];
 }
 
@@ -273,6 +301,7 @@
     [self pauseMusic];
     AVSpeechUtterance* u=[[AVSpeechUtterance alloc]initWithString:str];
     u.voice=[AVSpeechSynthesisVoice voiceWithLanguage:@"zh-TW"];
+    _nowSpeaking = YES;
     [self.speechPlayer speakUtterance:u];
 }
 
@@ -303,44 +332,53 @@
 }
 
 - (void) playStockSound {
+    NSLog(@"PlayStock");
     if (!_continueRefresh) {
+        NSLog(@"    Skip: !continueRefresh");
+        NSLog(@"PlayStock Done");
         return;
     }
     if ([self.playList count] > 0) {
         NSString* url = [self.playList objectAtIndex:0];
         self.audioController.url = [self parseLocalFileUrl:url];
         [self pauseMusic];
+        NSLog(@"    Play stock");
         [self.audioController play];
         [self.playList removeObjectAtIndex:0];
     } else {
+        NSLog(@"    Complet: Play music");
         [self playMusic];
     }
+    NSLog(@"PlayStock Done");
 }
 
 - (void) playMusic {
+    NSLog(@"PlayMusic");
     if ([self.playList count] > 0) {
-        NSLog(@"play music skipped");
+        NSLog(@"    Skip: playlist cout > 0");
         return;
     }
     if (!_continueRefresh) {
+        NSLog(@"    !continueRefresh");
         return;
     }
+//    [self.audioController stop];
     if (self.musicPaused) {
-        NSLog(@"Play music after paused");
+        NSLog(@"    music Paused: paly with pause()");
         [self.musicController pause];
         self.musicPaused = NO;
         return;
     }
     if (![self.musicController isPlaying]) {
-        NSLog(@"Play music with play");
+        NSLog(@"    Play with play");
         [self.musicController play];
     }
     self.musicPaused = NO;
 }
 
 - (void) pauseMusic {
-    NSLog(@"pause music");
-    if (!self.musicPaused) {
+    if (!self.musicPaused && [self.musicController isPlaying]) {
+        NSLog(@"Pause Music");
         [self.musicController pause];
         self.musicPaused = YES;
     }
@@ -376,7 +414,7 @@
     self.currentPlayStock = [[self.dbHelper.stockList objectAtIndex:_currentPlayIndex] copy];
     
     [self playMusic];
-    [self onStockValueGot];
+//    [self onStockValueGot];
     
     if (self.delegate) {
         [self.delegate onPlaying:self.currentPlayStock];

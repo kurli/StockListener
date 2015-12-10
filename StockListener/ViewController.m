@@ -11,6 +11,8 @@
 #import "DatabaseHelper.h"
 #import "SearchStockController.h"
 #import "StockInfo.h"
+#import "StockTableItemViewController.h"
+#import "StockRefresher.h"
 
 @interface ViewController () {
 }
@@ -20,6 +22,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *stockTitle;
 @property(nonatomic, strong) SearchStockController* searchStockController;
 @property (weak, nonatomic) IBOutlet UIButton *playButton;
+@property(nonatomic, strong) StockTableItemViewController* stockTableItemViewController;
 @end
 
 @implementation ViewController
@@ -28,7 +31,6 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        _searchStockController = [[SearchStockController alloc] init];
     }
     return self;
 }
@@ -51,6 +53,9 @@
     [player setDelegate:self];
     [player setDbHelper:_dbHelper];
     
+    _searchStockController = [[SearchStockController alloc] init];
+    _stockTableItemViewController = [[StockTableItemViewController alloc] init];
+    
     [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(outputDeviceChanged:)name:AVAudioSessionRouteChangeNotification object:[AVAudioSession sharedInstance]];
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -61,6 +66,11 @@
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(applicationWillEnterForegroundNotification:)
                                                  name:UIApplicationWillEnterForegroundNotification
+                                               object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onStockValueRefreshed)
+                                                 name:STOCK_VALUE_REFRESHED_NOTIFICATION
                                                object:nil];
 }
 
@@ -114,27 +124,21 @@
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    static NSString *flag=@"cellFlag";
-    UITableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:flag];
-    if (cell==nil) {
-        cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:flag];
-    }
     if (self.searchController.active) {
+        static NSString *flag=@"searchCellFlag";
+        UITableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:flag];
+        if (cell==nil) {
+            cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:flag];
+        }
         [cell.textLabel setText:self.searchStockController.searchList[indexPath.row]];
+        return cell;
     }
     else{
-        NSArray* stockList = self.dbHelper.stockList;
-        if (indexPath.row >= [stockList count]) {
-            [cell.textLabel setText:@"N/A"];
-        }
-        StockInfo* info = [stockList objectAtIndex:indexPath.row];
-        if ([info.name length] == 0) {
-            [cell.textLabel setText:info.sid];
-        } else {
-            [cell.textLabel setText:info.name];
-        }
+        StockInfo* info = [self.dbHelper.stockList objectAtIndex:indexPath.row];
+        UITableViewCell* cell2 = [self.stockTableItemViewController getTableViewCell:tableView andInfo:info];
+        return cell2;
     }
-    return cell;
+    return nil;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -211,5 +215,9 @@
 - (void)applicationWillEnterForegroundNotification:(NSNotification *)notification
 {
     NSLog(@"Application entering foreground");
+}
+
+- (void)onStockValueRefreshed {
+    [self.tableView reloadData];
 }
 @end
