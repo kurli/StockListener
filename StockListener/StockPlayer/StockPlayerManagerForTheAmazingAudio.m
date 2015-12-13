@@ -57,6 +57,7 @@
                                 inputEnabled:NO];
         _audioController.preferredBufferDuration = 0.005;
         _audioController.useMeasurementMode = NO;
+        [_audioController setAllowMixingWithOtherApps:NO];
 
         self.musicPlayer = [AEAudioFilePlayer audioFilePlayerWithURL:[[NSBundle mainBundle] URLForResource:MUSIC_SOUND withExtension:@"mp3"] error:NULL];
         _musicPlayer.volume = 1.0;
@@ -68,6 +69,7 @@
                                                  selector:@selector(onStockValueRefreshed)
                                                      name:STOCK_VALUE_REFRESHED_NOTIFICATION
                                                    object:nil];
+
         speachCounter = 0;
     }
     return self;
@@ -127,17 +129,17 @@
 
 - (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didFinishSpeechUtterance:(AVSpeechUtterance *)utterance {
     speachCounter = 0;
-    [_audioController start:nil];
+//    [_audioController start:nil];
 }
 
 - (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didPauseSpeechUtterance:(AVSpeechUtterance *)utterance {
     speachCounter = 0;
-    [_audioController start:nil];
+//    [_audioController start:nil];
 }
 
 - (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer didCancelSpeechUtterance:(AVSpeechUtterance *)utterance {
     speachCounter = 0;
-    [_audioController start:nil];
+//    [_audioController start:nil];
 }
 
 /*
@@ -202,7 +204,7 @@
 - (void)speak: (NSString*)str {
     AVSpeechUtterance* u=[[AVSpeechUtterance alloc]initWithString:str];
     u.voice=[AVSpeechSynthesisVoice voiceWithLanguage:@"zh-TW"];
-    [_audioController stop];
+//    [_audioController stop];
     [self.speechPlayer speakUtterance:u];
 }
 
@@ -301,7 +303,7 @@
     [self.playList removeAllObjects];
     _continueRefresh = false;
     [self pauseMusic];
-
+    
     if (self.delegate) {
         [self.delegate onPLayPaused];
     }
