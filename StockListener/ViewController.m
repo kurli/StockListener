@@ -15,6 +15,7 @@
 #import "StockRefresher.h"
 
 @interface ViewController () {
+    NSInteger stockSelected;
 }
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property(nonatomic, strong) UISearchController *searchController;
@@ -46,17 +47,23 @@
     _searchController.searchBar.placeholder = @"股票代码";
     
     // Init stock list
-    _dbHelper = [[DatabaseHelper alloc] init];
+    _dbHelper = [DatabaseHelper getInstance];
     [_dbHelper setDelegate:self];
     
     player = [[StockPlayerManager alloc] init];
     [player setDelegate:self];
-    [player setDbHelper:_dbHelper];
     
     _searchStockController = [[SearchStockController alloc] init];
     _stockTableItemViewController = [[StockTableItemViewController alloc] init];
     [_stockTableItemViewController setTableView:self.tableView];
     [_stockTableItemViewController setPlayer:player];
+    [_stockTableItemViewController setDbHelper:self.dbHelper];
+
+    stockSelected = -1;
+    
+//    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    UIView* view = [[UIView alloc] initWithFrame:CGRectZero];
+    self.tableView.tableFooterView = view;
     
     [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(outputDeviceChanged:)name:AVAudioSessionRouteChangeNotification object:[AVAudioSession sharedInstance]];
@@ -129,6 +136,9 @@
     if (self.searchController.active) {
         return 44;
     } else {
+        if (stockSelected == indexPath.row) {
+            return 120;
+        }
         return 60;
     }
 }
@@ -159,11 +169,20 @@
         [self addBySID:[self.searchStockController.searchList objectAtIndex:indexPath.row]];
         [self.searchController setActive:NO];
     } else {
-//        if (indexPath.row >= [self.dbHelper.stockList count]) {
-//            return;
-//        }
-//        StockInfo* info = [self.dbHelper.stockList objectAtIndex:indexPath.row];
-//        [self.dbHelper removeStockBySID:info.sid];
+        [tableView selectRowAtIndexPath:nil animated:NO scrollPosition:UITableViewScrollPositionNone];
+        [tableView beginUpdates];
+        if (stockSelected == indexPath.row) {
+            stockSelected = -1;
+            [tableView endUpdates];
+            return;
+        }
+        stockSelected = indexPath.row;
+        if (stockSelected > [self.dbHelper.stockList count])
+        {
+            [tableView endUpdates];
+            return;
+        }
+        [tableView endUpdates];
     }
 }
 

@@ -23,6 +23,14 @@
 
 @implementation DatabaseHelper
 
++(DatabaseHelper*) getInstance {
+    static DatabaseHelper* shelper;
+    if (shelper == nil) {
+        shelper = [[DatabaseHelper alloc] init];
+    }
+    return shelper;
+}
+
 -(id) init {
     if (self = [super init]) {
         [self reloadStockList];
@@ -52,6 +60,9 @@
     info.sid = sid;
     GetStockValueTask* task = [[GetStockValueTask alloc] initWithStock:info];
     task.onCompleteBlock = ^(StockInfo* info) {
+        if (info == nil) {
+            return;
+        }
         [self.stockList addObject:info];
 
         [self saveToDB];
@@ -104,6 +115,16 @@
 
 - (void) stopRefreshStock {
     [self.stockRefresher stopRefreshStock];
+}
+
+-(StockInfo*)getInfoById:(NSString*)sid {
+    for (int i=0; i<[self.stockList count]; i++) {
+        StockInfo* info = [self.stockList objectAtIndex:i];
+        if ([info.sid isEqualToString:sid]) {
+            return info;
+        }
+    }
+    return nil;
 }
 
 @end

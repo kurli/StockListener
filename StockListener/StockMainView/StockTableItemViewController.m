@@ -9,6 +9,7 @@
 #import "StockTableItemViewController.h"
 #import "StockInfo.h"
 #import "StockPlayerManager.h"
+#import "DatabaseHelper.h"
 
 #define NAME 101
 #define PRICE 102
@@ -66,20 +67,44 @@
     [self.player playByIndex:(int)indexPath.row];
 }
 
+-(void) deleteClicked:(id)b {
+    UIButton *button = (UIButton *)b;
+    UIView *contentView;
+    if (IOS_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
+        contentView = [button superview];
+    } else if (IOS_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+        contentView = [[button superview] superview];
+    } else {
+        contentView = [button superview];
+    }
+    UITableViewCell *cell = (UITableViewCell*)[contentView superview];
+    if ([cell isKindOfClass:[UITableViewCell class]] == false) {
+        return;
+    }
+    NSIndexPath *indexPath = [_tableView indexPathForCell:cell];
+    if (indexPath.row >= [self.dbHelper.stockList count]) {
+        return;
+    }
+    StockInfo* info = [self.dbHelper.stockList objectAtIndex:indexPath.row];
+    [self.dbHelper removeStockBySID:info.sid];
+}
+
 -(UITableViewCell*) getTableViewCell:(UITableView*)tableView andInfo:(StockInfo*)info {
     static NSString *flag=@"StockTableViewCellFlag";
     UITableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:flag];
     if (cell == nil) {
         cell = [[[NSBundle mainBundle] loadNibNamed:@"StockTableItemView" owner:self options:nil] lastObject];
         [cell setValue:flag forKey:@"reuseIdentifier"];
+        UIButton* headSetImg = [cell viewWithTag:HEADSET];
+        [headSetImg addTarget:self action:@selector(headsetClicked:) forControlEvents:UIControlEventTouchUpInside];
+        UIButton* delete = [cell viewWithTag:DELETE];
+        [delete addTarget:self action:@selector(deleteClicked:) forControlEvents:UIControlEventTouchUpInside];
     }
     UILabel* nameLabel = [cell viewWithTag:NAME];
     UILabel* priceLabel = [cell viewWithTag:PRICE];
     UILabel* rateLabel = [cell viewWithTag:RATE];
     UILabel* sid = [cell viewWithTag:SID];
     UIButton* headSetImg = [cell viewWithTag:HEADSET];
-    
-    [headSetImg addTarget:self action:@selector(headsetClicked:) forControlEvents:UIControlEventTouchUpInside];
     
     if (nowPLayingSID != nil) {
         if ([nowPLayingSID isEqualToString:info.sid]) {
@@ -93,7 +118,7 @@
 
     [nameLabel setText:info.name];
 
-    NSString* priceStr = [NSString stringWithFormat:@"%.3f", info.currentPrice];
+    NSString* priceStr = [NSString stringWithFormat:@"%.3f", info.price];
     priceStr = [self valueToStr:priceStr];
     [priceLabel setText:priceStr];
 

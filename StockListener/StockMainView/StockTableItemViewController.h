@@ -11,11 +11,14 @@
 
 @class StockInfo;
 @class StockPlayerManager;
+@class DatabaseHelper;
+
 @interface StockTableItemViewController : NSObject
 
 @property (nonatomic, strong) NSString* nowPLayingSID;
 @property (nonatomic, assign) UITableView* tableView;
 @property (nonatomic, strong) StockPlayerManager* player;
+@property (nonatomic, strong) DatabaseHelper* dbHelper;
 
 -(UITableViewCell*) getTableViewCell:(UITableView*)tableView andInfo:(StockInfo*)info;
 @end

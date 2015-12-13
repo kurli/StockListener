@@ -23,8 +23,6 @@
     FSStreamConfiguration *_configuration;
 }
 
-@property (nonatomic, strong) DatabaseHelper* dbHelper;
-
 @property (nonatomic, assign) id <StockPlayerDelegate> delegate;
 
 -(void) play;

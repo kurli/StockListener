@@ -12,17 +12,23 @@
 -(void)onStockListChanged;
 @end
 
+@class StockInfo;
+
 @interface DatabaseHelper : NSObject
 
 @property (nonatomic, assign) id <OnStockListChangedDelegate> delegate;
 
-@property (nonatomic, strong) NSMutableArray* stockList;
+@property (atomic, strong) NSMutableArray* stockList;
 
 -(void) reloadStockList;
 
 -(void) addStockBySID:(NSString*)sid;
 -(void) removeStockBySID:(NSString*)sid;
-- (void) startRefreshStock;
-- (void) stopRefreshStock;
+-(void) startRefreshStock;
+-(void) stopRefreshStock;
+
+-(StockInfo*)getInfoById:(NSString*)sid;
+
++(DatabaseHelper*) getInstance;
 
 @end

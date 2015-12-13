@@ -32,8 +32,8 @@
 @property (nonatomic,strong) FSAudioController *audioController;
 @property (nonatomic,strong) FSAudioController *musicController;
 @property (nonatomic,strong) AVSpeechSynthesizer *speechPlayer;
+@property (nonatomic,strong) NSString *currentPlaySID;
 @property (atomic,strong) NSMutableArray* playList;
-@property (nonatomic,strong) StockInfo* currentPlayStock;
 @property (nonatomic,assign) BOOL musicPaused;
 @property (nonatomic,assign) BOOL nowSpeaking;
 
@@ -67,7 +67,7 @@
  */
 
 - (void)onStockValueRefreshed {
-    if ([self.dbHelper.stockList count] == 0) {
+    if ([[DatabaseHelper getInstance].stockList count] == 0) {
         return;
     }
     if (_continueRefresh == NO) {
@@ -79,12 +79,29 @@
     if ([self.playList count] > 0) {
         [self.playList removeAllObjects];
     }
+    
+    StockInfo* info = [[DatabaseHelper getInstance] getInfoById:_currentPlaySID];
+    if (info == nil) {
+        [self pause];
+        return;
+    }
+
+    float value = info.changeRate * 100;
+    [self setLockScreenTitle:[NSString stringWithFormat:@"%@  %@ (%.2f%%)", info.name, [self valueToStr:info.price], value] andTime:info.updateTime andRate:info.changeRate];
+
     speachCounter++;
     if (speachCounter == SPEACH_COUNTER) {
         [self stockSpeachFired];
         return;
     }
-    [self onStockValueGot];
+    
+    if (info.speed > 0) {
+        [self playStockValueUp:info.step];
+    } else if (info.speed < 0) {
+        [self playStockValueDown:info.step];
+    } else {
+        [self playMusic];
+    }
 }
 
 /*
@@ -196,24 +213,6 @@
  * =======================================
  */
 
--(void)onStockValueGot{
-    StockInfo* latestInfo = nil;
-    if (self.currentPlayStock == nil) {
-        return;
-    }
-    for (StockInfo* info in self.dbHelper.stockList) {
-        if ([info.sid isEqualToString:self.currentPlayStock.sid]) {
-            latestInfo = info;
-        }
-    }
-    if (latestInfo == nil) {
-        return;
-    }
-    _currentPlayStock.name = latestInfo.name;
-    _currentPlayStock.changeRate = latestInfo.changeRate;
-    [self stockValueChanged:latestInfo.currentPrice andTime:latestInfo.updateTime andLatestInfo:latestInfo];
-}
-
 - (NSString*) valueToStr:(float)value {
     NSString* str = [NSString stringWithFormat:@"%.3f", value];
     int index = (int)[str length] - 1;
@@ -234,53 +233,6 @@
     }
     str = [str substringToIndex:index+1];
     return str;
-}
-
-- (void) stockValueChanged:(float)newValue andTime:(NSString*)time andLatestInfo:(StockInfo*) latestInfo {
-    float value = _currentPlayStock.changeRate * 100;
-    [self setLockScreenTitle:[NSString stringWithFormat:@"%@  %@ (%.2f%%)", _currentPlayStock.name, [self valueToStr:newValue], value] andTime:time andRate:_currentPlayStock.changeRate];
-
-    if (_currentPlayStock.currentPrice == 0) {
-        _currentPlayStock = [latestInfo copy];
-        [self playMusic];
-        return;
-    }
-    float currentChangeRate = (newValue - _currentPlayStock.currentPrice) / _currentPlayStock.currentPrice;
-    currentChangeRate*=100;
-    int step = 1;
-    if (_currentPlayStock.lastChangeRate == 0) {
-        step = 1;
-        latestInfo.lastStep = 1;
-    } else {
-        float rt0 = _currentPlayStock.lastChangeRate < 0 ? _currentPlayStock.lastChangeRate * -1 : _currentPlayStock.lastChangeRate;
-        float rt1 = currentChangeRate < 0 ? currentChangeRate * -1 : currentChangeRate;
-        float tmpDrt = rt1 / rt0;
-
-        float t = tmpDrt * _currentPlayStock.lastStep;
-        if (((int)(t*10) % 10) >= 5) {
-            t += 1;
-        }
-        step = t;
-    }
-    if (step <= 0) {
-        step = 1;
-    }
-    if (step > 5) {
-        step = 5;
-    }
-//    NSLog(@"lastPrice: %f currentPrice:%f c_rate:%f last_rate:%f step:%d", _currentPlayStock.currentPrice, newValue, currentChangeRate, _currentPlayStock.lastChangeRate, step);
-    if (currentChangeRate > 0) {
-        [self playStockValueUp:step];
-    } else if (currentChangeRate < 0) {
-        [self playStockValueDown:step];
-    } else {
-        [self playMusic];
-    }
-    latestInfo.lastChangeRate = currentChangeRate;
-    latestInfo.currentPrice = newValue;
-    latestInfo.lastStep = step;
-    _currentPlayStock = [latestInfo copy];
-//    NSLog(@"step:%d", _currentPlayStock.lastStep);
 }
 
 -(void) playStockValueUp: (int)step {
@@ -385,15 +337,17 @@
 }
 
 - (void)stockSpeachFired {
-    if (_currentPlayIndex < 0 || _currentPlayIndex >= [self.dbHelper.stockList count]) {
-        _currentPlayIndex = 0;
+    StockInfo* info = [[DatabaseHelper getInstance] getInfoById:_currentPlaySID];
+    if (info == nil) {
+        speachCounter = 0;
+        _nowSpeaking = NO;
+        [self playMusic];
+        return;
     }
-    StockInfo* info = [self.dbHelper.stockList objectAtIndex:_currentPlayIndex];
     
     float value = info.changeRate * 100;
-    NSString* proceStr = [NSString stringWithFormat:@"%@, 百分之%.2f", [self valueToStr:info.currentPrice], value];
+    NSString* proceStr = [NSString stringWithFormat:@"%@, 百分之%.2f", [self valueToStr:info.price], value];
     [self speak:proceStr];
-    [self setLockScreenTitle:[NSString stringWithFormat:@"%@  %@ (%.2f%%)", _currentPlayStock.name, [self valueToStr:info.currentPrice], value] andTime:info.updateTime andRate:_currentPlayStock.changeRate];
 }
 
 /*
@@ -402,25 +356,25 @@
  * =======================================
  */
 - (void) play {
-    if ([self.dbHelper.stockList count] == 0) {
+    if ([[DatabaseHelper getInstance].stockList count] == 0) {
         _continueRefresh = false;
         return;
     }
     _continueRefresh = true;
 
-    if (_currentPlayIndex < 0 || _currentPlayIndex >= [self.dbHelper.stockList count]) {
+    if (_currentPlayIndex < 0 || _currentPlayIndex >= [[DatabaseHelper getInstance].stockList count]) {
         _currentPlayIndex = 0;
     }
-    self.currentPlayStock = [[self.dbHelper.stockList objectAtIndex:_currentPlayIndex] copy];
+    StockInfo* info = [[DatabaseHelper getInstance].stockList objectAtIndex:_currentPlayIndex];
+    [self setCurrentPlaySID:info.sid];
     
     speachCounter = 0;
     _nowSpeaking = NO;
     
     [self playMusic];
-//    [self onStockValueGot];
     
     if (self.delegate) {
-        [self.delegate onPlaying:self.currentPlayStock];
+        [self.delegate onPlaying:info];
     }
 }
 
@@ -440,7 +394,7 @@
 
 -(void) next {
     _currentPlayIndex++;
-    if (_currentPlayIndex >= [self.dbHelper.stockList count]) {
+    if (_currentPlayIndex >= [[DatabaseHelper getInstance].stockList count]) {
         _currentPlayIndex = 0;
     }
     [self pause];
@@ -450,7 +404,7 @@
 -(void) pre {
     _currentPlayIndex--;
     if (_currentPlayIndex < 0) {
-        _currentPlayIndex = (int)[self.dbHelper.stockList count] -1;
+        _currentPlayIndex = (int)[[DatabaseHelper getInstance].stockList count] -1;
     }
     [self pause];
     [self play];
@@ -460,7 +414,7 @@
     if (index < 0) {
         index = 0;
     }
-    if (index >= [self.dbHelper.stockList count]) {
+    if (index >= [[DatabaseHelper getInstance].stockList count]) {
         index = 0;
     }
     _currentPlayIndex = index;

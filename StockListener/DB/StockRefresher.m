@@ -12,7 +12,7 @@
 #import "DatabaseHelper.h"
 #import "StockInfo.h"
 
-#define REFRESH_RATE 10
+#define REFRESH_RATE 2
 
 @interface StockRefresher()
 
@@ -45,19 +45,7 @@
     [[KingdaWorker getInstance] queue: task];
 }
 
--(void)onStockValueGot:(StockInfo*)info andError:(NSString*)errorInfo {
-    
-}
-
--(void)onStockValuesRefreshed:(NSArray*)infos {
-    for (StockInfo* infoGot in infos) {
-        for (StockInfo* infoOrigin in self.dbHelper.stockList) {
-            if ([infoGot.sid isEqualToString:infoOrigin.sid]) {
-                [infoOrigin assign:infoGot];
-                break;
-            }
-        }
-    }
+-(void)onStockValuesRefreshed {
     NSNotification * notice = [NSNotification notificationWithName:STOCK_VALUE_REFRESHED_NOTIFICATION object:nil userInfo:nil];
     [[NSNotificationCenter defaultCenter]postNotification:notice];
 }
