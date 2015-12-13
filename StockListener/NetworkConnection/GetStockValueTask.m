@@ -42,7 +42,7 @@
             [self.ids appendFormat:@"%@,", info.sid];
         }
         #ifdef ENABLE_TEST
-        self.arrayTest = [[NSArray alloc] initWithObjects:@"27.47", @"27.1", @"27.96", @"28.23", @"28.38", @"28.5", @"28.45", @"28.15", @"27.66", @"27.95", @"27.22", @"26.84", @"26", @"25.75", @"24.76", @"25", @"25.5", @"26", @"27", nil];
+        self.arrayTest = [[NSArray alloc] initWithObjects:@"27.47", @"27.47", @"27.47", @"28.23", @"28.38", @"28.5", @"28.45", @"28.15", @"27.66", @"27.95", @"27.22", @"26.84", @"26", @"25.75", @"24.76", @"25", @"25.5", @"26", @"27", nil];
         #endif
     }
     return self;
@@ -122,28 +122,28 @@
     float newPrice = [[array objectAtIndex:3] floatValue];
     info.todayHighestPrice = [[array objectAtIndex:4] floatValue];
     info.todayLoestPrice = [[array objectAtIndex:5] floatValue];
-    info.dealCount = [[array objectAtIndex:8] longValue];
+    info.dealCount = [[array objectAtIndex:8] longLongValue];
     info.dealTotalMoney = [[array objectAtIndex:9] floatValue];
     
-    info.buyOneCount = [[array objectAtIndex:10] longValue];
+    info.buyOneCount = [[array objectAtIndex:10] longLongValue];
     info.buyOnePrice = [[array objectAtIndex:11] floatValue];
-    info.buyTwoCount = [[array objectAtIndex:12] longValue];
+    info.buyTwoCount = [[array objectAtIndex:12] longLongValue];
     info.buyTwoPrice = [[array objectAtIndex:13] floatValue];
-    info.buyThreeCount = [[array objectAtIndex:14] longValue];
+    info.buyThreeCount = [[array objectAtIndex:14] longLongValue];
     info.buyThreePrice = [[array objectAtIndex:15] floatValue];
-    info.buyFourCount = [[array objectAtIndex:16] longValue];
+    info.buyFourCount = [[array objectAtIndex:16] longLongValue];
     info.buyFourPrice = [[array objectAtIndex:17] floatValue];
-    info.buyFiveCount = [[array objectAtIndex:18] longValue];
+    info.buyFiveCount = [[array objectAtIndex:18] longLongValue];
     info.buyFivePrice = [[array objectAtIndex:19] floatValue];
-    info.sellOneCount = [[array objectAtIndex:20] longValue];
+    info.sellOneCount = [[array objectAtIndex:20] longLongValue];
     info.sellOnePrice = [[array objectAtIndex:21] floatValue];
-    info.sellTwoCount = [[array objectAtIndex:22] longValue];
+    info.sellTwoCount = [[array objectAtIndex:22] longLongValue];
     info.sellTwoPrice = [[array objectAtIndex:23] floatValue];
-    info.sellThreeCount = [[array objectAtIndex:24] longValue];
+    info.sellThreeCount = [[array objectAtIndex:24] longLongValue];
     info.sellThreePrice = [[array objectAtIndex:25] floatValue];
-    info.sellFourCount = [[array objectAtIndex:26] longValue];
+    info.sellFourCount = [[array objectAtIndex:26] longLongValue];
     info.sellFourPrice = [[array objectAtIndex:27] floatValue];
-    info.sellFiveCount = [[array objectAtIndex:28] longValue];
+    info.sellFiveCount = [[array objectAtIndex:28] longLongValue];
     info.sellFivePrice = [[array objectAtIndex:29] floatValue];
     
     info.updateDay = [array objectAtIndex:30];

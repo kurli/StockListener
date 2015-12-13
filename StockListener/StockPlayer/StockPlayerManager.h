@@ -20,7 +20,7 @@
 
 @interface StockPlayerManager : NSObject <FSAudioControllerDelegate, AVSpeechSynthesizerDelegate> {
 
-    FSStreamConfiguration *_configuration;
+//    FSStreamConfiguration *_configuration;
 }
 
 @property (nonatomic, assign) id <StockPlayerDelegate> delegate;
