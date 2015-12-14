@@ -20,5 +20,5 @@
 @property (nonatomic, strong) StockPlayerManager* player;
 @property (nonatomic, strong) DatabaseHelper* dbHelper;
 
--(UITableViewCell*) getTableViewCell:(UITableView*)tableView andInfo:(StockInfo*)info;
+-(UITableViewCell*) getTableViewCell:(UITableView*)tableView andInfo:(StockInfo*)info andSelected:(BOOL)selected;
 @end

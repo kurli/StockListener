@@ -137,7 +137,7 @@
         return 44;
     } else {
         if (stockSelected == indexPath.row) {
-            return 120;
+            return 180;
         }
         return 60;
     }
@@ -155,10 +155,20 @@
     }
     else{
         StockInfo* info = [self.dbHelper.stockList objectAtIndex:indexPath.row];
-        UITableViewCell* cell2 = [self.stockTableItemViewController getTableViewCell:tableView andInfo:info];
+        BOOL selected = NO;
+        if (indexPath.row == stockSelected) {
+            selected = YES;
+        }
+        UITableViewCell* cell2 = [self.stockTableItemViewController getTableViewCell:tableView andInfo:info andSelected:selected];
         return cell2;
     }
     return nil;
+}
+
+-(void) reloadSelectedCell {
+//    NSIndexPath *indexPath=[NSIndexPath indexPathForRow:stockSelected inSection:0];
+//    
+//    [_tableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath,nil] withRowAnimation:UITableViewRowAnimationNone];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -173,15 +183,13 @@
         [tableView beginUpdates];
         if (stockSelected == indexPath.row) {
             stockSelected = -1;
+            [self reloadSelectedCell];
             [tableView endUpdates];
             return;
         }
+        
         stockSelected = indexPath.row;
-        if (stockSelected > [self.dbHelper.stockList count])
-        {
-            [tableView endUpdates];
-            return;
-        }
+        [self reloadSelectedCell];
         [tableView endUpdates];
     }
 }

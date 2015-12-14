@@ -17,9 +17,8 @@
 @interface GetStockValueTask()
 
 @property (nonatomic, strong) NSMutableString* ids;
-#ifdef ENABLE_TEST
-@property (nonatomic, strong) NSArray* arrayTest;
-#endif
+@property (nonatomic, strong) StockInfo* neededNewInfo;
+
 @end
 
 @implementation GetStockValueTask
@@ -28,9 +27,7 @@
     if ((self = [super init]) != nil) {
         self.ids = [[NSMutableString alloc] init];
         [self.ids appendString:info.sid];
-#ifdef ENABLE_TEST
-        self.arrayTest = [[NSArray alloc] initWithObjects:@"27.47", @"27.47", @"27.96", @"28.23", @"28.38", @"28.5", @"28.45", @"28.15", @"27.66", @"27.95", @"27.22", @"26.84", @"26", @"25.75", @"24.76", @"25", @"25.5", @"26", @"27", nil];
-#endif
+        self.neededNewInfo = info;
     }
     return self;
 }
@@ -41,9 +38,6 @@
         for (StockInfo* info in infos) {
             [self.ids appendFormat:@"%@,", info.sid];
         }
-        #ifdef ENABLE_TEST
-        self.arrayTest = [[NSArray alloc] initWithObjects:@"27.47", @"27.47", @"27.47", @"28.23", @"28.38", @"28.5", @"28.45", @"28.15", @"27.66", @"27.95", @"27.22", @"26.84", @"26", @"25.75", @"24.76", @"25", @"25.5", @"26", @"27", nil];
-        #endif
     }
     return self;
 }
@@ -110,7 +104,11 @@
 
     StockInfo* info = [[DatabaseHelper getInstance] getInfoById:sid];
     if (info == nil) {
-        return;
+        if (_neededNewInfo!= nil && [sid isEqualToString:_neededNewInfo.sid]) {
+            info = _neededNewInfo;
+        } else {
+            return;
+        }
     }
     info.lastDayPrice = [[array objectAtIndex:2] floatValue];
     if (info.lastDayPrice == 0) {
@@ -148,14 +146,15 @@
     
     info.updateDay = [array objectAtIndex:30];
     info.updateTime = [array objectAtIndex:31];
-    info.changeRate = (newPrice - info.lastDayPrice) / info.lastDayPrice;
+    
 #ifdef ENABLE_TEST
-    static int count =0;
-    count = count % [self.arrayTest count];
-    newPrice = [[self.arrayTest objectAtIndex:count] floatValue];
-    count++;
-    info.changeRate = (newPrice - 27.51) / 27.51;
+    float random = (float)(1+arc4random()%80)/1000 ;
+    newPrice = newPrice + newPrice*(random - 0.04);
+    info.buyOneCount += (arc4random()%info.buyOneCount/2);
 #endif
+    
+    info.changeRate = (newPrice - info.lastDayPrice) / info.lastDayPrice;
+
     if (info.price <= 0) {
         info.price = newPrice;
         info.step = 0;
@@ -187,6 +186,9 @@
     if (self.onCompleteBlock) {
         dispatch_sync(dispatch_get_main_queue(), ^{
             StockInfo* info = [[DatabaseHelper getInstance] getInfoById:self.ids];
+            if (info == nil) {
+                info = _neededNewInfo;
+            }
             self.onCompleteBlock(info);
         });
     }

@@ -23,7 +23,7 @@
 #define STOCK_UP 1
 #define STOCK_DOWN 2
 
-#define SPEACH_COUNTER 6
+#define SPEACH_COUNTER 20
 
 //#define NSLog(a)
 
@@ -60,7 +60,7 @@
         [_audioController setAllowMixingWithOtherApps:NO];
 
         self.musicPlayer = [AEAudioFilePlayer audioFilePlayerWithURL:[[NSBundle mainBundle] URLForResource:MUSIC_SOUND withExtension:@"mp3"] error:NULL];
-        _musicPlayer.volume = 1.0;
+        _musicPlayer.volume = 0.5;
         _musicPlayer.loop = YES;
         _musicPlayer.channelIsMuted = YES;
         [_audioController addChannels:@[_musicPlayer]];
@@ -290,7 +290,8 @@
     StockInfo* info = [[DatabaseHelper getInstance].stockList objectAtIndex:_currentPlayIndex];
     [self setCurrentPlaySID:info.sid];
     
-    speachCounter = 0;
+    speachCounter = SPEACH_COUNTER - 1;
+    [self onStockValueRefreshed];
     
     [self playMusic];
     
