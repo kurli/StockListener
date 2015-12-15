@@ -138,6 +138,12 @@
     info.todayLoestPrice = [[array objectAtIndex:5] floatValue];
     info.dealCount = [[array objectAtIndex:8] longLongValue];
     info.dealTotalMoney = [[array objectAtIndex:9] floatValue];
+    
+    NSString* updateDay = [array objectAtIndex:30];
+    if ([info.updateDay isEqualToString:updateDay]) {
+        [info.buySellDic removeAllObjects];
+    }
+    info.updateDay = updateDay;
 
     info.buyOneCount = [[array objectAtIndex:10] longLongValue];
     info.buyOnePrice = [[array objectAtIndex:11] floatValue];
@@ -175,7 +181,6 @@
 //    [info.buySellDic setObject:[NSNumber numberWithLongLong:8370000] forKey:[NSNumber numberWithFloat:0.837]];
 //    [info.buySellDic setObject:[NSNumber numberWithLongLong:8500000] forKey:[NSNumber numberWithFloat:0.848]];
 
-    info.updateDay = [array objectAtIndex:30];
     info.updateTime = [array objectAtIndex:31];
     
 #ifdef ENABLE_TEST
