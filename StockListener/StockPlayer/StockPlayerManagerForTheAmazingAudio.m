@@ -23,7 +23,7 @@
 #define STOCK_UP 1
 #define STOCK_DOWN 2
 
-#define SPEACH_COUNTER 20
+#define SPEACH_COUNTER 60
 
 //#define NSLog(a)
 
@@ -290,7 +290,7 @@
     StockInfo* info = [[DatabaseHelper getInstance].stockList objectAtIndex:_currentPlayIndex];
     [self setCurrentPlaySID:info.sid];
     
-    speachCounter = SPEACH_COUNTER - 1;
+    speachCounter = SPEACH_COUNTER - 2;
     [self onStockValueRefreshed];
     
     [self playMusic];
@@ -303,6 +303,7 @@
 -(void) pause {
     [self.playList removeAllObjects];
     _continueRefresh = false;
+    [self.speechPlayer stopSpeakingAtBoundary:AVSpeechBoundaryWord];
     [self pauseMusic];
     
     if (self.delegate) {

@@ -28,7 +28,7 @@
 }
 
 -(void) post:(NSString*)ids {
-    NSString *urlString = [NSString stringWithFormat:@"http://hq.sinajs.cn/list=%@", ids];
+    NSString *urlString = [NSString stringWithFormat:@"http://hq.sinajs.cn/list=s_sh000001,s_sz399001,s_sz399006,%@", ids];
     NSString *agentString = @"Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_6; en-us) AppleWebKit/525.27.1 (KHTML, like Gecko) Version/3.2.1 Safari/525.27.1";
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlString]]; [request setValue:agentString forHTTPHeaderField:@"User-Agent"];
 //    NSData *data = [ NSURLConnection sendSynchronousRequest:request returningResponse: nil error: nil ];

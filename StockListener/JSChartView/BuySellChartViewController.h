@@ -14,6 +14,7 @@
 @interface BuySellChartViewController : NSObject
 
 @property (nonatomic, strong) StockInfo* stockInfo;
+//@property (nonatomic, assign) UILabel* currentPriceLabel;
 
 -(id) initWithParentView:(UIView*)view;
 - (void) reload;

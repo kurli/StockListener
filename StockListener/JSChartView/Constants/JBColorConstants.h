@@ -19,6 +19,8 @@
 #define kJBColorBarChartBackground [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1.0]
 #define kJBColorBarChartBarBlue UIColorFromHex(0x08bcef)
 #define kJBColorBarChartBarGreen UIColorFromHex(0x34b234)
+#define kJBColorBarChartBarGray [UIColor colorWithRed:0.7 green:0.7 blue:0.7 alpha:1.0]
+#define kJBColorBarChartBarYello [UIColor yellowColor]
 #define kJBColorBarChartBarRed [UIColor colorWithRed:1.0 green:0.0 blue:0.0 alpha:1.0]
 #define kJBColorBarChartHeaderSeparatorColor UIColorFromHex(0x686868)
 

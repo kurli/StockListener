@@ -35,6 +35,9 @@
 -(id) initWithStocks:(NSArray*) infos {
     if ((self = [super init]) != nil) {
         self.ids = [[NSMutableString alloc] init];
+        if (infos == nil) {
+            return self;
+        }
         for (StockInfo* info in infos) {
             [self.ids appendFormat:@"%@,", info.sid];
         }
@@ -78,6 +81,15 @@
     info.speed = speed;
 }
 
+-(void) parseDapan:(NSArray*)array andSID:(NSString*)sid {
+    StockInfo* info = [[DatabaseHelper getInstance] getDapanInfoById:sid];
+    info.name = [array objectAtIndex:0];
+    float newPrice = [[array objectAtIndex:1] floatValue];
+    info.changeRate = [[array objectAtIndex:3] floatValue];
+    [self calculateStep:info andNewPrice:newPrice];
+    info.price = newPrice;
+}
+
 -(void) parseValueForSina:(NSString*)str {
     if (str == nil) {
         return;
@@ -98,6 +110,10 @@
     range.location = sIDRange.location + sIDRange.length + 2;
     NSString* subStr = [str substringFromIndex:range.location];
     NSArray* array = [subStr componentsSeparatedByString:@","];
+    if ([array count] == 6) {
+        [self parseDapan:array andSID:sid];
+        return;
+    }
     if ([array count] < 32) {
         return;
     }
@@ -122,28 +138,43 @@
     info.todayLoestPrice = [[array objectAtIndex:5] floatValue];
     info.dealCount = [[array objectAtIndex:8] longLongValue];
     info.dealTotalMoney = [[array objectAtIndex:9] floatValue];
-    
+
     info.buyOneCount = [[array objectAtIndex:10] longLongValue];
     info.buyOnePrice = [[array objectAtIndex:11] floatValue];
+    [info.buySellDic setObject:[NSNumber numberWithLongLong:info.buyOneCount] forKey:[NSNumber numberWithFloat:info.buyOnePrice]];
     info.buyTwoCount = [[array objectAtIndex:12] longLongValue];
     info.buyTwoPrice = [[array objectAtIndex:13] floatValue];
+    [info.buySellDic setObject:[NSNumber numberWithLongLong:info.buyTwoCount] forKey:[NSNumber numberWithFloat:info.buyTwoPrice]];
     info.buyThreeCount = [[array objectAtIndex:14] longLongValue];
     info.buyThreePrice = [[array objectAtIndex:15] floatValue];
+    [info.buySellDic setObject:[NSNumber numberWithLongLong:info.buyThreeCount] forKey:[NSNumber numberWithFloat:info.buyThreePrice]];
     info.buyFourCount = [[array objectAtIndex:16] longLongValue];
     info.buyFourPrice = [[array objectAtIndex:17] floatValue];
+    [info.buySellDic setObject:[NSNumber numberWithLongLong:info.buyFourCount] forKey:[NSNumber numberWithFloat:info.buyFourPrice]];
     info.buyFiveCount = [[array objectAtIndex:18] longLongValue];
     info.buyFivePrice = [[array objectAtIndex:19] floatValue];
+    [info.buySellDic setObject:[NSNumber numberWithLongLong:info.buyFiveCount] forKey:[NSNumber numberWithFloat:info.buyFivePrice]];
     info.sellOneCount = [[array objectAtIndex:20] longLongValue];
     info.sellOnePrice = [[array objectAtIndex:21] floatValue];
+    [info.buySellDic setObject:[NSNumber numberWithLongLong:info.sellOneCount] forKey:[NSNumber numberWithFloat:info.sellOnePrice]];
     info.sellTwoCount = [[array objectAtIndex:22] longLongValue];
     info.sellTwoPrice = [[array objectAtIndex:23] floatValue];
+    [info.buySellDic setObject:[NSNumber numberWithLongLong:info.sellTwoCount] forKey:[NSNumber numberWithFloat:info.sellTwoPrice]];
     info.sellThreeCount = [[array objectAtIndex:24] longLongValue];
     info.sellThreePrice = [[array objectAtIndex:25] floatValue];
+    [info.buySellDic setObject:[NSNumber numberWithLongLong:info.sellThreeCount] forKey:[NSNumber numberWithFloat:info.sellThreePrice]];
     info.sellFourCount = [[array objectAtIndex:26] longLongValue];
     info.sellFourPrice = [[array objectAtIndex:27] floatValue];
+    [info.buySellDic setObject:[NSNumber numberWithLongLong:info.sellFourCount] forKey:[NSNumber numberWithFloat:info.sellFourPrice]];
     info.sellFiveCount = [[array objectAtIndex:28] longLongValue];
     info.sellFivePrice = [[array objectAtIndex:29] floatValue];
+    [info.buySellDic setObject:[NSNumber numberWithLongLong:info.sellFiveCount] forKey:[NSNumber numberWithFloat:info.sellFivePrice]];
     
+//    [info.buySellDic setObject:[NSNumber numberWithLongLong:8330000] forKey:[NSNumber numberWithFloat:0.833]];
+//    [info.buySellDic setObject:[NSNumber numberWithLongLong:8350000] forKey:[NSNumber numberWithFloat:0.835]];
+//    [info.buySellDic setObject:[NSNumber numberWithLongLong:8370000] forKey:[NSNumber numberWithFloat:0.837]];
+//    [info.buySellDic setObject:[NSNumber numberWithLongLong:8500000] forKey:[NSNumber numberWithFloat:0.848]];
+
     info.updateDay = [array objectAtIndex:30];
     info.updateTime = [array objectAtIndex:31];
     
@@ -166,9 +197,9 @@
 }
 
 -(void) onComplete:(NSString *)data {
-    if ([self.ids length] == 0) {
-        return;
-    }
+//    if ([self.ids length] == 0) {
+//        return;
+//    }
     
     NSArray* array = [data componentsSeparatedByString:@";"];
     if ([array count] == 0) {

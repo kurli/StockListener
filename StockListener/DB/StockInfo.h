@@ -13,6 +13,7 @@
 @property (nonatomic, strong) NSString* name;
 @property (nonatomic, strong) NSString* sid;
 @property (atomic, unsafe_unretained) float changeRate;         // Current change rate by open price
+@property (atomic, strong) NSMutableDictionary* buySellDic;
 
 // Used for play sound
 @property (atomic, unsafe_unretained) int step;                 // Used for play sound

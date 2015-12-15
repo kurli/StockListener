@@ -8,6 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
+#define SH_STOCK @"s_sh000001"
+#define SZ_STOCK @"s_sz399001"
+#define CY_STOCK @"s_sz399006"
+
 @protocol OnStockListChangedDelegate <NSObject>
 -(void)onStockListChanged;
 @end
@@ -19,6 +23,7 @@
 @property (nonatomic, assign) id <OnStockListChangedDelegate> delegate;
 
 @property (atomic, strong) NSMutableArray* stockList;
+@property (atomic, strong) NSMutableArray* dapanList;
 
 -(void) reloadStockList;
 
@@ -28,7 +33,10 @@
 -(void) stopRefreshStock;
 
 -(StockInfo*)getInfoById:(NSString*)sid;
+-(StockInfo*)getDapanInfoById:(NSString*)sid;
 
 +(DatabaseHelper*) getInstance;
+
+-(void) saveToDB;
 
 @end

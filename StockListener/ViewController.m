@@ -13,6 +13,7 @@
 #import "StockInfo.h"
 #import "StockTableItemViewController.h"
 #import "StockRefresher.h"
+#import "CERoundProgressView.h"
 
 @interface ViewController () {
     NSInteger stockSelected;
@@ -24,6 +25,10 @@
 @property(nonatomic, strong) SearchStockController* searchStockController;
 @property (weak, nonatomic) IBOutlet UIButton *playButton;
 @property(nonatomic, strong) StockTableItemViewController* stockTableItemViewController;
+@property (weak, nonatomic) IBOutlet CERoundProgressView *progressView;
+@property (weak, nonatomic) IBOutlet UILabel *shValue;
+@property (weak, nonatomic) IBOutlet UILabel *szValue;
+@property (weak, nonatomic) IBOutlet UILabel *chuangValue;
 @end
 
 @implementation ViewController
@@ -65,6 +70,11 @@
     UIView* view = [[UIView alloc] initWithFrame:CGRectZero];
     self.tableView.tableFooterView = view;
     
+    UIColor *tintColor = [UIColor redColor];
+    [[CERoundProgressView appearance] setTintColor:tintColor];
+    self.progressView.trackColor = [UIColor colorWithWhite:0.80 alpha:1.0];
+    self.progressView.startAngle = (3.0*M_PI)/2.0;
+    
     [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(outputDeviceChanged:)name:AVAudioSessionRouteChangeNotification object:[AVAudioSession sharedInstance]];
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -81,6 +91,11 @@
                                              selector:@selector(onStockValueRefreshed)
                                                  name:STOCK_VALUE_REFRESHED_NOTIFICATION
                                                object:nil];
+}
+
+-(void) viewDidUnload {
+    [self setProgressView:nil];
+    [super viewDidUnload];
 }
 
 - (void)outputDeviceChanged:(NSNotification *)aNotification
@@ -236,14 +251,16 @@
 
 -(void) onPlaying:(StockInfo*)info {
     [self.stockTitle setText:info.name];
-    [self.playButton setTitle:@"Pause" forState:UIControlStateNormal];
+    self.playButton.selected = YES;
+//    [self.playButton setTitle:@"Pause" forState:UIControlStateNormal];
     [self.stockTableItemViewController setNowPLayingSID:info.sid];
     [self.tableView reloadData];
 }
 
 -(void) onPLayPaused {
     [self.stockTitle setText:@"听股市"];
-    [self.playButton setTitle:@"Play" forState:UIControlStateNormal];
+    self.playButton.selected = NO;
+//    [self.playButton setTitle:@"Play" forState:UIControlStateNormal];
     [self.stockTableItemViewController setNowPLayingSID:nil];
     [self.tableView reloadData];
 }
@@ -253,6 +270,7 @@
     if (![player isPlaying]) {
         [self.dbHelper stopRefreshStock];
     }
+    [self.dbHelper saveToDB];
 }
 
 - (void)applicationWillEnterForegroundNotification:(NSNotification *)notification
@@ -262,5 +280,36 @@
 
 - (void)onStockValueRefreshed {
     [self.tableView reloadData];
+    
+    //Da pan
+    StockInfo* info = [[DatabaseHelper getInstance] getDapanInfoById:SH_STOCK];
+    NSMutableString* str = [[NSMutableString alloc] init];
+    [str appendFormat:@"%.2f %.2f%%", info.price, info.changeRate];
+    [self.shValue setText:str];
+    if (info.changeRate < 0) {
+        [self.shValue setTextColor:[UIColor colorWithRed:0 green:0.7 blue:0 alpha:1]];
+    } else if (info.changeRate > 0) {
+        [self.shValue setTextColor:[UIColor redColor]];
+    }
+    
+    info = [[DatabaseHelper getInstance] getDapanInfoById:SZ_STOCK];
+    str = [[NSMutableString alloc] init];
+    [str appendFormat:@"%.2f %.2f%%", info.price, info.changeRate];
+    [self.szValue setText:str];
+    if (info.changeRate < 0) {
+        [self.szValue setTextColor:[UIColor colorWithRed:0 green:0.7 blue:0 alpha:1]];
+    } else if (info.changeRate > 0) {
+        [self.szValue setTextColor:[UIColor redColor]];
+    }
+    
+    info = [[DatabaseHelper getInstance] getDapanInfoById:CY_STOCK];
+    str = [[NSMutableString alloc] init];
+    [str appendFormat:@"%.2f %.2f%%", info.price, info.changeRate];
+    [self.chuangValue setText:str];
+    if (info.changeRate < 0) {
+        [self.chuangValue setTextColor:[UIColor colorWithRed:0 green:0.7 blue:0 alpha:1]];
+    } else if (info.changeRate > 0) {
+        [self.chuangValue setTextColor:[UIColor redColor]];
+    }
 }
 @end

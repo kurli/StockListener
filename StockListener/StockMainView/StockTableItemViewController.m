@@ -21,6 +21,9 @@
 #define HIGHEST 107
 #define AVERAGE 108
 #define LOWEST 109
+#define CURRENT_PRICE 110
+#define GREEN_STEP 111
+#define RED_STEP 112
 
 #define HEADSET_HIDE 0.2
 #define HEADSET_SHOW 1
@@ -45,25 +48,6 @@
         return [NSString stringWithFormat:@"%.3f", value];
     }
     return [NSString stringWithFormat:@"%.2f", value];
-//    NSString* str = [NSString stringWithFormat:@"%.3f", value];
-//    int index = (int)[str length] - 1;
-//    for (; index >= 0; index--) {
-//        char c = [str characterAtIndex:index];
-//        if (c !='0') {
-//            break;
-//        }
-//    }
-//    if (index <= 0) {
-//        return @"0";
-//    }
-//    if ([str characterAtIndex:index] == '.') {
-//        index--;
-//    }
-//    if (index <= 0) {
-//        return @"0";
-//    }
-//    str = [str substringToIndex:index+1];
-//    return str;
 }
 
 - (NSString*) skipLastZero:(NSString*)str {
@@ -156,7 +140,11 @@
     UILabel* highestLabel = [cell viewWithTag:HIGHEST];
     UILabel* averageLabel = [cell viewWithTag:AVERAGE];
     UILabel* lowestLabel = [cell viewWithTag:LOWEST];
-    
+//    UILabel* currentPriceLabel = [cell viewWithTag:CURRENT_PRICE];
+//    [currentPriceLabel setHidden:NO];
+    UILabel* greenLabel = [cell viewWithTag:GREEN_STEP];
+    UILabel* redLabel = [cell viewWithTag:RED_STEP];
+
     if (nowPLayingSID != nil) {
         if ([nowPLayingSID isEqualToString:info.sid]) {
             [headSetImg setAlpha:HEADSET_SHOW];
@@ -206,6 +194,26 @@
     }
     priceStr = [self valueToStr:info.dealTotalMoney/info.dealCount];
     [averageLabel setText:priceStr];
+    
+    // set steps
+    if (info.step > 0) {
+        [greenLabel setHidden:NO];
+        [redLabel setHidden:NO];
+        NSMutableString* str = [[NSMutableString alloc] init];
+        for (int i=0; i< info.step; i++) {
+            [str appendString:@"*"];
+        }
+        if (info.speed > 0) {
+            [redLabel setText:str];
+            [greenLabel setText:@""];
+        } else {
+            [redLabel setText:@""];
+            [greenLabel setText:str];
+        }
+    } else {
+        [greenLabel setHidden:YES];
+        [redLabel setHidden:YES];
+    }
     
     if (selected) {
         [buySellController setStockInfo:info];

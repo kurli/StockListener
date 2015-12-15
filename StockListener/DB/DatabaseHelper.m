@@ -36,6 +36,18 @@
         [self reloadStockList];
         self.stockRefresher = [[StockRefresher alloc] init];
         [self.stockRefresher startRefresh:self];
+        
+        StockInfo* info = nil;
+        self.dapanList = [[NSMutableArray alloc] init];
+        info = [[StockInfo alloc] init];
+        info.sid = SH_STOCK;
+        [self.dapanList addObject:info];
+        info = [[StockInfo alloc] init];
+        info.sid = SZ_STOCK;
+        [self.dapanList addObject:info];
+        info = [[StockInfo alloc] init];
+        info.sid = CY_STOCK;
+        [self.dapanList addObject:info];
     }
     return self;
 }
@@ -126,5 +138,16 @@
     }
     return nil;
 }
+
+-(StockInfo*)getDapanInfoById:(NSString*)sid {
+    for (int i=0; i<[self.dapanList count]; i++) {
+        StockInfo* info = [self.dapanList objectAtIndex:i];
+        if ([info.sid isEqualToString:sid]) {
+            return info;
+        }
+    }
+    return nil;
+}
+
 
 @end

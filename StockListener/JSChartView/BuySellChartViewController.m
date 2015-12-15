@@ -77,7 +77,7 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
 - (void)loadView
 {    
     self.barChartView = [[JBBarChartView alloc] init];
-    int width = view.bounds.size.width - kJBBarChartViewControllerChartPadding;
+    int width = view.bounds.size.width - kJBBarChartViewControllerChartPadding *2;
     self.barChartView.frame = CGRectMake(kJBBarChartViewControllerChartPadding, 65, width, kJBBarChartViewControllerChartHeight);
     self.barChartView.delegate = self;
     self.barChartView.dataSource = self;
@@ -109,7 +109,16 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
 
 - (NSUInteger)numberOfBarsInBarChartView:(JBBarChartView *)barChartView
 {
-    return 10;
+//    float count = self.stockInfo.todayHighestPrice - self.stockInfo.todayLoestPrice;
+//    if (self.stockInfo.price < 2) {
+//        count = count * 1000 + 1;
+//    } else {
+//        count = count * 100 + 1;
+//    }
+//    if (count < 10) {
+//        count = 10;
+//    }
+    return 20;
 }
 
 - (void)barChartView:(JBBarChartView *)barChartView didSelectBarAtIndex:(NSUInteger)index touchPoint:(CGPoint)touchPoint
@@ -124,7 +133,8 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
 
 - (CGFloat)barChartView:(JBBarChartView *)barChartView heightForBarViewAtIndex:(NSUInteger)index
 {
-    switch (index) {
+    long tmpIndex = index - 5;
+    switch (tmpIndex) {
         case 0:
             return _stockInfo.buyFiveCount;
         case 1:
@@ -148,13 +158,51 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
         default:
             break;
     }
-    
-    return 0;
+    float price = 0;
+    if (_stockInfo.price < 2) {
+        price = _stockInfo.buyFivePrice + tmpIndex * 0.001;
+    } else {
+        price = _stockInfo.buyFivePrice + tmpIndex * 0.01;
+    }
+    NSNumber* number = [_stockInfo.buySellDic objectForKey:[NSNumber numberWithFloat:price]];
+
+    return [number longLongValue];
 }
 
 - (UIColor *)barChartView:(JBBarChartView *)barChartView colorForBarViewAtIndex:(NSUInteger)index
 {
-    return (index > 4) ? kJBColorBarChartBarGreen : kJBColorBarChartBarRed;
+    long tmpIndex = index - 5;
+    float price = 0;
+    if (_stockInfo.price < 2) {
+        price = _stockInfo.buyFivePrice + tmpIndex * 0.001;
+    } else {
+        price = _stockInfo.buyFivePrice + tmpIndex * 0.01;
+    }
+    float average = _stockInfo.dealTotalMoney/_stockInfo.dealCount;
+    float current = _stockInfo.price;
+    
+    if (_stockInfo.price < 2) {
+        price *= 1000;
+        average *= 1000;
+        current *= 1000;
+    } else {
+        price *= 100;
+        average *= 100;
+        current *= 100;
+    }
+
+    if ((int)price == (int)current) {
+        return kJBColorBarChartBarBlue;
+    }
+    if ((int)price == (int)average) {
+        return kJBColorBarChartBarYello;
+    }
+    
+    if (index < 5 || index > 14) {
+        return kJBColorBarChartBarGray;
+    }
+ 
+    return (index > 9) ? kJBColorBarChartBarGreen : kJBColorBarChartBarRed;
 }
 
 - (UIColor *)barSelectionColorForBarChartView:(JBBarChartView *)barChartView
