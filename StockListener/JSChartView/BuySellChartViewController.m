@@ -190,6 +190,15 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
         average *= 100;
         current *= 100;
     }
+    if (((int)(price*10) % 10) >= 5) {
+        price += 1;
+    }
+    if (((int)(average*10) % 10) >= 5) {
+        average += 1;
+    }
+    if (((int)(current*10) % 10) >= 5) {
+        current += 1;
+    }
 
     if ((int)price == (int)current) {
         return kJBColorBarChartBarBlue;
