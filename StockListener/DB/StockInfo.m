@@ -18,6 +18,7 @@
 #define CURRENT_PRICE @"current_price"
 #define CHANGE_RATE @"change_rate"
 #define BUY_SELL_DIC @"buy_sell_dic"
+#define UPDATE_DAY @"upreate_day"
 
 - (id) init {
     if (self = [super init]) {
@@ -88,6 +89,7 @@
 -(void)encodeWithCoder:(NSCoder *)aCoder {
     [aCoder encodeObject:self.sid forKey:SID];
     [aCoder encodeObject:self.name forKey:NAME];
+    [aCoder encodeObject:self.updateDay forKey:UPDATE_DAY];
     if (self.buySellDic != nil) {
         [aCoder encodeObject:self.buySellDic forKey:BUY_SELL_DIC];
     }
@@ -101,6 +103,7 @@
         self.sid = [aDecoder decodeObjectForKey:SID];
         self.name = [aDecoder decodeObjectForKey:NAME];
         self.buySellDic = [aDecoder decodeObjectForKey:BUY_SELL_DIC];
+        self.updateDay = [aDecoder decodeObjectForKey:UPDATE_DAY];
         if (self.buySellDic == nil) {
             self.buySellDic = [[NSMutableDictionary alloc] init];
         }

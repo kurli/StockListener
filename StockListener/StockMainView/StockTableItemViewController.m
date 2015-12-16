@@ -112,6 +112,7 @@
     }
     StockInfo* info = [self.dbHelper.stockList objectAtIndex:indexPath.row];
     [self.dbHelper removeStockBySID:info.sid];
+    [_buySellViewDictionary removeObjectForKey:info.sid];
 }
 
 -(UITableViewCell*) getTableViewCell:(UITableView*)tableView andInfo:(StockInfo*)info andSelected:(BOOL)selected; {
@@ -132,6 +133,10 @@
 //        [buySellController reload];
     }
     buySellController = [_buySellViewDictionary valueForKey:info.sid];
+    if (buySellController == nil) {
+        buySellController = [[BuySellChartViewController alloc] initWithParentView:cell];
+        [buySellController loadView];
+    }
     UILabel* nameLabel = [cell viewWithTag:NAME];
     UILabel* priceLabel = [cell viewWithTag:PRICE];
     UILabel* rateLabel = [cell viewWithTag:RATE];

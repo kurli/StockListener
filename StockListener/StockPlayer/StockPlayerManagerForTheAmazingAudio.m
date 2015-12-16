@@ -60,7 +60,7 @@
         [_audioController setAllowMixingWithOtherApps:NO];
 
         self.musicPlayer = [AEAudioFilePlayer audioFilePlayerWithURL:[[NSBundle mainBundle] URLForResource:MUSIC_SOUND withExtension:@"mp3"] error:NULL];
-        _musicPlayer.volume = 0.5;
+        _musicPlayer.volume = 0.05;
         _musicPlayer.loop = YES;
         _musicPlayer.channelIsMuted = YES;
         [_audioController addChannels:@[_musicPlayer]];

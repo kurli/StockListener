@@ -12,7 +12,7 @@
 #import "StockInfo.h"
 #import "DatabaseHelper.h"
 
-//#define ENABLE_TEST
+#define ENABLE_TEST
 
 @interface GetStockValueTask()
 
@@ -68,6 +68,9 @@
         float t = tmpDrt * info.step;
         if (((int)(t*10) % 10) >= 5) {
             t += 1;
+        }
+        if (info.speed * speed > 0) {
+            t++;
         }
         info.step = t;
     }
@@ -140,7 +143,7 @@
     info.dealTotalMoney = [[array objectAtIndex:9] floatValue];
     
     NSString* updateDay = [array objectAtIndex:30];
-    if ([info.updateDay isEqualToString:updateDay]) {
+    if (![info.updateDay isEqualToString:updateDay]) {
         [info.buySellDic removeAllObjects];
     }
     info.updateDay = updateDay;
@@ -184,11 +187,17 @@
     info.updateTime = [array objectAtIndex:31];
     
 #ifdef ENABLE_TEST
-    float random = (float)(1+arc4random()%80)/1000 ;
-    newPrice = newPrice + newPrice*(random - 0.04);
-    info.buyOneCount += (arc4random()%info.buyOneCount/2);
+    if (info.price != 0) {
+        int random = 6 - (arc4random()%10);
+        if (newPrice < 2) {
+            newPrice = info.price + (0.001 * random);
+        } else {
+            newPrice = info.price + (0.01 * random);
+        }
+        info.buyOneCount += (arc4random()%info.buyOneCount/2);
+    }
 #endif
-    
+
     info.changeRate = (newPrice - info.lastDayPrice) / info.lastDayPrice;
 
     if (info.price <= 0) {

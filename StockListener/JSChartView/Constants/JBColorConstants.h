@@ -16,7 +16,7 @@
 #pragma mark - Bar Chart
 
 #define kJBColorBarChartControllerBackground UIColorFromHex(0x313131)
-#define kJBColorBarChartBackground [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1.0]
+#define kJBColorBarChartBackground [UIColor colorWithRed:1 green:1 blue:1 alpha:1.0]
 #define kJBColorBarChartBarBlue UIColorFromHex(0x08bcef)
 #define kJBColorBarChartBarGreen UIColorFromHex(0x34b234)
 #define kJBColorBarChartBarGray [UIColor colorWithRed:0.7 green:0.7 blue:0.7 alpha:1.0]
