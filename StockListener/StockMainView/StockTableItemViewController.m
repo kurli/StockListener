@@ -11,6 +11,7 @@
 #import "StockPlayerManager.h"
 #import "DatabaseHelper.h"
 #import "BuySellChartViewController.h"
+#import "StockDetailViewController.h"
 
 #define NAME 101
 #define PRICE 102
@@ -24,6 +25,7 @@
 #define CURRENT_PRICE 110
 #define GREEN_STEP 111
 #define RED_STEP 112
+#define INFO_BUTTON 113
 
 #define HEADSET_HIDE 0.2
 #define HEADSET_SHOW 1
@@ -92,7 +94,7 @@
     [self.player playByIndex:(int)indexPath.row];
 }
 
--(void) deleteClicked:(id)b {
+-(void) infoButtonClicked:(id)b {
     UIButton *button = (UIButton *)b;
     UIView *contentView;
     if (IOS_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
@@ -111,8 +113,11 @@
         return;
     }
     StockInfo* info = [self.dbHelper.stockList objectAtIndex:indexPath.row];
-    [self.dbHelper removeStockBySID:info.sid];
-    [_buySellViewDictionary removeObjectForKey:info.sid];
+//    [self.dbHelper removeStockBySID:info.sid];
+//    [_buySellViewDictionary removeObjectForKey:info.sid];
+    StockDetailViewController* controller = [[StockDetailViewController alloc] init];
+    [controller setStockInfo:info];
+    [self.viewController presentViewController:controller animated:YES completion:nil];
 }
 
 -(UITableViewCell*) getTableViewCell:(UITableView*)tableView andInfo:(StockInfo*)info andSelected:(BOOL)selected; {
@@ -126,6 +131,8 @@
         [headSetImg addTarget:self action:@selector(headsetClicked:) forControlEvents:UIControlEventTouchUpInside];
         UIButton* delete = [cell viewWithTag:DELETE];
         [delete addTarget:self action:@selector(deleteClicked:) forControlEvents:UIControlEventTouchUpInside];
+        UIButton* infoBUtton = [cell viewWithTag:INFO_BUTTON];
+        [infoBUtton addTarget:self action:@selector(infoButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
         buySellController = [[BuySellChartViewController alloc] initWithParentView:cell];
         [buySellController loadView];
         [_buySellViewDictionary setValue:buySellController forKey:info.sid];

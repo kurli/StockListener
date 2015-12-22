@@ -19,6 +19,7 @@
 @property (nonatomic, assign) UITableView* tableView;
 @property (nonatomic, strong) StockPlayerManager* player;
 @property (nonatomic, strong) DatabaseHelper* dbHelper;
+@property (nonatomic, strong) UIViewController* viewController;
 
 -(UITableViewCell*) getTableViewCell:(UITableView*)tableView andInfo:(StockInfo*)info andSelected:(BOOL)selected;
 @end

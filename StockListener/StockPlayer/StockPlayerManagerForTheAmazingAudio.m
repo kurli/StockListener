@@ -97,6 +97,31 @@
     }
 
     StockInfo* info = [[DatabaseHelper getInstance] getInfoById:_currentPlaySID];
+    BOOL switched = NO;
+    if (self.isAudoChoose)
+    {
+        int tmpStep = 0;
+        StockInfo* tmpInfo = nil;
+        NSArray* array = [DatabaseHelper getInstance].stockList;
+        int i = 0;
+        for (i=0; i<[array count]; i++) {
+            StockInfo* info2 = [array objectAtIndex:i];
+            if (info2.step > tmpStep) {
+                tmpInfo = info2;
+                tmpStep = info2.step;
+            }
+        }
+        if (tmpStep > 3 && info != tmpInfo) {
+            info = tmpInfo;
+            switched = YES;
+            _currentPlaySID = info.sid;
+            _currentPlayIndex = i;
+            if (self.delegate) {
+                [self.delegate onPlaying:info];
+            }
+            [self speak:info.name];
+        }
+    }
     if (info == nil) {
         [self pause];
         return;
@@ -105,12 +130,14 @@
     float value = info.changeRate * 100;
     [self setLockScreenTitle:[NSString stringWithFormat:@"%@  %@ (%.2f%%)", info.name, [self valueToStr:info.price], value] andTime:info.updateTime andRate:info.changeRate];
 
-    speachCounter++;
-    if (speachCounter == SPEACH_COUNTER) {
-        [self stockSpeachFired];
-        return;
+    if (!switched) {
+        speachCounter++;
+        if (speachCounter == SPEACH_COUNTER) {
+            [self stockSpeachFired];
+            return;
+        }
     }
-    
+
     if (info.speed > 0) {
         [self playStockValueUp:info.step];
     } else if (info.speed < 0) {

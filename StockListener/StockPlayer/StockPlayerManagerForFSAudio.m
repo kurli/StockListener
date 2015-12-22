@@ -79,6 +79,7 @@
     }
     if ([self.playList count] > 0) {
         [self.playList removeAllObjects];
+        return;
     }
     
     StockInfo* info = [[DatabaseHelper getInstance] getInfoById:_currentPlaySID];

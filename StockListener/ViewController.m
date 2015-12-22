@@ -63,6 +63,7 @@
     [_stockTableItemViewController setTableView:self.tableView];
     [_stockTableItemViewController setPlayer:player];
     [_stockTableItemViewController setDbHelper:self.dbHelper];
+    [_stockTableItemViewController setViewController:self];
 
     stockSelected = -1;
     
@@ -310,6 +311,14 @@
         [self.chuangValue setTextColor:[UIColor colorWithRed:0 green:0.7 blue:0 alpha:1]];
     } else if (info.changeRate > 0) {
         [self.chuangValue setTextColor:[UIColor redColor]];
+    }
+}
+- (IBAction)onAutoSwitchChanged:(id)sender {
+    UISegmentedControl* control = (UISegmentedControl*)sender;
+    if (control.selectedSegmentIndex == 0) {
+        [player setIsAudoChoose:NO];
+    } else {
+        [player setIsAudoChoose:YES];
     }
 }
 @end

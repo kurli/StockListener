@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "DatabaseHelper.h"
+#import "ViewController.h"
 
 @interface AppDelegate ()
 

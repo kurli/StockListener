@@ -25,6 +25,8 @@
 
 @property (nonatomic, assign) id <StockPlayerDelegate> delegate;
 
+@property (nonatomic, assign) BOOL isAudoChoose;
+
 -(void) play;
 
 -(void) pause;

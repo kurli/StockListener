@@ -12,7 +12,7 @@
 #import "StockInfo.h"
 #import "DatabaseHelper.h"
 
-#define ENABLE_TEST
+//#define ENABLE_TEST
 
 @interface GetStockValueTask()
 
