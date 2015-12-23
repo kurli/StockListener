@@ -12,6 +12,7 @@
 #import "DatabaseHelper.h"
 #import "BuySellChartViewController.h"
 #import "StockDetailViewController.h"
+#import "StockKDJViewController.h"
 
 #define NAME 101
 #define PRICE 102
@@ -26,6 +27,7 @@
 #define GREEN_STEP 111
 #define RED_STEP 112
 #define INFO_BUTTON 113
+#define KDJ_BUTTON 114
 
 #define HEADSET_HIDE 0.2
 #define HEADSET_SHOW 1
@@ -120,6 +122,32 @@
     [self.viewController presentViewController:controller animated:YES completion:nil];
 }
 
+-(void) kdjButtonClicked:(id)b {
+    UIButton *button = (UIButton *)b;
+    UIView *contentView;
+    if (IOS_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
+        contentView = [button superview];
+    } else if (IOS_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+        contentView = [[button superview] superview];
+    } else {
+        contentView = [button superview];
+    }
+    UITableViewCell *cell = (UITableViewCell*)[contentView superview];
+    if ([cell isKindOfClass:[UITableViewCell class]] == false) {
+        return;
+    }
+    NSIndexPath *indexPath = [_tableView indexPathForCell:cell];
+    if (indexPath.row >= [self.dbHelper.stockList count]) {
+        return;
+    }
+    StockInfo* info = [self.dbHelper.stockList objectAtIndex:indexPath.row];
+    //    [self.dbHelper removeStockBySID:info.sid];
+    //    [_buySellViewDictionary removeObjectForKey:info.sid];
+    StockKDJViewController* controller = [[StockKDJViewController alloc] init];
+    [controller setStockInfo:info];
+    [self.viewController presentViewController:controller animated:YES completion:nil];
+}
+
 -(UITableViewCell*) getTableViewCell:(UITableView*)tableView andInfo:(StockInfo*)info andSelected:(BOOL)selected; {
     static NSString *flag=@"StockTableViewCellFlag";
     UITableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:flag];
@@ -129,10 +157,12 @@
         [cell setValue:flag forKey:@"reuseIdentifier"];
         UIButton* headSetImg = [cell viewWithTag:HEADSET];
         [headSetImg addTarget:self action:@selector(headsetClicked:) forControlEvents:UIControlEventTouchUpInside];
-        UIButton* delete = [cell viewWithTag:DELETE];
-        [delete addTarget:self action:@selector(deleteClicked:) forControlEvents:UIControlEventTouchUpInside];
+//        UIButton* delete = [cell viewWithTag:DELETE];
+//        [delete addTarget:self action:@selector(deleteClicked:) forControlEvents:UIControlEventTouchUpInside];
         UIButton* infoBUtton = [cell viewWithTag:INFO_BUTTON];
         [infoBUtton addTarget:self action:@selector(infoButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+        UIButton* kdjButton = [cell viewWithTag:KDJ_BUTTON];
+        [kdjButton addTarget:self action:@selector(kdjButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
         buySellController = [[BuySellChartViewController alloc] initWithParentView:cell];
         [buySellController loadView];
         [_buySellViewDictionary setValue:buySellController forKey:info.sid];

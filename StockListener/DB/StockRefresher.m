@@ -12,7 +12,7 @@
 #import "DatabaseHelper.h"
 #import "StockInfo.h"
 
-#define REFRESH_RATE 2
+#define REFRESH_RATE 6
 
 @interface StockRefresher()
 
