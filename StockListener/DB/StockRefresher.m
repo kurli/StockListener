@@ -13,6 +13,7 @@
 #import "StockInfo.h"
 
 #define REFRESH_RATE 6
+//#define REFRESH_RATE 1
 
 @interface StockRefresher()
 

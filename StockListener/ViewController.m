@@ -268,15 +268,15 @@
 
 - (void)applicationDidEnterBackgroundNotification:(NSNotification *)notification
 {
-    if (![player isPlaying]) {
-        [self.dbHelper stopRefreshStock];
-    }
-    [self.dbHelper saveToDB];
+//    if (![player isPlaying]) {
+//        [self.dbHelper stopRefreshStock];
+//    }
+//    [self.dbHelper saveToDB];
 }
 
 - (void)applicationWillEnterForegroundNotification:(NSNotification *)notification
 {
-    [self.dbHelper startRefreshStock];
+//    [self.dbHelper startRefreshStock];
 }
 
 - (void)onStockValueRefreshed {

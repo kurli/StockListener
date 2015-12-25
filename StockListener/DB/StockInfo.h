@@ -14,6 +14,9 @@
 @property (nonatomic, strong) NSString* sid;
 @property (atomic, unsafe_unretained) float changeRate;         // Current change rate by open price
 @property (atomic, strong) NSMutableDictionary* buySellDic;
+@property (atomic, strong) NSMutableDictionary* priceHistoryHalfMinute;
+@property (atomic, strong) NSMutableDictionary* priceHistoryOneMinutes;
+@property (atomic, strong) NSMutableDictionary* priceHistoryFiveMinutes;
 
 // Used for play sound
 @property (atomic, unsafe_unretained) int step;                 // Used for play sound
@@ -48,6 +51,8 @@
 @property (atomic, unsafe_unretained) float sellFivePrice;      //29
 @property (atomic, strong) NSString* updateDay;                 //30
 @property (atomic, strong) NSString* updateTime;                //31
+
+-(void) newPriceGot;
 
 //-(void) assign:(StockInfo*) info;
 @end

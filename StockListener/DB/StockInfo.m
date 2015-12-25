@@ -8,6 +8,9 @@
 
 #import "StockInfo.h"
 
+@interface StockInfo()
+@end
+
 @implementation StockInfo
 
 @synthesize sid;
@@ -19,6 +22,9 @@
 #define CHANGE_RATE @"change_rate"
 #define BUY_SELL_DIC @"buy_sell_dic"
 #define UPDATE_DAY @"upreate_day"
+#define PRICE_HISTORY_MINUTE @"price_history_minute"
+#define PRICE_HISTORY_FIVE_MINUTE @"price_history_five_minute"
+#define PRICE_HISTORY_HALF_MINUTE @"price_history_half_minute"
 
 - (id) init {
     if (self = [super init]) {
@@ -57,6 +63,9 @@
         self.updateDay = @"";
         self.updateTime = @"";
         self.buySellDic = [[NSMutableDictionary alloc] init];
+        self.priceHistoryHalfMinute = [[NSMutableDictionary alloc] init];
+        self.priceHistoryOneMinutes = [[NSMutableDictionary alloc] init];
+        self.priceHistoryFiveMinutes = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -73,6 +82,9 @@
     info.lastDayPrice = self.lastDayPrice;
     
     info.buySellDic = [self.buySellDic copy];
+    info.priceHistoryFiveMinutes = [self.priceHistoryFiveMinutes copy];
+    info.priceHistoryHalfMinute = [self.priceHistoryHalfMinute copy];
+    info.priceHistoryOneMinutes = [self.priceHistoryOneMinutes copy];
     
     return info;
 }
@@ -93,6 +105,15 @@
     if (self.buySellDic != nil) {
         [aCoder encodeObject:self.buySellDic forKey:BUY_SELL_DIC];
     }
+    if (self.priceHistoryFiveMinutes != nil) {
+        [aCoder encodeObject:self.priceHistoryFiveMinutes forKey:PRICE_HISTORY_FIVE_MINUTE];
+    }
+    if (self.priceHistoryHalfMinute != nil) {
+        [aCoder encodeObject:self.priceHistoryHalfMinute forKey:PRICE_HISTORY_HALF_MINUTE];
+    }
+    if (self.priceHistoryOneMinutes != nil) {
+        [aCoder encodeObject:self.priceHistoryOneMinutes forKey:PRICE_HISTORY_MINUTE];
+    }
 //    [aCoder encodeObject:[NSNumber numberWithFloat:self.currentPrice] forKey:CURRENT_PRICE];
 //    [aCoder encodeObject:[NSNumber numberWithFloat:self.changeRate] forKey:CHANGE_RATE];
 }
@@ -104,13 +125,128 @@
         self.name = [aDecoder decodeObjectForKey:NAME];
         self.buySellDic = [aDecoder decodeObjectForKey:BUY_SELL_DIC];
         self.updateDay = [aDecoder decodeObjectForKey:UPDATE_DAY];
+        self.priceHistoryFiveMinutes = [aDecoder decodeObjectForKey:PRICE_HISTORY_FIVE_MINUTE];
+        self.priceHistoryHalfMinute = [aDecoder decodeObjectForKey:PRICE_HISTORY_HALF_MINUTE];
+        self.priceHistoryOneMinutes = [aDecoder decodeObjectForKey:PRICE_HISTORY_MINUTE];
+
         if (self.buySellDic == nil) {
             self.buySellDic = [[NSMutableDictionary alloc] init];
+        }
+        if (self.priceHistoryFiveMinutes == nil) {
+            self.priceHistoryFiveMinutes = [[NSMutableDictionary alloc] init];
+        }
+        if (self.priceHistoryHalfMinute == nil) {
+            self.priceHistoryHalfMinute = [[NSMutableDictionary alloc] init];
+        }
+        if (self.priceHistoryOneMinutes == nil) {
+            self.priceHistoryOneMinutes = [[NSMutableDictionary alloc] init];
         }
 //        self.currentPrice = [(NSNumber*)[aDecoder decodeObjectForKey:CURRENT_PRICE] floatValue];
 //        self.changeRate = [(NSNumber*)[aDecoder decodeObjectForKey:CHANGE_RATE] floatValue];
     }
     return self;
+}
+
+-(void) newPriceGot {
+    NSArray* timeArray = [self.updateTime componentsSeparatedByString:@":"];
+    if ([timeArray count] != 3) {
+        return;
+    }
+    long hour = [[timeArray objectAtIndex:0] longLongValue] ;
+    long minute = [[timeArray objectAtIndex:1] longLongValue];
+    long second = [[timeArray objectAtIndex:2] longLongValue];
+    long totalSecond = hour * 60 * 60;
+    totalSecond += (minute * 60);
+    totalSecond += second;
+    totalSecond -= (9*60*60 + 30*60);
+    if (totalSecond < 0) {
+        return;
+    }
+    if (totalSecond > (2*60*60)) {
+        if (totalSecond < (3*60*60 + 30 *60)) {
+            return;
+        }
+        totalSecond -= (60*60 + 30*60);
+    }
+    NSString* halfMinuteKey = [NSString stringWithFormat:@"%ld", totalSecond / 30];
+    NSString* minuteKey = [NSString stringWithFormat:@"%ld", totalSecond / 60];
+    NSString* fiveMinuteKey = [NSString stringWithFormat:@"%ld", totalSecond / (5 * 60)];
+    NSLog(@"%@ %@ %@", halfMinuteKey, minuteKey, fiveMinuteKey);
+    // Half minute data
+    NSString* halfMinuteData = [self.priceHistoryHalfMinute valueForKey:halfMinuteKey];
+    if (halfMinuteData != nil) {
+        NSArray* prices = [halfMinuteData componentsSeparatedByString:@" "];
+        if ([prices count] == 3) {
+            float highP = [[prices objectAtIndex:0] floatValue];
+            float lowP = [[prices objectAtIndex:2] floatValue];
+            if (highP < self.price) {
+                highP = self.price;
+            }
+            if (lowP > self.price) {
+                lowP = self.price;
+            }
+            NSString* data = [NSString stringWithFormat:@"%f %f %f", highP, self.price, lowP];
+            [self.priceHistoryHalfMinute setObject:data forKey:halfMinuteKey];
+//            NSLog(@"%@", data);
+        } else {
+            halfMinuteData = nil;
+        }
+    }
+    if (halfMinuteData == nil) {
+        NSString* data = [NSString stringWithFormat:@"%f %f %f", self.price, self.price, self.price];
+        [self.priceHistoryHalfMinute setObject:data forKey:halfMinuteKey];
+//        NSLog(@"%@", data);
+    }
+    // minute data
+    NSString* minuteData = [self.priceHistoryOneMinutes valueForKey:minuteKey];
+    if (minuteData != nil) {
+        NSArray* prices = [minuteData componentsSeparatedByString:@" "];
+        if ([prices count] == 3) {
+            float highP = [[prices objectAtIndex:0] floatValue];
+            float lowP = [[prices objectAtIndex:2] floatValue];
+            if (highP < self.price) {
+                highP = self.price;
+            }
+            if (lowP > self.price) {
+                lowP = self.price;
+            }
+            NSString* data = [NSString stringWithFormat:@"%f %f %f", highP, self.price, lowP];
+            [self.priceHistoryOneMinutes setObject:data forKey:minuteKey];
+//            NSLog(@"%@", data);
+        } else {
+            minuteData = nil;
+        }
+    }
+    if (minuteData == nil) {
+        NSString* data = [NSString stringWithFormat:@"%f %f %f", self.price, self.price, self.price];
+        [self.priceHistoryOneMinutes setObject:data forKey:minuteKey];
+//        NSLog(@"%@", data);
+    }
+    // Five minutes
+    NSString* fiveMinuteData = [self.priceHistoryFiveMinutes valueForKey:fiveMinuteKey];
+    if (fiveMinuteData != nil) {
+        NSArray* prices = [fiveMinuteData componentsSeparatedByString:@" "];
+        if ([prices count] == 3) {
+            float highP = [[prices objectAtIndex:0] floatValue];
+            float lowP = [[prices objectAtIndex:2] floatValue];
+            if (highP < self.price) {
+                highP = self.price;
+            }
+            if (lowP > self.price) {
+                lowP = self.price;
+            }
+            NSString* data = [NSString stringWithFormat:@"%f %f %f", highP, self.price, lowP];
+            [self.priceHistoryFiveMinutes setObject:data forKey:fiveMinuteKey];
+//            NSLog(@"%@", data);
+        } else {
+            fiveMinuteData = nil;
+        }
+    }
+    if (fiveMinuteData == nil) {
+        NSString* data = [NSString stringWithFormat:@"%f %f %f", self.price, self.price, self.price];
+        [self.priceHistoryFiveMinutes setObject:data forKey:fiveMinuteKey];
+//        NSLog(@"%@", data);
+    }
 }
 
 @end

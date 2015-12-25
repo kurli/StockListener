@@ -96,33 +96,33 @@
     [self.player playByIndex:(int)indexPath.row];
 }
 
--(void) infoButtonClicked:(id)b {
-    UIButton *button = (UIButton *)b;
-    UIView *contentView;
-    if (IOS_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
-        contentView = [button superview];
-    } else if (IOS_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-        contentView = [[button superview] superview];
-    } else {
-        contentView = [button superview];
-    }
-    UITableViewCell *cell = (UITableViewCell*)[contentView superview];
-    if ([cell isKindOfClass:[UITableViewCell class]] == false) {
-        return;
-    }
-    NSIndexPath *indexPath = [_tableView indexPathForCell:cell];
-    if (indexPath.row >= [self.dbHelper.stockList count]) {
-        return;
-    }
-    StockInfo* info = [self.dbHelper.stockList objectAtIndex:indexPath.row];
-//    [self.dbHelper removeStockBySID:info.sid];
-//    [_buySellViewDictionary removeObjectForKey:info.sid];
-    StockDetailViewController* controller = [[StockDetailViewController alloc] init];
-    [controller setStockInfo:info];
-    [self.viewController presentViewController:controller animated:YES completion:nil];
-}
+//-(void) infoButtonClicked:(id)b {
+//    UIButton *button = (UIButton *)b;
+//    UIView *contentView;
+//    if (IOS_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
+//        contentView = [button superview];
+//    } else if (IOS_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+//        contentView = [[button superview] superview];
+//    } else {
+//        contentView = [button superview];
+//    }
+//    UITableViewCell *cell = (UITableViewCell*)[contentView superview];
+//    if ([cell isKindOfClass:[UITableViewCell class]] == false) {
+//        return;
+//    }
+//    NSIndexPath *indexPath = [_tableView indexPathForCell:cell];
+//    if (indexPath.row >= [self.dbHelper.stockList count]) {
+//        return;
+//    }
+//    StockInfo* info = [self.dbHelper.stockList objectAtIndex:indexPath.row];
+////    [self.dbHelper removeStockBySID:info.sid];
+////    [_buySellViewDictionary removeObjectForKey:info.sid];
+//    StockDetailViewController* controller = [[StockDetailViewController alloc] init];
+//    [controller setStockInfo:info];
+//    [self.viewController presentViewController:controller animated:YES completion:nil];
+//}
 
--(void) kdjButtonClicked:(id)b {
+-(void) infoButtonClicked:(id)b {
     UIButton *button = (UIButton *)b;
     UIView *contentView;
     if (IOS_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
@@ -161,8 +161,8 @@
 //        [delete addTarget:self action:@selector(deleteClicked:) forControlEvents:UIControlEventTouchUpInside];
         UIButton* infoBUtton = [cell viewWithTag:INFO_BUTTON];
         [infoBUtton addTarget:self action:@selector(infoButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
-        UIButton* kdjButton = [cell viewWithTag:KDJ_BUTTON];
-        [kdjButton addTarget:self action:@selector(kdjButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+//        UIButton* kdjButton = [cell viewWithTag:KDJ_BUTTON];
+//        [kdjButton addTarget:self action:@selector(kdjButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
         buySellController = [[BuySellChartViewController alloc] initWithParentView:cell];
         [buySellController loadView];
         [_buySellViewDictionary setValue:buySellController forKey:info.sid];
