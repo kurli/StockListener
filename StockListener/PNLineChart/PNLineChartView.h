@@ -46,6 +46,7 @@
 @property (nonatomic, assign) float  horizontalLineWidth; // the width of the horizontal line
 @property (nonatomic, assign) float  axisBottomLinetHeight;  // xAxis line off the view
 @property (nonatomic, assign) float  axisLeftLineWidth;   //yAxis line between the view left
+@property (nonatomic, assign) float xAxisInterval;
 
 @property (nonatomic, strong) NSString*  floatNumberFormatterString; // the yAxis label text should be formatted with
 

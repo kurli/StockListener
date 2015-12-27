@@ -74,11 +74,11 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
     return str;
 }
 
-- (void)loadView
+- (void)loadView:(int)yOffset
 {    
     self.barChartView = [[JBBarChartView alloc] init];
-    int width = view.bounds.size.width - kJBBarChartViewControllerChartPadding *2;
-    self.barChartView.frame = CGRectMake(kJBBarChartViewControllerChartPadding, 65, width, kJBBarChartViewControllerChartHeight);
+    int width = view.bounds.size.width - (kJBBarChartViewControllerChartPadding *2);
+    self.barChartView.frame = CGRectMake(kJBBarChartViewControllerChartPadding, yOffset, width, kJBBarChartViewControllerChartHeight);
     self.barChartView.delegate = self;
     self.barChartView.dataSource = self;
     self.barChartView.headerPadding = kJBBarChartViewControllerChartHeaderPadding;
@@ -86,7 +86,15 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
     self.barChartView.inverted = NO;
     self.barChartView.backgroundColor = kJBColorBarChartBackground;
     
+    UILabel* label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 10, 10)];
+    label.text = @"^";
+    
     [view addSubview:self.barChartView];
+    [view addSubview:label];
+    CGRect rect = label.frame;
+    rect.origin.x = view.bounds.size.width/2 - rect.size.width/2;
+    rect.origin.y = self.barChartView.frame.size.height + self.barChartView.frame.origin.y;
+    [label setFrame:rect];
 }
 
 - (void) reload {

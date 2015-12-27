@@ -153,7 +153,7 @@
         return 44;
     } else {
         if (stockSelected == indexPath.row) {
-            return 180;
+            return 135;
         }
         return 60;
     }
@@ -268,15 +268,16 @@
 
 - (void)applicationDidEnterBackgroundNotification:(NSNotification *)notification
 {
-//    if (![player isPlaying]) {
-//        [self.dbHelper stopRefreshStock];
-//    }
-//    [self.dbHelper saveToDB];
+    if (![player isPlaying]) {
+        [self.dbHelper stopRefreshStock];
+        [self.dbHelper clearStoredPriceData];
+    }
+    [self.dbHelper saveToDB];
 }
 
 - (void)applicationWillEnterForegroundNotification:(NSNotification *)notification
 {
-//    [self.dbHelper startRefreshStock];
+    [self.dbHelper startRefreshStock];
 }
 
 - (void)onStockValueRefreshed {
@@ -285,7 +286,7 @@
     //Da pan
     StockInfo* info = [[DatabaseHelper getInstance] getDapanInfoById:SH_STOCK];
     NSMutableString* str = [[NSMutableString alloc] init];
-    [str appendFormat:@"%.2f %.2f%%", info.price, info.changeRate];
+    [str appendFormat:@"%.2f %.2f%%", info.price, info.changeRate*100];
     [self.shValue setText:str];
     if (info.changeRate < 0) {
         [self.shValue setTextColor:[UIColor colorWithRed:0 green:0.7 blue:0 alpha:1]];
@@ -295,7 +296,7 @@
     
     info = [[DatabaseHelper getInstance] getDapanInfoById:SZ_STOCK];
     str = [[NSMutableString alloc] init];
-    [str appendFormat:@"%.2f %.2f%%", info.price, info.changeRate];
+    [str appendFormat:@"%.2f %.2f%%", info.price, info.changeRate*100];
     [self.szValue setText:str];
     if (info.changeRate < 0) {
         [self.szValue setTextColor:[UIColor colorWithRed:0 green:0.7 blue:0 alpha:1]];
@@ -305,7 +306,7 @@
     
     info = [[DatabaseHelper getInstance] getDapanInfoById:CY_STOCK];
     str = [[NSMutableString alloc] init];
-    [str appendFormat:@"%.2f %.2f%%", info.price, info.changeRate];
+    [str appendFormat:@"%.2f %.2f%%", info.price, info.changeRate*100];
     [self.chuangValue setText:str];
     if (info.changeRate < 0) {
         [self.chuangValue setTextColor:[UIColor colorWithRed:0 green:0.7 blue:0 alpha:1]];

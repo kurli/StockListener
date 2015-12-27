@@ -66,6 +66,7 @@
         self.priceHistoryHalfMinute = [[NSMutableDictionary alloc] init];
         self.priceHistoryOneMinutes = [[NSMutableDictionary alloc] init];
         self.priceHistoryFiveMinutes = [[NSMutableDictionary alloc] init];
+        self.changeRateArray = [[NSMutableArray alloc] init];
     }
     return self;
 }
@@ -85,6 +86,7 @@
     info.priceHistoryFiveMinutes = [self.priceHistoryFiveMinutes copy];
     info.priceHistoryHalfMinute = [self.priceHistoryHalfMinute copy];
     info.priceHistoryOneMinutes = [self.priceHistoryOneMinutes copy];
+    info.changeRateArray = [self.changeRateArray copy];
     
     return info;
 }
@@ -114,8 +116,6 @@
     if (self.priceHistoryOneMinutes != nil) {
         [aCoder encodeObject:self.priceHistoryOneMinutes forKey:PRICE_HISTORY_MINUTE];
     }
-//    [aCoder encodeObject:[NSNumber numberWithFloat:self.currentPrice] forKey:CURRENT_PRICE];
-//    [aCoder encodeObject:[NSNumber numberWithFloat:self.changeRate] forKey:CHANGE_RATE];
 }
 
 -(id)initWithCoder:(NSCoder *)aDecoder {
@@ -125,9 +125,9 @@
         self.name = [aDecoder decodeObjectForKey:NAME];
         self.buySellDic = [aDecoder decodeObjectForKey:BUY_SELL_DIC];
         self.updateDay = [aDecoder decodeObjectForKey:UPDATE_DAY];
-        self.priceHistoryFiveMinutes = [aDecoder decodeObjectForKey:PRICE_HISTORY_FIVE_MINUTE];
-        self.priceHistoryHalfMinute = [aDecoder decodeObjectForKey:PRICE_HISTORY_HALF_MINUTE];
-        self.priceHistoryOneMinutes = [aDecoder decodeObjectForKey:PRICE_HISTORY_MINUTE];
+//        self.priceHistoryFiveMinutes = [aDecoder decodeObjectForKey:PRICE_HISTORY_FIVE_MINUTE];
+//        self.priceHistoryHalfMinute = [aDecoder decodeObjectForKey:PRICE_HISTORY_HALF_MINUTE];
+//        self.priceHistoryOneMinutes = [aDecoder decodeObjectForKey:PRICE_HISTORY_MINUTE];
 
         if (self.buySellDic == nil) {
             self.buySellDic = [[NSMutableDictionary alloc] init];
@@ -141,13 +141,16 @@
         if (self.priceHistoryOneMinutes == nil) {
             self.priceHistoryOneMinutes = [[NSMutableDictionary alloc] init];
         }
-//        self.currentPrice = [(NSNumber*)[aDecoder decodeObjectForKey:CURRENT_PRICE] floatValue];
-//        self.changeRate = [(NSNumber*)[aDecoder decodeObjectForKey:CHANGE_RATE] floatValue];
+        self.changeRateArray = [[NSMutableArray alloc] init];
     }
     return self;
 }
 
 -(void) newPriceGot {
+    //Store changeRate
+    [self.changeRateArray addObject:[NSNumber numberWithFloat:self.changeRate*100]];
+
+    //Store price
     NSArray* timeArray = [self.updateTime componentsSeparatedByString:@":"];
     if ([timeArray count] != 3) {
         return;

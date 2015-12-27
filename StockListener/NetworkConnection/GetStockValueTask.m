@@ -103,9 +103,18 @@
     StockInfo* info = [[DatabaseHelper getInstance] getDapanInfoById:sid];
     info.name = [array objectAtIndex:0];
     float newPrice = [[array objectAtIndex:1] floatValue];
-    info.changeRate = [[array objectAtIndex:3] floatValue];
+    info.changeRate = [[array objectAtIndex:3] floatValue]/100;
     [self calculateStep:info andNewPrice:newPrice];
     info.price = newPrice;
+    //Hack
+#ifndef ENABLE_TEST
+    if (info.dealCount != [[array objectAtIndex:4] longLongValue]) {
+#endif
+        info.dealCount = [[array objectAtIndex:4] longLongValue];
+        [info newPriceGot];
+#ifndef ENABLE_TEST
+    }
+#endif
 }
 
 -(void) parseValueForSina:(NSString*)str {
@@ -201,13 +210,17 @@
 //    [info.buySellDic setObject:[NSNumber numberWithLongLong:8350000] forKey:[NSNumber numberWithFloat:0.835]];
 //    [info.buySellDic setObject:[NSNumber numberWithLongLong:8370000] forKey:[NSNumber numberWithFloat:0.837]];
 //    [info.buySellDic setObject:[NSNumber numberWithLongLong:8500000] forKey:[NSNumber numberWithFloat:0.848]];
-
-    info.updateTime = [array objectAtIndex:31];
     
+#ifndef ENABLE_TEST
+    if (info.updateTime != nil && [info.updateTime isEqualToString:[array objectAtIndex:31]]) {
+        return;
+    }
+#endif
+    info.updateTime = [array objectAtIndex:31];
+
 #ifdef ENABLE_TEST
     newPrice = [self getTestData:info];
 #endif
-
     info.changeRate = (newPrice - info.lastDayPrice) / info.lastDayPrice;
 
     if (info.price <= 0) {

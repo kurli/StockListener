@@ -157,9 +157,8 @@
     CGContextSetTextMatrix(context, CGAffineTransformIdentity);
     CGContextSelectFont(context, [self.fontName UTF8String], self.xAxisFontSize, kCGEncodingMacRoman);
     
-    
     // draw yAxis
-    for (int i=0; i<=self.numberOfVerticalElements; i++) {
+    for (int i=0; i<self.numberOfVerticalElements; i++) {
         int height =self.horizontalLineInterval*i;
         float verticalLine = height + startHeight - self.contentScroll.y;
         
@@ -167,21 +166,44 @@
         
         [self.horizontalLinesColor set];
         
-        CGContextMoveToPoint(context, startWidth, verticalLine);
-        CGContextAddLineToPoint(context, self.bounds.size.width, verticalLine);
-        CGContextStrokePath(context);
-        
-        
         NSNumber* yAxisVlue = [self.yAxisValues objectAtIndex:i];
         
         NSString* numberString = [NSString stringWithFormat:self.floatNumberFormatterString, yAxisVlue.floatValue];
         
         NSInteger count = [numberString lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
         
-        CGContextShowTextAtPoint(context, 0, verticalLine - self.xAxisFontSize/2, [numberString UTF8String], count);
+        if (i == 0) {
+            CGContextMoveToPoint(context, startWidth, verticalLine);
+            CGContextAddLineToPoint(context, self.bounds.size.width, verticalLine);
+            CGContextStrokePath(context);
+            CGContextShowTextAtPoint(context, 0, 1, [numberString UTF8String], count);
+        } else if (i == self.numberOfVerticalElements-1) {
+            CGContextMoveToPoint(context, startWidth, verticalLine);
+            CGContextAddLineToPoint(context, self.bounds.size.width, verticalLine);
+            CGContextStrokePath(context);
+            CGContextShowTextAtPoint(context, 0, verticalLine - self.xAxisFontSize, [numberString UTF8String], count);
+        }
+        else {
+            CGContextMoveToPoint(context, startWidth, verticalLine);
+            CGContextAddLineToPoint(context, self.bounds.size.width, verticalLine);
+            CGContextStrokePath(context);
+            CGContextShowTextAtPoint(context, 0, verticalLine - self.xAxisFontSize/2, [numberString UTF8String], count);
+        }
     }
     
-    
+    // draw x line
+    if (self.xAxisInterval != 0) {
+        for (int i=1; i<DEVICE_WIDTH/self.xAxisInterval; i++) {
+            int x = self.xAxisInterval * i;
+            CGContextSetLineWidth(context, self.horizontalLineWidth);
+            
+            [self.horizontalLinesColor set];
+            
+            CGContextMoveToPoint(context, startWidth + x, 0);
+            CGContextAddLineToPoint(context, startWidth + x, self.frame.size.height);
+            CGContextStrokePath(context);
+        }
+    }
     // draw lines
     for (int i=0; i<self.plots.count; i++)
     {
@@ -199,18 +221,18 @@
             float floatValue = value.floatValue;
             
             float height = (floatValue-self.min)/self.interval*self.horizontalLineInterval-self.contentScroll.y+startHeight;
-            float width =self.pointerInterval*(i+1)+self.contentScroll.x+ startHeight+5;
+            float width =startWidth + self.pointerInterval*(i)+self.contentScroll.x+ startHeight;
             
-            if (width<startWidth) {
-                
-                NSNumber* nextValue = [pointArray objectAtIndex:i+1];
-                float nextFloatValue = nextValue.floatValue;
-                float nextHeight = (nextFloatValue-self.min)/self.interval*self.horizontalLineInterval+startHeight;
-                
-                CGContextMoveToPoint(context, startWidth, nextHeight);
-                
-                continue;
-            }
+//            if (width<startWidth && i+1 < [pointArray count]) {
+//                
+//                NSNumber* nextValue = [pointArray objectAtIndex:i+1];
+//                float nextFloatValue = nextValue.floatValue;
+//                float nextHeight = (nextFloatValue-self.min)/self.interval*self.horizontalLineInterval+startHeight;
+//                
+//                CGContextMoveToPoint(context, startWidth, nextHeight);
+//                
+//                continue;
+//            }
             
             if (i==0) {
                 CGContextMoveToPoint(context,  width, height);
@@ -221,28 +243,13 @@
         }
         
         CGContextStrokePath(context);
-
-        
-        // draw pointer
-//        for (int i=0; i<pointArray.count; i++) {
-//            NSNumber* value = [pointArray objectAtIndex:i];
-//            float floatValue = value.floatValue;
-//            
-//            float height = (floatValue-self.min)/self.interval*self.horizontalLineInterval-self.contentScroll.y+startHeight;
-//            float width =self.pointerInterval*(i+1)+self.contentScroll.x+ startWidth;
-//            
-//            if (width>startWidth){
-//                CGContextFillEllipseInRect(context, CGRectMake(width-POINT_CIRCLE, height-POINT_CIRCLE/2, POINT_CIRCLE, POINT_CIRCLE));
-//            }
-//        }
-        CGContextStrokePath(context);
     }
     
     [self.xAxisFontColor set];
     CGContextSetLineWidth(context, self.axisLineWidth);
     CGContextMoveToPoint(context, startWidth, startHeight);
     
-    CGContextAddLineToPoint(context, startWidth, 100);
+    CGContextAddLineToPoint(context, startWidth, self.bounds.size.height);
     CGContextStrokePath(context);
     
     CGContextMoveToPoint(context, startWidth, startHeight);

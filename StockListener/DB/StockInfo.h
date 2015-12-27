@@ -54,5 +54,8 @@
 
 -(void) newPriceGot;
 
+//temp data
+@property (atomic, strong) NSMutableArray* changeRateArray;
+
 //-(void) assign:(StockInfo*) info;
 @end

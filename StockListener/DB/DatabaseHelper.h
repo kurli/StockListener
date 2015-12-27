@@ -39,4 +39,6 @@
 
 -(void) saveToDB;
 
+-(void) clearStoredPriceData;
+
 @end

@@ -149,5 +149,13 @@
     return nil;
 }
 
+-(void) clearStoredPriceData {
+//    for (StockInfo* info in self.stockList) {
+//        [info.changeRateArray removeAllObjects];
+//    }
+//    for (StockInfo* info in self.dapanList) {
+//        [info.changeRateArray removeAllObjects];
+//    }
+}
 
 @end

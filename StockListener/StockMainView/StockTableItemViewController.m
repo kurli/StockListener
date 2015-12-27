@@ -33,7 +33,7 @@
 #define HEADSET_SHOW 1
 
 @interface StockTableItemViewController()
-@property (nonatomic, strong) NSMutableDictionary* buySellViewDictionary;
+//@property (nonatomic, strong) NSMutableDictionary* buySellViewDictionary;
 @end
 
 @implementation StockTableItemViewController
@@ -42,7 +42,7 @@
 
 -(id) init {
     if (self = [super init]) {
-        self.buySellViewDictionary = [[NSMutableDictionary alloc] init];
+//        self.buySellViewDictionary = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -151,29 +151,23 @@
 -(UITableViewCell*) getTableViewCell:(UITableView*)tableView andInfo:(StockInfo*)info andSelected:(BOOL)selected; {
     static NSString *flag=@"StockTableViewCellFlag";
     UITableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:flag];
-    BuySellChartViewController* buySellController = nil;
+//    BuySellChartViewController* buySellController = nil;
     if (cell == nil) {
         cell = [[[NSBundle mainBundle] loadNibNamed:@"StockTableItemView" owner:self options:nil] lastObject];
         [cell setValue:flag forKey:@"reuseIdentifier"];
         UIButton* headSetImg = [cell viewWithTag:HEADSET];
         [headSetImg addTarget:self action:@selector(headsetClicked:) forControlEvents:UIControlEventTouchUpInside];
-//        UIButton* delete = [cell viewWithTag:DELETE];
-//        [delete addTarget:self action:@selector(deleteClicked:) forControlEvents:UIControlEventTouchUpInside];
         UIButton* infoBUtton = [cell viewWithTag:INFO_BUTTON];
         [infoBUtton addTarget:self action:@selector(infoButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
-//        UIButton* kdjButton = [cell viewWithTag:KDJ_BUTTON];
-//        [kdjButton addTarget:self action:@selector(kdjButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
-        buySellController = [[BuySellChartViewController alloc] initWithParentView:cell];
-        [buySellController loadView];
-        [_buySellViewDictionary setValue:buySellController forKey:info.sid];
-//        [buySellController setStockInfo:info];
-//        [buySellController reload];
+//        buySellController = [[BuySellChartViewController alloc] initWithParentView:cell];
+//        [buySellController loadView];
+//        [_buySellViewDictionary setValue:buySellController forKey:info.sid];
     }
-    buySellController = [_buySellViewDictionary valueForKey:info.sid];
-    if (buySellController == nil) {
-        buySellController = [[BuySellChartViewController alloc] initWithParentView:cell];
-        [buySellController loadView];
-    }
+//    buySellController = [_buySellViewDictionary valueForKey:info.sid];
+//    if (buySellController == nil) {
+//        buySellController = [[BuySellChartViewController alloc] initWithParentView:cell];
+//        [buySellController loadView];
+//    }
     UILabel* nameLabel = [cell viewWithTag:NAME];
     UILabel* priceLabel = [cell viewWithTag:PRICE];
     UILabel* rateLabel = [cell viewWithTag:RATE];
@@ -257,10 +251,10 @@
         [redLabel setHidden:YES];
     }
     
-    if (selected) {
-        [buySellController setStockInfo:info];
-        [buySellController reload];
-    }
+//    if (selected) {
+//        [buySellController setStockInfo:info];
+//        [buySellController reload];
+//    }
     return cell;
 }
 

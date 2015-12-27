@@ -18,5 +18,5 @@
 
 -(id) initWithParentView:(UIView*)view;
 - (void) reload;
-- (void)loadView;
+- (void)loadView:(int)yOffset;
 @end
