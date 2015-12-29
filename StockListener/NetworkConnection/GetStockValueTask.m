@@ -260,7 +260,7 @@
 }
 #ifdef ENABLE_TEST
 -(float)getTestData:(StockInfo*)info {
-    static int index = 100;
+    static int index = 200;
     if (self.testArray == nil) {
         NSString* data = [NSString stringWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"test" withExtension:@"data"]  encoding:NSUTF8StringEncoding error:nil];
         self.testArray = [data componentsSeparatedByString:@"\n"];

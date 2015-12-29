@@ -223,17 +223,6 @@
             float height = (floatValue-self.min)/self.interval*self.horizontalLineInterval-self.contentScroll.y+startHeight;
             float width =startWidth + self.pointerInterval*(i)+self.contentScroll.x+ startHeight;
             
-//            if (width<startWidth && i+1 < [pointArray count]) {
-//                
-//                NSNumber* nextValue = [pointArray objectAtIndex:i+1];
-//                float nextFloatValue = nextValue.floatValue;
-//                float nextHeight = (nextFloatValue-self.min)/self.interval*self.horizontalLineInterval+startHeight;
-//                
-//                CGContextMoveToPoint(context, startWidth, nextHeight);
-//                
-//                continue;
-//            }
-            
             if (i==0) {
                 CGContextMoveToPoint(context,  width, height);
             }
@@ -244,6 +233,18 @@
         
         CGContextStrokePath(context);
     }
+    
+//    // Draw vetical focus line
+//    if ([self.plots count] > 0) {
+//        PNPlot* plot = [self.plots objectAtIndex:0];
+//        if ([plot.plottingValues count] >= 2) {
+//            float width =startWidth + self.pointerInterval*([plot.plottingPointsLabels count]-2)+self.contentScroll.x+ startHeight;
+//            CGContextSetLineWidth(context, self.axisLineWidth);
+//            CGContextMoveToPoint(context,  width, 0);
+//            CGContextAddLineToPoint(context, width, self.bounds.size.height);
+//            CGContextStrokePath(context);
+//        }
+//    }
     
     [self.xAxisFontColor set];
     CGContextSetLineWidth(context, self.axisLineWidth);

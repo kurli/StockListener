@@ -130,8 +130,6 @@
     [self updateButtons];
     [self.stockNameButton setTitle:self.stockInfo.name forState:UIControlStateNormal];
     [self.currentStockName setText:self.stockInfo.name];
-    
-    
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView1
@@ -153,6 +151,7 @@
         default:
             break;
     }
+    [self refreshFenShi];
 }
 
 //- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView1 willDecelerate:(BOOL)decelerate{
@@ -376,7 +375,7 @@
     [self.kdj_d removeAllObjects];
     [self.kdj_j removeAllObjects];
     [self.kdj_k removeAllObjects];
-    for(NSInteger i = index;i < data.count;i++){
+    for(NSInteger i = index;i < (data.count);i++){
         float h  = [[[data objectAtIndex:i] objectAtIndex:0] floatValue];
         float l = [[[data objectAtIndex:i] objectAtIndex:2] floatValue];
         float c = [[[data objectAtIndex:i] objectAtIndex:1] floatValue];
@@ -514,8 +513,30 @@
     float highest = -100;
     float lowest = 100;
     
+    StockInfo* shInfo = [[DatabaseHelper getInstance] getDapanInfoById:SH_STOCK];
+    StockInfo* szInfo = [[DatabaseHelper getInstance] getDapanInfoById:SZ_STOCK];
+    StockInfo* cyInfo = [[DatabaseHelper getInstance] getDapanInfoById:CY_STOCK];
+    
+    float pointerInterval = 320.0/(MAX_SHOW_HALF_MINUTE*30/6);
+    float xAsisInterval = 320.0/MAX_SHOW_HALF_MINUTE;
+    if (pageControl.currentPage == 1) {
+        pointerInterval = 320.0/(MAX_SHOW_ONE_MINUTE*60/6);
+        xAsisInterval = 320.0/MAX_SHOW_ONE_MINUTE;
+    } else if (pageControl.currentPage == 2) {
+        pointerInterval = 320.0/(MAX_SHOW_FIVE_MINUTE*60);
+        xAsisInterval = 320.0/MAX_SHOW_FIVE_MINUTE;
+    }
+    int count = 320/pointerInterval;
+    
+    NSInteger index = 0;
+    
     if (currentStockSelected) {
-        for (NSNumber* number in self.stockInfo.changeRateArray) {
+        index = 0;
+        if ([self.stockInfo.changeRateArray count] > count) {
+            index = [self.stockInfo.changeRateArray count] - count;
+        }
+        for (; index < [self.stockInfo.changeRateArray count]; index++) {
+            NSNumber* number = [self.stockInfo.changeRateArray objectAtIndex:index];
             if ([number floatValue] > highest) {
                 highest = [number floatValue];
             }
@@ -524,13 +545,14 @@
             }
         }
     }
-    
-    StockInfo* shInfo = [[DatabaseHelper getInstance] getDapanInfoById:SH_STOCK];
-    StockInfo* szInfo = [[DatabaseHelper getInstance] getDapanInfoById:SZ_STOCK];
-    StockInfo* cyInfo = [[DatabaseHelper getInstance] getDapanInfoById:CY_STOCK];
-    
+
     if (shSelected) {
-        for (NSNumber* number in shInfo.changeRateArray) {
+        index = 0;
+        if ([shInfo.changeRateArray count] > count) {
+            index = [shInfo.changeRateArray count] - count;
+        }
+        for (; index < [shInfo.changeRateArray count]; index++) {
+            NSNumber* number = [shInfo.changeRateArray objectAtIndex:index];
             if ([number floatValue] > highest) {
                 highest = [number floatValue];
             }
@@ -541,7 +563,12 @@
     }
 
     if (szSelected) {
-        for (NSNumber* number in szInfo.changeRateArray) {
+        index = 0;
+        if ([szInfo.changeRateArray count] > count) {
+            index = [szInfo.changeRateArray count] - count;
+        }
+        for (; index < [szInfo.changeRateArray count]; index++) {
+            NSNumber* number = [szInfo.changeRateArray objectAtIndex:index];
             if ([number floatValue] > highest) {
                 highest = [number floatValue];
             }
@@ -552,7 +579,12 @@
     }
 
     if (cySelected) {
-        for (NSNumber* number in cyInfo.changeRateArray) {
+        index = 0;
+        if ([cyInfo.changeRateArray count] > count) {
+            index = [cyInfo.changeRateArray count] - count;
+        }
+        for (; index < [cyInfo.changeRateArray count]; index++) {
+            NSNumber* number = [cyInfo.changeRateArray objectAtIndex:index];
             if ([number floatValue] > highest) {
                 highest = [number floatValue];
             }
@@ -572,11 +604,11 @@
     priceChartView.min = lowest - 1;
     priceChartView.interval = (highest-lowest + 2)/4;
     priceChartView.numberOfVerticalElements = 5;
-    priceChartView.pointerInterval = 320/(MAX_SHOW_HALF_MINUTE*30/6);
+    priceChartView.pointerInterval = pointerInterval;
     priceChartView.horizontalLineInterval = 150/4;
     priceChartView.floatNumberFormatterString = @"%.2f";
     priceChartView.axisLeftLineWidth = LEFT_PADDING;
-    priceChartView.xAxisInterval = 320/MAX_SHOW_HALF_MINUTE;
+    priceChartView.xAxisInterval = xAsisInterval;
     NSMutableArray* yAxisValues = [[NSMutableArray alloc] init];
     for (int i=0; i<5; i++) {
         float value = priceChartView.min + i*priceChartView.interval;
@@ -585,20 +617,37 @@
     priceChartView.yAxisValues = yAxisValues;
     
     [priceChartView clearPlot];
-    
+
     if (currentStockSelected) {
         PNPlot *plot = [[PNPlot alloc] init];
-        plot.plottingValues = [self.stockInfo.changeRateArray mutableCopy];
+        NSMutableArray* array = [[NSMutableArray alloc] init];
+        NSInteger index = 0;
+        if ([self.stockInfo.changeRateArray count] > count) {
+            index = [self.stockInfo.changeRateArray count] - count;
+        }
+        for (; index < [self.stockInfo.changeRateArray count]; index++) {
+            [array addObject:[self.stockInfo.changeRateArray objectAtIndex:index]];
+        }
+        plot.plottingValues = array;
 
         plot.lineColor = [UIColor redColor];
-        plot.lineWidth = 0.5;
+        plot.lineWidth = 1;
 
         [priceChartView addPlot:plot];
     }
     
     if (shSelected) {
         PNPlot *plot = [[PNPlot alloc] init];
-        plot.plottingValues = [shInfo.changeRateArray mutableCopy];
+        NSMutableArray* array = [[NSMutableArray alloc] init];
+        NSInteger index = 0;
+        if ([shInfo.changeRateArray count] > count) {
+            index = [shInfo.changeRateArray count] - count;
+        }
+        for (; index < [shInfo.changeRateArray count]; index++) {
+            [array addObject:[shInfo.changeRateArray objectAtIndex:index]];
+        }
+
+        plot.plottingValues = array;
         
         plot.lineColor = [UIColor blackColor];
         plot.lineWidth = 0.5;
@@ -608,7 +657,16 @@
 
     if (szSelected) {
         PNPlot *plot = [[PNPlot alloc] init];
-        plot.plottingValues = [szInfo.changeRateArray mutableCopy];
+        NSMutableArray* array = [[NSMutableArray alloc] init];
+        NSInteger index = 0;
+        if ([szInfo.changeRateArray count] > count) {
+            index = [szInfo.changeRateArray count] - count;
+        }
+        for (; index < [szInfo.changeRateArray count]; index++) {
+            [array addObject:[szInfo.changeRateArray objectAtIndex:index]];
+        }
+
+        plot.plottingValues = array;
 
         plot.lineColor = [UIColor colorWithRed:0 green:0.7 blue:0 alpha:1];
         plot.lineWidth = 0.5;
@@ -618,7 +676,16 @@
     
     if (cySelected) {
         PNPlot *plot = [[PNPlot alloc] init];
-        plot.plottingValues = [cyInfo.changeRateArray mutableCopy];
+        NSMutableArray* array = [[NSMutableArray alloc] init];
+        NSInteger index = 0;
+        if ([cyInfo.changeRateArray count] > count) {
+            index = [cyInfo.changeRateArray count] - count;
+        }
+        for (; index < [cyInfo.changeRateArray count]; index++) {
+            [array addObject:[cyInfo.changeRateArray objectAtIndex:index]];
+        }
+
+        plot.plottingValues = array;
         
         plot.lineColor = [UIColor blueColor];
         plot.lineWidth = 0.5;
