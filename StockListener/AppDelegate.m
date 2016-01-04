@@ -8,7 +8,10 @@
 
 #import "AppDelegate.h"
 #import "DatabaseHelper.h"
-#import "ViewController.h"
+#import "TabBarController.h"
+#import "StockKDJViewController.h"
+#import "StockListViewController.h"
+#import "StockPlayerManager.h"
 
 @interface AppDelegate ()
 
@@ -18,8 +21,98 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    
+    TabBarController *tb=[[TabBarController alloc]init];
+    self.window.rootViewController=tb;
+
+    //b.创建子控制器
+    StockListViewController *c1=[[StockListViewController alloc] init];
+    c1.tabBarItem.title=@"Stock";
+
+//    c1.tabBarItem.image=[UIImage imageNamed:@"Play"];
+
+    StockKDJViewController *c2=[[StockKDJViewController alloc] init];
+    c2.tabBarItem.title=@"KDJ";
+//    c2.tabBarItem.image=[UIImage imageNamed:@"Play"];
+    
+    UIViewController *c3=[[UIViewController alloc]init];
+    c3.view.backgroundColor=[UIColor yellowColor];
+    c3.view.tag = 444;
+//    c3.tabBarItem.title=@"Play";
+//    c3.tabBarItem.image=[UIImage imageNamed:@"Play"];
+    UIViewController *c4=[[UIViewController alloc]init];
+    c4.view.backgroundColor=[UIColor grayColor];
+    c4.tabBarItem.title=@"Caculator";
+//    c4.tabBarItem.image=[UIImage imageNamed:@"Play"];
+    UIViewController *c5=[[UIViewController alloc]init];
+    c5.view.backgroundColor=[UIColor whiteColor];
+    c5.tabBarItem.title=@"Setting";
+//    c5.tabBarItem.image=[UIImage imageNamed:@"Play"];
+    
+    tb.viewControllers =@[c1,c2,c3,c4,c5];
+    [self.window makeKeyAndVisible];
+    
+    [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(outputDeviceChanged:)name:AVAudioSessionRouteChangeNotification object:[AVAudioSession sharedInstance]];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationDidEnterBackgroundNotification:)
+                                                 name:UIApplicationDidEnterBackgroundNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationWillEnterForegroundNotification:)
+                                                 name:UIApplicationWillEnterForegroundNotification
+                                               object:nil];
+    
     return YES;
+}
+
+- (void)outputDeviceChanged:(NSNotification *)aNotification
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[StockPlayerManager getInstance] pause];
+    });
+}
+
+- (void)remoteControlReceivedWithEvent:(UIEvent *)receivedEvent
+{
+    if (receivedEvent.type == UIEventTypeRemoteControl) {
+        switch (receivedEvent.subtype) {
+            case UIEventSubtypeRemoteControlPause: /* FALLTHROUGH */
+            case UIEventSubtypeRemoteControlPlay:  /* FALLTHROUGH */
+            case UIEventSubtypeRemoteControlTogglePlayPause:
+                if ([[StockPlayerManager getInstance] isPlaying]) {
+                    [[StockPlayerManager getInstance] pause];
+                } else {
+                    [[StockPlayerManager getInstance] play];
+                }
+                break;
+            case UIEventSubtypeMotionShake:
+            case UIEventSubtypeRemoteControlNextTrack:
+                [[StockPlayerManager getInstance] next];
+                break;
+            case UIEventSubtypeRemoteControlPreviousTrack:
+                [[StockPlayerManager getInstance] pre];
+                break;
+            default:
+                break;
+        }
+    }
+}
+
+- (void)applicationDidEnterBackgroundNotification:(NSNotification *)notification
+{
+    if (![[StockPlayerManager getInstance] isPlaying]) {
+        [[DatabaseHelper getInstance] stopRefreshStock];
+        [[DatabaseHelper getInstance] clearStoredPriceData];
+    }
+    [[DatabaseHelper getInstance] saveToDB];
+}
+
+- (void)applicationWillEnterForegroundNotification:(NSNotification *)notification
+{
+    [[DatabaseHelper getInstance] startRefreshStock];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

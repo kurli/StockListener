@@ -10,20 +10,22 @@
 #import "FSAudioController.h"
 #import <AVFoundation/AVFoundation.h>
 
+#define STOCK_PLAYER_STETE_NOTIFICATION @"STOCK_PLAYER_STETE_NOTIFICATION"
+
 @class StockInfo;
 @class DatabaseHelper;
 
-@protocol StockPlayerDelegate <NSObject>
--(void) onPlaying:(StockInfo*)info;
--(void) onPLayPaused;
-@end
+//@protocol StockPlayerDelegate <NSObject>
+//-(void) onPlaying:(StockInfo*)info;
+//-(void) onPLayPaused;
+//@end
 
 @interface StockPlayerManager : NSObject <FSAudioControllerDelegate, AVSpeechSynthesizerDelegate> {
 
 //    FSStreamConfiguration *_configuration;
 }
 
-@property (nonatomic, assign) id <StockPlayerDelegate> delegate;
+//@property (nonatomic, assign) id <StockPlayerDelegate> delegate;
 
 @property (nonatomic, assign) BOOL isAudoChoose;
 
@@ -38,5 +40,9 @@
 -(void) pre;
 
 -(void) playByIndex:(int)index;
+
++(StockPlayerManager*) getInstance;
+
+-(StockInfo*) getCurrentPlayingInfo;
 
 @end

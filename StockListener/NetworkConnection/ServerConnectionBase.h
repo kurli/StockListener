@@ -10,9 +10,18 @@
 #import "KingdaTask.h"
 
 @class StockInfo;
+@protocol GetStockValueDoneDelegate <NSObject>
+-(void)onStockValuesRefreshed;
+@end
+
 @interface ServerConnectionBase : KingdaTask
 
--(void) post: (NSString*)ids;
+@property (nonatomic, strong) NSString* mURL;
+@property (nonatomic, assign) id <GetStockValueDoneDelegate> delegate;
+@property (copy) void (^onCompleteBlock)(StockInfo*);
+@property (nonatomic, strong) StockInfo* neededNewInfo;
+
+-(void) post;
 
 -(void) onComplete:(NSString*) data;
 

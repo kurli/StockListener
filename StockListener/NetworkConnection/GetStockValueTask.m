@@ -16,8 +16,7 @@
 
 @interface GetStockValueTask()
 
-@property (nonatomic, strong) NSMutableString* ids;
-@property (nonatomic, strong) StockInfo* neededNewInfo;
+//@property (nonatomic, strong) NSMutableString* ids;
 #ifdef ENABLE_TEST
 @property (nonatomic, strong) NSArray* testArray;
 #endif
@@ -27,9 +26,10 @@
 
 -(id) initWithStock:(StockInfo*) info {
     if ((self = [super init]) != nil) {
-        self.ids = [[NSMutableString alloc] init];
-        [self.ids appendString:info.sid];
+//        self.ids = [[NSMutableString alloc] init];
+//        [self.ids appendString:info.sid];
         self.neededNewInfo = info;
+        self.mURL =  [NSString stringWithFormat:@"http://hq.sinajs.cn/list=s_sh000001,s_sz399001,s_sz399006,%@", info.sid];
     }
     return self;
 }
@@ -41,13 +41,14 @@
         [self.ids appendString:@"sz000025"];
         return self;
 #else
-        self.ids = [[NSMutableString alloc] init];
+        NSMutableString* ids = [[NSMutableString alloc] init];
         if (infos == nil) {
             return self;
         }
         for (StockInfo* info in infos) {
-            [self.ids appendFormat:@"%@,", info.sid];
+            [ids appendFormat:@"%@,", info.sid];
         }
+        self.mURL =  [NSString stringWithFormat:@"http://hq.sinajs.cn/list=s_sh000001,s_sz399001,s_sz399006,%@", ids];
 #endif
     }
     return self;
@@ -60,7 +61,7 @@
      var hq_str_s_sz399006=\"创业板指,2783.942,-55.910,-1.97,16247176,4849739\";\n\
      var hq_str_sz000025=\"特  力Ａ,91.40,92.33,90.05,92.78,90.01,90.05,90.06,11814273,1069541834.39,159570,90.05,47800,90.04,12400,90.03,3879,90.02,19100,90.01,30980,90.06,2700,90.07,9700,90.08,6200,90.09,4100,90.10,2015-12-23,15:36:55,00\";"];
 #else
-    [self post:self.ids];
+    [self post];
 #endif
 }
 
@@ -147,8 +148,8 @@
 
     StockInfo* info = [[DatabaseHelper getInstance] getInfoById:sid];
     if (info == nil) {
-        if (_neededNewInfo!= nil && [sid isEqualToString:_neededNewInfo.sid]) {
-            info = _neededNewInfo;
+        if (self.neededNewInfo!= nil && [sid isEqualToString:self.neededNewInfo.sid]) {
+            info = self.neededNewInfo;
         } else {
             return;
         }
@@ -172,6 +173,7 @@
         [info.priceHistoryFiveMinutes removeAllObjects];
         [info.priceHistoryHalfMinute removeAllObjects];
         [info.priceHistoryOneMinutes removeAllObjects];
+        [info.changeRateArray removeAllObjects];
     }
     info.updateDay = updateDay;
 
@@ -250,11 +252,11 @@
     }
     if (self.onCompleteBlock) {
         dispatch_sync(dispatch_get_main_queue(), ^{
-            StockInfo* info = [[DatabaseHelper getInstance] getInfoById:self.ids];
-            if (info == nil) {
-                info = _neededNewInfo;
-            }
-            self.onCompleteBlock(info);
+//            StockInfo* info = [[DatabaseHelper getInstance] getInfoById:self.ids];
+//            if (info == nil) {
+//                info = _neededNewInfo;
+//            }
+            self.onCompleteBlock(self.neededNewInfo);
         });
     }
 }

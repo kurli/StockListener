@@ -156,6 +156,12 @@
 //    for (StockInfo* info in self.dapanList) {
 //        [info.changeRateArray removeAllObjects];
 //    }
+    for (StockInfo* info in self.stockList) {
+        [info.todayPriceByMinutes removeAllObjects];
+    }
+    for (StockInfo* info in self.dapanList) {
+        [info.todayPriceByMinutes removeAllObjects];
+    }
 }
 
 @end

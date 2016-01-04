@@ -46,6 +46,14 @@
 
 @implementation StockPlayerManager
 
++(StockPlayerManager*) getInstance {
+    static StockPlayerManager* shelper;
+    if (shelper == nil) {
+        shelper = [[StockPlayerManager alloc] init];
+    }
+    return shelper;
+}
+
 - (id) init {
     if (self = [super init]) {
         _currentPlayIndex = 0;
@@ -116,9 +124,11 @@
             switched = YES;
             _currentPlaySID = info.sid;
             _currentPlayIndex = i;
-            if (self.delegate) {
-                [self.delegate onPlaying:info];
-            }
+//            if (self.delegate) {
+//                [self.delegate onPlaying:info];
+//            }
+            NSNotification * notice = [NSNotification notificationWithName:STOCK_PLAYER_STETE_NOTIFICATION object:info userInfo:nil];
+            [[NSNotificationCenter defaultCenter]postNotification:notice];
             [self speak:info.name];
         }
     }
@@ -322,9 +332,11 @@
     
     [self playMusic];
     
-    if (self.delegate) {
-        [self.delegate onPlaying:info];
-    }
+//    if (self.delegate) {
+//        [self.delegate onPlaying:info];
+//    }
+    NSNotification * notice = [NSNotification notificationWithName:STOCK_PLAYER_STETE_NOTIFICATION object:info userInfo:nil];
+    [[NSNotificationCenter defaultCenter]postNotification:notice];
 }
 
 -(void) pause {
@@ -332,10 +344,13 @@
     _continueRefresh = false;
     [self.speechPlayer stopSpeakingAtBoundary:AVSpeechBoundaryWord];
     [self pauseMusic];
+//    
+//    if (self.delegate) {
+//        [self.delegate onPLayPaused];
+//    }
     
-    if (self.delegate) {
-        [self.delegate onPLayPaused];
-    }
+    NSNotification * notice = [NSNotification notificationWithName:STOCK_PLAYER_STETE_NOTIFICATION object:nil userInfo:nil];
+    [[NSNotificationCenter defaultCenter]postNotification:notice];
 }
 
 -(BOOL) isPlaying {
@@ -370,6 +385,14 @@
     _currentPlayIndex = index;
     [self pause];
     [self play];
+}
+
+-(StockInfo*) getCurrentPlayingInfo {
+    if ([_currentPlaySID length] == 0) {
+        return nil;
+    }
+    StockInfo* info = [[DatabaseHelper getInstance] getInfoById:_currentPlaySID];
+    return info;
 }
 
 @end

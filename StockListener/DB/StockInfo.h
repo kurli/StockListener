@@ -17,6 +17,10 @@
 @property (atomic, strong) NSMutableDictionary* priceHistoryHalfMinute;
 @property (atomic, strong) NSMutableDictionary* priceHistoryOneMinutes;
 @property (atomic, strong) NSMutableDictionary* priceHistoryFiveMinutes;
+@property (atomic, strong) NSMutableArray* todayPriceByMinutes;
+@property (atomic, strong) NSString* todayUpdateDay;
+@property (atomic, strong) NSMutableArray* fiveDayPriceByMinutes;
+@property (atomic, strong) NSString* fiveDayLastUpdateDay;
 
 // Used for play sound
 @property (atomic, unsafe_unretained) int step;                 // Used for play sound

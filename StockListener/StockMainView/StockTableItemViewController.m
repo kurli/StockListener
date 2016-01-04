@@ -93,7 +93,7 @@
         return;
     }
     NSIndexPath *indexPath = [_tableView indexPathForCell:cell];
-    [self.player playByIndex:(int)indexPath.row];
+    [[StockPlayerManager getInstance] playByIndex:(int)indexPath.row];
 }
 
 //-(void) infoButtonClicked:(id)b {
@@ -137,10 +137,10 @@
         return;
     }
     NSIndexPath *indexPath = [_tableView indexPathForCell:cell];
-    if (indexPath.row >= [self.dbHelper.stockList count]) {
+    if (indexPath.row >= [[DatabaseHelper getInstance].stockList count]) {
         return;
     }
-    StockInfo* info = [self.dbHelper.stockList objectAtIndex:indexPath.row];
+    StockInfo* info = [[DatabaseHelper getInstance].stockList objectAtIndex:indexPath.row];
     //    [self.dbHelper removeStockBySID:info.sid];
     //    [_buySellViewDictionary removeObjectForKey:info.sid];
     StockKDJViewController* controller = [[StockKDJViewController alloc] init];

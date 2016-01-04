@@ -10,15 +10,9 @@
 #import "ServerConnectionBase.h"
 
 @class StockInfo;
-@protocol GetStockValueDoneDelegate <NSObject>
--(void)onStockValuesRefreshed;
-@end
 
 @interface GetStockValueTask : ServerConnectionBase {
 }
-
-@property (copy) void (^onCompleteBlock)(StockInfo*);
-@property (nonatomic, assign) id <GetStockValueDoneDelegate> delegate;
 
 -(id) initWithStocks:(NSArray*) infos;
 -(id) initWithStock:(StockInfo*) info;

@@ -16,6 +16,11 @@
 #import "BuySellChartViewController.h"
 #import "ZSYPopoverListView.h"
 #import "DatabaseHelper.h"
+#import "StockPlayerManager.h"
+#import "GetTodayStockValue.h"
+#import "KingdaWorker.h"
+#import "SyncPoint.h"
+#import "GetFiveDayStockValue.h"
 
 #define MAX_SHOW_HALF_MINUTE 30
 #define MAX_SHOW_ONE_MINUTE 30
@@ -69,6 +74,10 @@
         shSelected = NO;
         szSelected = NO;
         cySelected = NO;
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(onPlayerStatusChanged:)
+                                                     name:STOCK_PLAYER_STETE_NOTIFICATION
+                                                   object:nil];
     }
     return self;
 }
@@ -130,6 +139,63 @@
     [self updateButtons];
     [self.stockNameButton setTitle:self.stockInfo.name forState:UIControlStateNormal];
     [self.currentStockName setText:self.stockInfo.name];
+    
+    if (self.stockInfo == nil) {
+        StockInfo* info = [[StockPlayerManager getInstance] getCurrentPlayingInfo];
+        if (info == nil) {
+            if ([[DatabaseHelper getInstance].stockList count] > 0) {
+                info = [[DatabaseHelper getInstance].stockList objectAtIndex:0];
+            }
+        }
+        self.stockInfo = info;
+        [self.stockNameButton setTitle:info.name forState:UIControlStateNormal];
+        [self.currentStockName setText:info.name];
+    }
+    [self onStockValueRefreshed];
+    
+    [self refreshData];
+}
+
+-(void) refreshData {
+    StockInfo* shInfo = [[DatabaseHelper getInstance] getDapanInfoById:SH_STOCK];
+    StockInfo* szInfo = [[DatabaseHelper getInstance] getDapanInfoById:SZ_STOCK];
+    StockInfo* cyInfo = [[DatabaseHelper getInstance] getDapanInfoById:CY_STOCK];
+    if ([self.stockInfo.todayPriceByMinutes count] == 0) {
+        GetTodayStockValue* task = [[GetTodayStockValue alloc] initWithStock:self.stockInfo];
+        [[KingdaWorker getInstance] queue:task];
+        GetTodayStockValue* task2 = [[GetTodayStockValue alloc] initWithStock:shInfo];
+        GetTodayStockValue* task3 = [[GetTodayStockValue alloc] initWithStock:szInfo];
+        GetTodayStockValue* task4 = [[GetTodayStockValue alloc] initWithStock:cyInfo];
+        [[KingdaWorker getInstance] queue:task2];
+        [[KingdaWorker getInstance] queue:task3];
+        [[KingdaWorker getInstance] queue:task4];
+        SyncPoint* sync = [[SyncPoint alloc] init];
+        sync.onCompleteBlock = ^(StockInfo* info) {
+            [self onStockValueRefreshed];
+        };
+        [[KingdaWorker getInstance] queue:sync];
+    }
+    NSDate* date = [NSDate date];
+    NSDateFormatter  *dateformatter=[[NSDateFormatter alloc] init];
+    [dateformatter setDateFormat:@"YYMMdd"];
+    NSString* dateStr =[dateformatter stringFromDate:date];
+    NSInteger intValue = [dateStr integerValue];
+    NSInteger historyDateValue = [self.stockInfo.fiveDayLastUpdateDay integerValue];
+    if (historyDateValue == 0 || intValue - historyDateValue >= 2) {
+        GetFiveDayStockValue* task = [[GetFiveDayStockValue alloc] initWithStock:shInfo];
+        [[KingdaWorker getInstance] queue:task];
+    }
+}
+
+-(void)onPlayerStatusChanged:(NSNotification*)notification {
+    StockInfo* info = [notification object];
+    if (info != nil) {
+        self.stockInfo = info;
+        [self.stockNameButton setTitle:info.name forState:UIControlStateNormal];
+        [self.currentStockName setText:info.name];
+        [self onStockValueRefreshed];
+        [self refreshData];
+    }
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView1
@@ -177,7 +243,7 @@
     self.priceLabel.text = price;
     CGRect rect = self.priceLabel.frame;
     rect.origin.x = self.view.frame.size.width/2 - (rect.size.width/2);
-    [self.priceLabel setFrame:rect];
+    [self.priceLabel setCenter:CGPointMake(self.view.frame.size.width/2, self.stockNameButton.frame.origin.y + self.stockNameButton.frame.size.height/2)];
     
     NSString* rate = [NSString stringWithFormat:@"%.2f%%", self.stockInfo.changeRate * 100];
     self.rateLabel.text = rate;
@@ -443,7 +509,8 @@
     {
         cell.imageView.image = [UIImage imageNamed:@"selection_normal.png"];
     }
-    cell.textLabel.text = info.name;
+    NSString* rateStr = [NSString stringWithFormat:@"%.2f%%", info.changeRate * 100];
+    cell.textLabel.text = [NSString stringWithFormat:@"%@  %@",info.name, rateStr];
     return cell;
 }
 
@@ -600,9 +667,16 @@
         return;
     }
     
-    priceChartView.max = highest + 1;
-    priceChartView.min = lowest - 1;
-    priceChartView.interval = (highest-lowest + 2)/4;
+    float tmph = highest >0 ? highest : -1*highest;
+    float tmpl = lowest >0 ? lowest : -1*lowest;
+    float tmp = tmph;
+    if (tmpl > tmph) {
+        tmp = tmpl;
+    }
+    
+    priceChartView.max = tmp + 0.5;
+    priceChartView.min = -1*tmp - 0.5;
+    priceChartView.interval = (priceChartView.max - priceChartView.min)/4;
     priceChartView.numberOfVerticalElements = 5;
     priceChartView.pointerInterval = pointerInterval;
     priceChartView.horizontalLineInterval = 150/4;
