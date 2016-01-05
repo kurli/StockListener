@@ -148,6 +148,28 @@
     [self.viewController presentViewController:controller animated:YES completion:nil];
 }
 
+-(void) deleteButtonClicked:(id)b {
+    UIButton *button = (UIButton *)b;
+    UIView *contentView;
+    if (IOS_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
+        contentView = [button superview];
+    } else if (IOS_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+        contentView = [[button superview] superview];
+    } else {
+        contentView = [button superview];
+    }
+    UITableViewCell *cell = (UITableViewCell*)[contentView superview];
+    if ([cell isKindOfClass:[UITableViewCell class]] == false) {
+        return;
+    }
+    NSIndexPath *indexPath = [_tableView indexPathForCell:cell];
+    if (indexPath.row >= [[DatabaseHelper getInstance].stockList count]) {
+        return;
+    }
+    StockInfo* info = [[DatabaseHelper getInstance].stockList objectAtIndex:indexPath.row];
+    [[DatabaseHelper getInstance] removeStockBySID:info.sid];
+}
+
 -(UITableViewCell*) getTableViewCell:(UITableView*)tableView andInfo:(StockInfo*)info andSelected:(BOOL)selected; {
     static NSString *flag=@"StockTableViewCellFlag";
     UITableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:flag];
@@ -159,6 +181,8 @@
         [headSetImg addTarget:self action:@selector(headsetClicked:) forControlEvents:UIControlEventTouchUpInside];
         UIButton* infoBUtton = [cell viewWithTag:INFO_BUTTON];
         [infoBUtton addTarget:self action:@selector(infoButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+        UIButton* deleteButton = [cell viewWithTag:DELETE];
+        [deleteButton addTarget:self action:@selector(deleteButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
 //        buySellController = [[BuySellChartViewController alloc] initWithParentView:cell];
 //        [buySellController loadView];
 //        [_buySellViewDictionary setValue:buySellController forKey:info.sid];

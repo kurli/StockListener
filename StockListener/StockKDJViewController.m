@@ -153,7 +153,7 @@
     }
     [self onStockValueRefreshed];
     
-    [self refreshData];
+//    [self refreshData];
 }
 
 -(void) refreshData {
@@ -194,7 +194,7 @@
         [self.stockNameButton setTitle:info.name forState:UIControlStateNormal];
         [self.currentStockName setText:info.name];
         [self onStockValueRefreshed];
-        [self refreshData];
+//        [self refreshData];
     }
 }
 
