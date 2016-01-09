@@ -82,6 +82,9 @@
     self.axisLineWidth = AXIX_LINE_WIDTH;
     
     self.floatNumberFormatterString = FLOAT_NUMBER_FORMATTER_STRING;
+    
+    self.layer.borderWidth = 0.5;
+    self.layer.borderColor = [[UIColor grayColor] CGColor];
 }
 
 - (instancetype)init {
@@ -211,26 +214,42 @@
         
         [plot.lineColor set];
         CGContextSetLineWidth(context, plot.lineWidth);
-        
-        
+
         NSArray* pointArray = plot.plottingValues;
         
         // draw lines
+        BOOL newLine = NO;
         for (int i=0; i<pointArray.count; i++) {
+            NSObject* obj = [pointArray objectAtIndex:i];
+            if ([obj isKindOfClass:[NSNumber class]] == NO) {
+                CGContextStrokePath(context);
+                newLine = YES;
+                continue;
+            }
             NSNumber* value = [pointArray objectAtIndex:i];
             float floatValue = value.floatValue;
             
             float height = (floatValue-self.min)/self.interval*self.horizontalLineInterval-self.contentScroll.y+startHeight;
             float width =startWidth + self.pointerInterval*(i)+self.contentScroll.x+ startHeight;
             
-            if (i==0) {
+            if (i==0 || newLine) {
                 CGContextMoveToPoint(context,  width, height);
+                newLine = NO;
             }
             else{
                 CGContextAddLineToPoint(context, width, height);
             }
         }
         
+        CGContextStrokePath(context);
+    }
+    
+    if (self.splitX > 0) {
+        int x = self.xAxisInterval * self.splitX;
+        CGContextSetLineWidth(context, 1);
+        [[UIColor blackColor] set];
+        CGContextMoveToPoint(context, startWidth + x, 0);
+        CGContextAddLineToPoint(context, startWidth + x, self.frame.size.height);
         CGContextStrokePath(context);
     }
     
@@ -246,16 +265,16 @@
 //        }
 //    }
     
-    [self.xAxisFontColor set];
-    CGContextSetLineWidth(context, self.axisLineWidth);
-    CGContextMoveToPoint(context, startWidth, startHeight);
-    
-    CGContextAddLineToPoint(context, startWidth, self.bounds.size.height);
-    CGContextStrokePath(context);
-    
-    CGContextMoveToPoint(context, startWidth, startHeight);
-    CGContextAddLineToPoint(context, self.bounds.size.width, startHeight);
-    CGContextStrokePath(context);
+//    [self.xAxisFontColor set];
+//    CGContextSetLineWidth(context, self.axisLineWidth);
+//    CGContextMoveToPoint(context, startWidth, startHeight);
+//    
+//    CGContextAddLineToPoint(context, startWidth, self.bounds.size.height);
+//    CGContextStrokePath(context);
+//    
+//    CGContextMoveToPoint(context, startWidth, startHeight);
+//    CGContextAddLineToPoint(context, self.bounds.size.width, startHeight);
+//    CGContextStrokePath(context);
     
     // x axis text
 //    for (int i=0; i<self.xAxisValues.count; i++) {

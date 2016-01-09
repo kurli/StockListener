@@ -8,9 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-#define SH_STOCK @"s_sh000001"
-#define SZ_STOCK @"s_sz399001"
-#define CY_STOCK @"s_sz399006"
+#define SH_STOCK @"sh000001"
+#define SZ_STOCK @"sz399001"
+#define CY_STOCK @"sz399006"
 
 @protocol OnStockListChangedDelegate <NSObject>
 -(void)onStockListChanged;

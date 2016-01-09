@@ -29,7 +29,7 @@
 //        self.ids = [[NSMutableString alloc] init];
 //        [self.ids appendString:info.sid];
         self.neededNewInfo = info;
-        self.mURL =  [NSString stringWithFormat:@"http://hq.sinajs.cn/list=s_sh000001,s_sz399001,s_sz399006,%@", info.sid];
+        self.mURL =  [NSString stringWithFormat:@"http://hq.sinajs.cn/list=sh000001,sz399001,sz399006,%@", info.sid];
     }
     return self;
 }
@@ -48,7 +48,7 @@
         for (StockInfo* info in infos) {
             [ids appendFormat:@"%@,", info.sid];
         }
-        self.mURL =  [NSString stringWithFormat:@"http://hq.sinajs.cn/list=s_sh000001,s_sz399001,s_sz399006,%@", ids];
+        self.mURL =  [NSString stringWithFormat:@"http://hq.sinajs.cn/list=sh000001,sz399001,sz399006,%@", ids];
 #endif
     }
     return self;
@@ -100,23 +100,30 @@
     info.speed = speed;
 }
 
--(void) parseDapan:(NSArray*)array andSID:(NSString*)sid {
-    StockInfo* info = [[DatabaseHelper getInstance] getDapanInfoById:sid];
-    info.name = [array objectAtIndex:0];
-    float newPrice = [[array objectAtIndex:1] floatValue];
-    info.changeRate = [[array objectAtIndex:3] floatValue]/100;
-    [self calculateStep:info andNewPrice:newPrice];
-    info.price = newPrice;
-    //Hack
-#ifndef ENABLE_TEST
-    if (info.dealCount != [[array objectAtIndex:4] longLongValue]) {
-#endif
-        info.dealCount = [[array objectAtIndex:4] longLongValue];
-        [info newPriceGot];
-#ifndef ENABLE_TEST
-    }
-#endif
-}
+//-(void) parseDapan:(NSArray*)array andSID:(NSString*)sid {
+//    StockInfo* info = [[DatabaseHelper getInstance] getDapanInfoById:sid];
+//    info.name = [array objectAtIndex:0];
+//    float newPrice = [[array objectAtIndex:1] floatValue];
+//    info.changeRate = [[array objectAtIndex:3] floatValue]/100;
+//    [self calculateStep:info andNewPrice:newPrice];
+//    info.price = newPrice;
+//    
+//    NSDate* date = [NSDate date];
+//    NSDateFormatter  *dateformatter=[[NSDateFormatter alloc] init];
+//    [dateformatter setDateFormat:@"hh:mm:ss"];
+//    NSString* dateStr =[dateformatter stringFromDate:date];
+//    info.updateTime = dateStr;
+//    
+//    //Hack
+//#ifndef ENABLE_TEST
+//    if (info.dealCount != [[array objectAtIndex:4] longLongValue]) {
+//#endif
+//        info.dealCount = [[array objectAtIndex:4] longLongValue];
+//        [info newPriceGot];
+//#ifndef ENABLE_TEST
+//    }
+//#endif
+//}
 
 -(void) parseValueForSina:(NSString*)str {
     if (str == nil) {
@@ -138,15 +145,19 @@
     range.location = sIDRange.location + sIDRange.length + 2;
     NSString* subStr = [str substringFromIndex:range.location];
     NSArray* array = [subStr componentsSeparatedByString:@","];
-    if ([array count] == 6) {
-        [self parseDapan:array andSID:sid];
-        return;
-    }
+//    if ([array count] == 6) {
+//        sid = [sid stringByReplacingOccurrencesOfString:@"s_" withString:@""];
+//        [self parseDapan:array andSID:sid];
+//        return;
+//    }
     if ([array count] < 32) {
         return;
     }
 
     StockInfo* info = [[DatabaseHelper getInstance] getInfoById:sid];
+    if (info == nil) {
+        info = [[DatabaseHelper getInstance] getDapanInfoById:sid];
+    }
     if (info == nil) {
         if (self.neededNewInfo!= nil && [sid isEqualToString:self.neededNewInfo.sid]) {
             info = self.neededNewInfo;
@@ -173,7 +184,7 @@
         [info.priceHistoryFiveMinutes removeAllObjects];
         [info.priceHistoryHalfMinute removeAllObjects];
         [info.priceHistoryOneMinutes removeAllObjects];
-        [info.changeRateArray removeAllObjects];
+//        [info.changeRateArray removeAllObjects];
     }
     info.updateDay = updateDay;
 

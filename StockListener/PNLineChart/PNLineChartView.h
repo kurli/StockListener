@@ -31,6 +31,7 @@
 @property (nonatomic, assign) NSInteger xAxisFontSize;
 @property (nonatomic, strong) UIColor*  xAxisFontColor;
 @property (nonatomic, assign) NSInteger numberOfVerticalElements;
+@property (nonatomic, assign) NSInteger splitX;
 
 @property (nonatomic, strong) UIColor * horizontalLinesColor;
 

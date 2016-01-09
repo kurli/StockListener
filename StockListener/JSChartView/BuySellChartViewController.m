@@ -75,7 +75,7 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
 }
 
 - (void)loadView:(int)yOffset
-{    
+{
     self.barChartView = [[JBBarChartView alloc] init];
     int width = view.bounds.size.width - (kJBBarChartViewControllerChartPadding *2);
     self.barChartView.frame = CGRectMake(kJBBarChartViewControllerChartPadding, yOffset, width, kJBBarChartViewControllerChartHeight);
@@ -95,6 +95,26 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
     rect.origin.x = view.bounds.size.width/2 - rect.size.width/2;
     rect.origin.y = self.barChartView.frame.size.height + self.barChartView.frame.origin.y;
     [label setFrame:rect];
+}
+
+#define degreeTOradians(x) (M_PI * (x)/180)
+-(void) loadViewVertical:(CGRect) rect {
+    self.barChartView = [[JBBarChartView alloc] init];
+    self.barChartView.frame = CGRectMake(rect.origin.x-rect.size.height/2+rect.size.width/2,
+                                         rect.origin.y + rect.size.height/2 - rect.size.width/2,
+                                         rect.size.height, rect.size.width);
+    self.barChartView.delegate = self;
+    self.barChartView.dataSource = self;
+//    self.barChartView.headerPadding = kJBBarChartViewControllerChartHeaderPadding;
+    self.barChartView.minimumValue = 0.0f;
+    self.barChartView.inverted = NO;
+    self.barChartView.backgroundColor = kJBColorBarChartBackground;
+    
+    [view addSubview:self.barChartView];
+
+    self.barChartView.transform =  CGAffineTransformMakeRotation(degreeTOradians(270));
+    self.barChartView.layer.borderWidth = 0.5;
+    self.barChartView.layer.borderColor = [[UIColor grayColor] CGColor];
 }
 
 - (void) reload {
@@ -171,6 +191,20 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
         price = _stockInfo.buyFivePrice + tmpIndex * 0.001;
     } else {
         price = _stockInfo.buyFivePrice + tmpIndex * 0.01;
+    }
+    if (_stockInfo.price < 2) {
+        price *= 1000;
+    } else {
+        price *= 100;
+    }
+    if (((int)(price*10) % 10) >= 5) {
+        price += 1;
+    }
+    price = (int)price;
+    if (_stockInfo.price < 2) {
+        price /= 1000;
+    } else {
+        price /= 100;
     }
     NSNumber* number = [_stockInfo.buySellDic objectForKey:[NSNumber numberWithFloat:price]];
 

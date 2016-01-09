@@ -60,6 +60,7 @@
                 NSDictionary* dic = (NSDictionary*)[jsonArray objectAtIndex:i];
                 NSString* str1 = [dic objectForKey:@"date"];
                 NSLog(@"%@ %@", str1, self.neededNewInfo.todayUpdateDay);
+                //TODO
                 if ([str1 isEqualToString:self.neededNewInfo.todayUpdateDay]) {
                     continue;
                 }

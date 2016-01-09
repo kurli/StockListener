@@ -13,7 +13,10 @@
 #import "StockListViewController.h"
 #import "StockPlayerManager.h"
 
-@interface AppDelegate ()
+@interface AppDelegate () {
+}
+
+@property (nonatomic, strong) TabBarController* tb;
 
 @end
 
@@ -23,8 +26,8 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
-    TabBarController *tb=[[TabBarController alloc]init];
-    self.window.rootViewController=tb;
+    self.tb=[[TabBarController alloc]init];
+    self.window.rootViewController=self.tb;
 
     //b.创建子控制器
     StockListViewController *c1=[[StockListViewController alloc] init];
@@ -50,7 +53,8 @@
     c5.tabBarItem.title=@"Setting";
 //    c5.tabBarItem.image=[UIImage imageNamed:@"Play"];
     
-    tb.viewControllers =@[c1,c2,c3,c4,c5];
+    self.tb.viewControllers =@[c1,c2,c3,c4,c5];
+    self.tb.selectedViewController = c1;
     [self.window makeKeyAndVisible];
     
     [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
@@ -113,6 +117,7 @@
 - (void)applicationWillEnterForegroundNotification:(NSNotification *)notification
 {
     [[DatabaseHelper getInstance] startRefreshStock];
+    [self.tb.selectedViewController viewWillAppear:NO];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

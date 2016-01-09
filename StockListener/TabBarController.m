@@ -99,6 +99,11 @@
     }
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+//    [self.selectedViewController viewWillAppear:animated];
+}
+
 #pragma mark- TabBar Delegate
 
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
@@ -107,4 +112,8 @@
     }
     return YES;
 }
+- (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {
+    [viewController viewWillAppear:NO];
+}
+
 @end

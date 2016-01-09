@@ -19,4 +19,5 @@
 -(id) initWithParentView:(UIView*)view;
 - (void) reload;
 - (void)loadView:(int)yOffset;
+-(void) loadViewVertical:(CGRect) rect;
 @end

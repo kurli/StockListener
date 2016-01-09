@@ -69,7 +69,7 @@
         self.priceHistoryHalfMinute = [[NSMutableDictionary alloc] init];
         self.priceHistoryOneMinutes = [[NSMutableDictionary alloc] init];
         self.priceHistoryFiveMinutes = [[NSMutableDictionary alloc] init];
-        self.changeRateArray = [[NSMutableArray alloc] init];
+//        self.changeRateArray = [[NSMutableArray alloc] init];
         self.fiveDayPriceByMinutes = [[NSMutableArray alloc] init];
         self.fiveDayLastUpdateDay = @"";
     }
@@ -91,7 +91,7 @@
     info.priceHistoryFiveMinutes = [self.priceHistoryFiveMinutes copy];
     info.priceHistoryHalfMinute = [self.priceHistoryHalfMinute copy];
     info.priceHistoryOneMinutes = [self.priceHistoryOneMinutes copy];
-    info.changeRateArray = [self.changeRateArray copy];
+//    info.changeRateArray = [self.changeRateArray copy];
     info.todayPriceByMinutes = [self.todayPriceByMinutes copy];
     info.fiveDayPriceByMinutes = [self.fiveDayPriceByMinutes copy];
     info.fiveDayLastUpdateDay = @"";
@@ -160,9 +160,9 @@
         if (self.priceHistoryOneMinutes == nil) {
             self.priceHistoryOneMinutes = [[NSMutableDictionary alloc] init];
         }
-        if (self.changeRateArray == nil) {
-            self.changeRateArray = [[NSMutableArray alloc] init];
-        }
+//        if (self.changeRateArray == nil) {
+//            self.changeRateArray = [[NSMutableArray alloc] init];
+//        }
         if (self.fiveDayLastUpdateDay == nil) {
             self.fiveDayLastUpdateDay = @"";
         }
@@ -175,8 +175,8 @@
 
 -(void) newPriceGot {
     //Store changeRate
-    [self.changeRateArray addObject:[NSNumber numberWithFloat:self.changeRate*100]];
-
+//    [self.changeRateArray addObject:[NSNumber numberWithFloat:self.changeRate*100]];
+    
     //Store price
     NSArray* timeArray = [self.updateTime componentsSeparatedByString:@":"];
     if ([timeArray count] != 3) {
@@ -184,6 +184,27 @@
     }
     long hour = [[timeArray objectAtIndex:0] longLongValue] ;
     long minute = [[timeArray objectAtIndex:1] longLongValue];
+
+    NSInteger index = 0;
+    index = (hour - 9) * 60 + minute - 30;
+    if (hour >= 13) {
+        index -= 90;
+    }
+    index++;
+    if ([self.todayPriceByMinutes count] == 0) {
+        [self.todayPriceByMinutes addObject:[NSNumber numberWithFloat:self.price]];
+        return;
+    }
+    if (index >=242) {
+        return;
+    }
+    if (index >= [self.todayPriceByMinutes count]) {
+        [self.todayPriceByMinutes addObject:[NSNumber numberWithFloat:self.price]];
+        return;
+    }
+    [self.todayPriceByMinutes removeLastObject];
+    [self.todayPriceByMinutes addObject:[NSNumber numberWithFloat:self.price]];
+    /*
     long second = [[timeArray objectAtIndex:2] longLongValue];
     long totalSecond = hour * 60 * 60;
     totalSecond += (minute * 60);
@@ -277,6 +298,7 @@
         [self.priceHistoryFiveMinutes setObject:data forKey:fiveMinuteKey];
 //        NSLog(@"%@", data);
     }
+     */
 }
 
 @end
