@@ -76,6 +76,33 @@
     }
 }
 
+-(void) calculateForDay {
+    if ([stockInfo.hundredDaysPrice count] == 0) {
+        return;
+    }
+    NSInteger startIndex = 20;
+    NSInteger needMinuteCount = (20 + 35);
+    NSMutableArray* needTreatArray = [[NSMutableArray alloc] init];
+    NSInteger start = [stockInfo.hundredDaysPrice count]-needMinuteCount;
+    if (start < 0) {
+        start = 0;
+    }
+    for (NSInteger i=start; i<[stockInfo.hundredDaysPrice count]; i++) {
+        NSMutableArray* array = [stockInfo.hundredDaysPrice objectAtIndex:i];
+        [needTreatArray addObject:array];
+    }
+    startIndex = [needTreatArray count] - 35;
+    if (startIndex < 0) {
+        startIndex = 0;
+    }
+    [self calculateKDJ:needTreatArray andStartIndex:startIndex];
+    self.priceKValues = needTreatArray;
+    self.todayStartIndex = [self.kdj_k count]-2;
+    if (self.todayStartIndex < 0) {
+        self.todayStartIndex = 0;
+    }
+}
+
 -(void) calculate {
     if ([stockInfo.fiveDayPriceByMinutes count] == 0) {
         return;
@@ -140,7 +167,11 @@
 }
 
 -(void) run {
-    [self calculate];
+    if (delta == 240) {
+        [self calculateForDay];
+    } else {
+        [self calculate];
+    }
     if (self.onCompleteBlock) {
         dispatch_sync(dispatch_get_main_queue(), ^{
             self.onCompleteBlock(self);

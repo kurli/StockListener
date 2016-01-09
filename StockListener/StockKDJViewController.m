@@ -23,6 +23,7 @@
 #import "GetFiveDayStockValue.h"
 #import "CalculateKDJ.h"
 #import "KingdaWorker.h"
+#import "GetDaysStockValue.h"
 
 #define MAX_SHOW_HALF_MINUTE 30
 #define MAX_SHOW_ONE_MINUTE 30
@@ -179,21 +180,35 @@
         needSync = YES;
     }
     
-    NSDate* date = [NSDate date];
-    NSDateFormatter  *dateformatter=[[NSDateFormatter alloc] init];
-    [dateformatter setDateFormat:@"YYMMdd"];
-    NSString* dateStr =[dateformatter stringFromDate:date];
-    NSInteger intValue = [dateStr integerValue];
+//    NSDate* date = [NSDate date];
+//    NSDateFormatter  *dateformatter=[[NSDateFormatter alloc] init];
+//    [dateformatter setDateFormat:@"YYMMdd"];
+//    NSString* dateStr =[dateformatter stringFromDate:date];
+//    NSInteger intValue = [dateStr integerValue];
+    NSString* str = [self.stockInfo.updateDay stringByReplacingOccurrencesOfString:@"-" withString:@""];
+    str = [str substringFromIndex:2];
+    NSInteger latest = [str integerValue];
+    
     NSInteger historyDateValue = [self.stockInfo.fiveDayLastUpdateDay integerValue];
-    if (historyDateValue == 0 || intValue - historyDateValue >= 2) {
+    if (historyDateValue == 0 || latest - historyDateValue >= 2) {
         GetFiveDayStockValue* task = [[GetFiveDayStockValue alloc] initWithStock:self.stockInfo];
         [[KingdaWorker getInstance] queue:task];
         needSync = YES;
-    } else if (intValue-historyDateValue == 1 && [self.stockInfo.fiveDayPriceByMinutes count] < 1200) {
+    } else if (latest-historyDateValue == 1 && [self.stockInfo.fiveDayPriceByMinutes count] < 1200) {
         GetFiveDayStockValue* task = [[GetFiveDayStockValue alloc] initWithStock:self.stockInfo];
         [[KingdaWorker getInstance] queue:task];
         needSync = YES;
     }
+
+    historyDateValue = [self.stockInfo.hundredDayLastUpdateDay integerValue];
+    if (historyDateValue == 0 || latest - historyDateValue >= 2) {
+        GetDaysStockValue* task5 = [[GetDaysStockValue alloc] initWithStock:self.stockInfo];
+        [[KingdaWorker getInstance] queue:task5];
+    } else if (latest-historyDateValue == 1 && [self.stockInfo.hundredDaysPrice count] < 100) {
+        GetDaysStockValue* task5 = [[GetDaysStockValue alloc] initWithStock:self.stockInfo];
+        [[KingdaWorker getInstance] queue:task5];
+    }
+    
     if (needSync) {
         SyncPoint* sync = [[SyncPoint alloc] init];
         sync.onCompleteBlock = ^(StockInfo* info) {

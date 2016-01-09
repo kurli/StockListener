@@ -22,12 +22,10 @@
 #define CHANGE_RATE @"change_rate"
 #define BUY_SELL_DIC @"buy_sell_dic"
 #define UPDATE_DAY @"upreate_day"
-#define PRICE_HISTORY_MINUTE @"price_history_minute"
-#define PRICE_HISTORY_FIVE_MINUTE @"price_history_five_minute"
-#define PRICE_HISTORY_HALF_MINUTE @"price_history_half_minute"
-#define PRICE_HISTORY_CHANGE_RATE @"price_history_change_rate"
 #define FIVE_DAY_PRICE_HISTORY @"five_day_price_history"
 #define FIVE_DAY_LAST_UPDAT_DAY @"five_day_update_day"
+#define HUNDRED_DAY_PRICE_HISTORY @"hundred_day_price_history"
+#define HUNDRED_DAY_UPDATE_DAY @"hundred_day_update_day"
 
 - (id) init {
     if (self = [super init]) {
@@ -66,12 +64,10 @@
         self.updateDay = @"";
         self.updateTime = @"";
         self.buySellDic = [[NSMutableDictionary alloc] init];
-        self.priceHistoryHalfMinute = [[NSMutableDictionary alloc] init];
-        self.priceHistoryOneMinutes = [[NSMutableDictionary alloc] init];
-        self.priceHistoryFiveMinutes = [[NSMutableDictionary alloc] init];
-//        self.changeRateArray = [[NSMutableArray alloc] init];
         self.fiveDayPriceByMinutes = [[NSMutableArray alloc] init];
         self.fiveDayLastUpdateDay = @"";
+        self.hundredDaysPrice = [[NSMutableArray alloc] init];
+        self.hundredDayLastUpdateDay = @"";
     }
     return self;
 }
@@ -88,24 +84,13 @@
     info.lastDayPrice = self.lastDayPrice;
     
     info.buySellDic = [self.buySellDic copy];
-    info.priceHistoryFiveMinutes = [self.priceHistoryFiveMinutes copy];
-    info.priceHistoryHalfMinute = [self.priceHistoryHalfMinute copy];
-    info.priceHistoryOneMinutes = [self.priceHistoryOneMinutes copy];
-//    info.changeRateArray = [self.changeRateArray copy];
     info.todayPriceByMinutes = [self.todayPriceByMinutes copy];
     info.fiveDayPriceByMinutes = [self.fiveDayPriceByMinutes copy];
-    info.fiveDayLastUpdateDay = @"";
+    info.fiveDayLastUpdateDay = [self.fiveDayLastUpdateDay copy];
+    info.hundredDayLastUpdateDay = [self.hundredDayLastUpdateDay copy];
+    info.hundredDaysPrice = [self.hundredDaysPrice copy];
     return info;
 }
-
-//-(void) assign:(StockInfo*) info {
-//    self.name = info.name;
-//    self.currentPrice = info.currentPrice;
-//    self.lastChangeRate = info.lastChangeRate;
-//    self.changeRate = info.changeRate;
-//    self.lastStep = info.lastStep;
-//    self.lastPrice = info.lastPrice;
-//}
 
 -(void)encodeWithCoder:(NSCoder *)aCoder {
     [aCoder encodeObject:self.sid forKey:SID];
@@ -114,23 +99,17 @@
     if (self.buySellDic != nil) {
         [aCoder encodeObject:self.buySellDic forKey:BUY_SELL_DIC];
     }
-//    if (self.priceHistoryFiveMinutes != nil) {
-//        [aCoder encodeObject:self.priceHistoryFiveMinutes forKey:PRICE_HISTORY_FIVE_MINUTE];
-//    }
-//    if (self.priceHistoryHalfMinute != nil) {
-//        [aCoder encodeObject:self.priceHistoryHalfMinute forKey:PRICE_HISTORY_HALF_MINUTE];
-//    }
-//    if (self.priceHistoryOneMinutes != nil) {
-//        [aCoder encodeObject:self.priceHistoryOneMinutes forKey:PRICE_HISTORY_MINUTE];
-//    }
-//    if (self.changeRateArray) {
-//        [aCoder encodeObject:self.changeRateArray forKey:PRICE_HISTORY_CHANGE_RATE];
-//    }
     if (self.fiveDayLastUpdateDay != nil) {
         [aCoder encodeObject:self.fiveDayLastUpdateDay forKey:FIVE_DAY_LAST_UPDAT_DAY];
     }
     if (self.fiveDayPriceByMinutes != nil) {
         [aCoder encodeObject:self.fiveDayPriceByMinutes forKey:FIVE_DAY_PRICE_HISTORY];
+    }
+    if (self.hundredDaysPrice != nil) {
+        [aCoder encodeObject:self.hundredDaysPrice forKey:HUNDRED_DAY_PRICE_HISTORY];
+    }
+    if (self.hundredDayLastUpdateDay != nil) {
+        [aCoder encodeObject:self.hundredDayLastUpdateDay forKey:HUNDRED_DAY_UPDATE_DAY];
     }
 }
 
@@ -141,49 +120,62 @@
         self.name = [aDecoder decodeObjectForKey:NAME];
         self.buySellDic = [aDecoder decodeObjectForKey:BUY_SELL_DIC];
         self.updateDay = [aDecoder decodeObjectForKey:UPDATE_DAY];
-//        self.priceHistoryFiveMinutes = [aDecoder decodeObjectForKey:PRICE_HISTORY_FIVE_MINUTE];
-//        self.priceHistoryHalfMinute = [aDecoder decodeObjectForKey:PRICE_HISTORY_HALF_MINUTE];
-//        self.priceHistoryOneMinutes = [aDecoder decodeObjectForKey:PRICE_HISTORY_MINUTE];
-//        self.changeRateArray = [aDecoder decodeObjectForKey:PRICE_HISTORY_CHANGE_RATE];
         self.fiveDayLastUpdateDay = [aDecoder decodeObjectForKey:FIVE_DAY_LAST_UPDAT_DAY];
         self.fiveDayPriceByMinutes = [aDecoder decodeObjectForKey:FIVE_DAY_PRICE_HISTORY];
+        self.hundredDayLastUpdateDay = [aDecoder decodeObjectForKey:HUNDRED_DAY_UPDATE_DAY];
+        self.hundredDaysPrice = [aDecoder decodeObjectForKey:HUNDRED_DAY_PRICE_HISTORY];
 
         if (self.buySellDic == nil) {
             self.buySellDic = [[NSMutableDictionary alloc] init];
         }
-        if (self.priceHistoryFiveMinutes == nil) {
-            self.priceHistoryFiveMinutes = [[NSMutableDictionary alloc] init];
-        }
-        if (self.priceHistoryHalfMinute == nil) {
-            self.priceHistoryHalfMinute = [[NSMutableDictionary alloc] init];
-        }
-        if (self.priceHistoryOneMinutes == nil) {
-            self.priceHistoryOneMinutes = [[NSMutableDictionary alloc] init];
-        }
-//        if (self.changeRateArray == nil) {
-//            self.changeRateArray = [[NSMutableArray alloc] init];
-//        }
         if (self.fiveDayLastUpdateDay == nil) {
             self.fiveDayLastUpdateDay = @"";
         }
         if (self.fiveDayPriceByMinutes == nil) {
             self.fiveDayPriceByMinutes = [[NSMutableArray alloc] init];
         }
+        if (self.hundredDayLastUpdateDay == nil) {
+            self.hundredDayLastUpdateDay = @"";
+        }
+        if (self.hundredDaysPrice == nil) {
+            self.hundredDaysPrice = [[NSMutableArray alloc] init];
+        }
     }
     return self;
 }
 
 -(void) newPriceGot {
-    //Store changeRate
-//    [self.changeRateArray addObject:[NSNumber numberWithFloat:self.changeRate*100]];
+    if ([self.updateDay length] > 6 && [self.hundredDaysPrice count] > 0) {
+        NSString* str = [self.updateDay stringByReplacingOccurrencesOfString:@"-" withString:@""];
+        str = [str substringFromIndex:2];
+        NSInteger latest = [str integerValue];
+        NSInteger history = [self.hundredDayLastUpdateDay integerValue];
+        if (latest - history == 0) {
+            ////
+            NSMutableArray* array = [self.hundredDaysPrice lastObject];
+            ////
+            [self.hundredDaysPrice removeLastObject];
+            array = [[NSMutableArray alloc] init];
+            [array addObject:[NSNumber numberWithFloat:self.todayHighestPrice]];
+            [array addObject:[NSNumber numberWithFloat:self.price]];
+            [array addObject:[NSNumber numberWithFloat:self.todayLoestPrice]];
+            [self.hundredDaysPrice addObject:array];
+        } else if (latest - history > 0) {
+            NSMutableArray* array = [[NSMutableArray alloc] init];
+            [array addObject:[NSNumber numberWithFloat:self.todayHighestPrice]];
+            [array addObject:[NSNumber numberWithFloat:self.price]];
+            [array addObject:[NSNumber numberWithFloat:self.todayLoestPrice]];
+            [self.hundredDaysPrice addObject:array];
+        }
+    }
     
-    //Store price
+    // Store price
     NSArray* timeArray = [self.updateTime componentsSeparatedByString:@":"];
     if ([timeArray count] != 3) {
         return;
     }
-    long hour = [[timeArray objectAtIndex:0] longLongValue] ;
-    long minute = [[timeArray objectAtIndex:1] longLongValue];
+    long hour = [[timeArray objectAtIndex:0] integerValue] ;
+    long minute = [[timeArray objectAtIndex:1] integerValue];
 
     NSInteger index = 0;
     index = (hour - 9) * 60 + minute - 30;
