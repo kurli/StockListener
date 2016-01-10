@@ -24,11 +24,13 @@
 #import "CalculateKDJ.h"
 #import "KingdaWorker.h"
 #import "GetDaysStockValue.h"
+#import "VOLChartViewController.h"
 
 #define MAX_SHOW_HALF_MINUTE 30
 #define MAX_SHOW_ONE_MINUTE 30
 #define MAX_SHOW_FIVE_MINUTE 24
 #define LEFT_PADDING 20
+#define MAX_DISPLAY_COUNT 35
 
 #define MAX_
 
@@ -37,6 +39,7 @@
     PNLineChartView *kLineChartView;
     PNLineChartView *priceChartView;
     BuySellChartViewController* buySellController;
+    VOLChartViewController* volController;
     ZSYPopoverListView* stockListView;
     NSInteger preSegment;
     NSInteger todayStartIndex;
@@ -135,17 +138,19 @@
         return;
     }
     
+    float leftWidth = ((int)(self.view.frame.size.width/7*6)/(MAX_DISPLAY_COUNT-1))*(MAX_DISPLAY_COUNT-1);
+    
     int offsetY = self.rateLabel.frame.size.height + self.rateLabel.frame.origin.y + 20;
-    [priceChartView setFrame:CGRectMake(0, offsetY, self.view.frame.size.width/7*6, 150)];
+    [priceChartView setFrame:CGRectMake(0, offsetY, leftWidth, 150)];
     
     if (buySellController == nil) {
         buySellController = [[BuySellChartViewController alloc] initWithParentView:self.view];
-        CGRect rect = CGRectMake(self.view.frame.size.width/7*6, offsetY, self.view.frame.size.width/7, 150);
+        CGRect rect = CGRectMake(leftWidth, offsetY, self.view.frame.size.width/7, 150);
         [buySellController loadViewVertical:rect];
     }
 
     CGRect aRect = self.averagePriceView.frame;
-    
+
     CGRect rect = self.kdjTypeSegment.frame;
     rect.origin.y = priceChartView.frame.origin.y + priceChartView.frame.size.height+1;
     rect.origin.x = 1;
@@ -156,16 +161,21 @@
     aRect.origin.y = priceChartView.frame.origin.y + priceChartView.frame.size.height+1;
     [self.averagePriceView setFrame:aRect];
 
-    [kLineChartView setFrame:CGRectMake(0, rect.origin.y + rect.size.height+1, self.view.frame.size.width/7*6, 130)];
-    ///
-    // VOL height 30 border 1
-    ///
-    [kdjChartView setFrame:CGRectMake(0, rect.origin.y + rect.size.height + 162, self.view.frame.size.width/7*6, 80)];
+    [kLineChartView setFrame:CGRectMake(0, rect.origin.y + rect.size.height+1, leftWidth, 130)];
+    if (volController == nil) {
+        volController = [[VOLChartViewController alloc] initWithParentView:self.view];
+        CGRect rect2 = CGRectMake(LEFT_PADDING, rect.origin.y + rect.size.height+1+130, leftWidth-LEFT_PADDING, 45);
+        [volController loadView:rect2];
+    }
+    [kdjChartView setFrame:CGRectMake(0, rect.origin.y + rect.size.height + 176, leftWidth, 75)];
 
     [self refreshData];
 }
 
 -(void) refreshData {
+    if (self.stockInfo == nil) {
+        return;
+    }
     BOOL needSync = YES;
     StockInfo* shInfo = [[DatabaseHelper getInstance] getDapanInfoById:SH_STOCK];
     StockInfo* szInfo = [[DatabaseHelper getInstance] getDapanInfoById:SZ_STOCK];
@@ -242,35 +252,6 @@
 }
 
 - (void)onStockValueRefreshed {
-    NSString* price = @"";
-    if (self.stockInfo.price > 3) {
-        price = [NSString stringWithFormat:@"%.2f", self.stockInfo.price];
-    } else {
-        price = [NSString stringWithFormat:@"%.3f", self.stockInfo.price];
-    }
-    self.priceLabel.text = price;
-    CGRect rect = self.priceLabel.frame;
-    rect.origin.x = self.view.frame.size.width/2 - (rect.size.width/2);
-    [self.priceLabel setCenter:CGPointMake(self.view.frame.size.width/2, self.stockNameButton.frame.origin.y + self.stockNameButton.frame.size.height/2)];
-    
-    NSString* rate;
-    if (self.stockInfo.changeRate < 0) {
-        [self.rateLabel setTextColor:[UIColor colorWithRed:0 green:1 blue:0 alpha:1]];
-        [self.priceLabel setTextColor:[UIColor colorWithRed:0 green:1 blue:0 alpha:1]];
-        rate = [NSString stringWithFormat:@"%.2f%%", self.stockInfo.changeRate * 100];
-    } else {
-        [self.rateLabel setTextColor:[UIColor whiteColor]];
-        [self.priceLabel setTextColor:[UIColor whiteColor]];
-        rate = [NSString stringWithFormat:@"+%.2f%%", self.stockInfo.changeRate * 100];
-    }
-    self.rateLabel.text = rate;
-    
-    [buySellController setStockInfo:self.stockInfo];
-    [buySellController reload];
-
-    [self refreshFenShi];
-//    [self refreshData];
-
     //Da pan
     StockInfo* info = [[DatabaseHelper getInstance] getDapanInfoById:SH_STOCK];
     NSMutableString* str = [[NSMutableString alloc] init];
@@ -301,6 +282,37 @@
     } else if (info.changeRate > 0) {
         [self.chuangValue setTextColor:[UIColor redColor]];
     }
+
+    if (self.stockInfo == nil) {
+        return;
+    }
+    NSString* price = @"";
+    if (self.stockInfo.price > 3) {
+        price = [NSString stringWithFormat:@"%.2f", self.stockInfo.price];
+    } else {
+        price = [NSString stringWithFormat:@"%.3f", self.stockInfo.price];
+    }
+    self.priceLabel.text = price;
+    CGRect rect = self.priceLabel.frame;
+    rect.origin.x = self.view.frame.size.width/2 - (rect.size.width/2);
+    [self.priceLabel setCenter:CGPointMake(self.view.frame.size.width/2, self.stockNameButton.frame.origin.y + self.stockNameButton.frame.size.height/2)];
+    
+    NSString* rate;
+    if (self.stockInfo.changeRate < 0) {
+        [self.rateLabel setTextColor:[UIColor colorWithRed:0 green:1 blue:0 alpha:1]];
+        [self.priceLabel setTextColor:[UIColor colorWithRed:0 green:1 blue:0 alpha:1]];
+        rate = [NSString stringWithFormat:@"%.2f%%", self.stockInfo.changeRate * 100];
+    } else {
+        [self.rateLabel setTextColor:[UIColor whiteColor]];
+        [self.priceLabel setTextColor:[UIColor whiteColor]];
+        rate = [NSString stringWithFormat:@"+%.2f%%", self.stockInfo.changeRate * 100];
+    }
+    self.rateLabel.text = rate;
+    
+    [buySellController setStockInfo:self.stockInfo];
+    [buySellController reload];
+
+    [self refreshFenShi];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -408,8 +420,8 @@
     }
     kLineChartView.yAxisValues = array;
     kLineChartView.numberOfVerticalElements = 6;
-    kLineChartView.pointerInterval = (kLineChartView.frame.size.width - LEFT_PADDING)/35;
-    kLineChartView.xAxisInterval = (kLineChartView.frame.size.width - LEFT_PADDING)/35;
+    kLineChartView.pointerInterval = (kLineChartView.frame.size.width - LEFT_PADDING - 1)/(MAX_DISPLAY_COUNT-1);
+    kLineChartView.xAxisInterval = (kLineChartView.frame.size.width - LEFT_PADDING)/(MAX_DISPLAY_COUNT-1);
     kLineChartView.axisLeftLineWidth = LEFT_PADDING;
     kLineChartView.splitX = todayStartIndex;
     
@@ -474,8 +486,8 @@
     kdjChartView.interval = 20;
     kdjChartView.yAxisValues = @[@"0", @"20", @"40", @"60", @"80", @"100"];
     kdjChartView.numberOfVerticalElements = 6;
-    kdjChartView.pointerInterval = (kdjChartView.frame.size.width - LEFT_PADDING)/35;
-    kdjChartView.xAxisInterval = (kdjChartView.frame.size.width - LEFT_PADDING)/35;
+    kdjChartView.pointerInterval = (kdjChartView.frame.size.width - LEFT_PADDING-1)/(MAX_DISPLAY_COUNT-1);
+    kdjChartView.xAxisInterval = (kdjChartView.frame.size.width - LEFT_PADDING)-1/(MAX_DISPLAY_COUNT-1);
     kdjChartView.axisLeftLineWidth = LEFT_PADDING;
     kdjChartView.splitX = todayStartIndex;
 
@@ -570,7 +582,7 @@
     StockInfo* szInfo = [[DatabaseHelper getInstance] getDapanInfoById:SZ_STOCK];
     StockInfo* cyInfo = [[DatabaseHelper getInstance] getDapanInfoById:CY_STOCK];
     
-    float width = priceChartView.frame.size.width - LEFT_PADDING;
+    float width = priceChartView.frame.size.width - LEFT_PADDING-1;
     float pointerInterval = width/240;
     float xAsisInterval = width/4;
     
@@ -731,6 +743,23 @@
         self.kdj_j = _self.kdj_j;
         self.kdj_k = _self.kdj_k;
         self.priceKValues = _self.priceKValues;
+        //VOL
+        NSInteger startIndex = [self.priceKValues count] - [self.kdj_d count];
+        if (startIndex < 0) {
+            startIndex = 0;
+        }
+        startIndex++;
+        volController.volValues = [[NSMutableArray alloc] init];
+        for (NSInteger i=startIndex; i<[_self.volValues count]; i++) {
+            NSNumber* vol = [_self.volValues objectAtIndex:i];
+            [volController.volValues addObject:vol];
+        }
+        // Insert zero for remaining
+        for (NSInteger i=0; i<[volController.volValues count] - MAX_DISPLAY_COUNT + 1; i++) {
+            [volController.volValues addObject:[NSNumber numberWithInteger:0]];
+        }
+        [volController reload];
+        
         todayStartIndex = _self.todayStartIndex;
         
         [self refreshKDJ];
@@ -742,7 +771,7 @@
         }
         [self refreshFenShi];
     };
-    
+
     [self clearCharts];
 
     [[KingdaWorker getInstance] queue:task];

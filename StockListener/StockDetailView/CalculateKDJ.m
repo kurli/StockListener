@@ -83,13 +83,35 @@
     NSInteger startIndex = 20;
     NSInteger needMinuteCount = (20 + 35);
     NSMutableArray* needTreatArray = [[NSMutableArray alloc] init];
+    self.volValues = [[NSMutableArray alloc] init];
     NSInteger start = [stockInfo.hundredDaysPrice count]-needMinuteCount;
     if (start < 0) {
         start = 0;
     }
+    float prePrice = 0;
+    if (start - 1 >= 0 && [stockInfo.hundredDaysPrice count] > start -1) {
+        NSArray* array = [stockInfo.hundredDaysPrice objectAtIndex:start -1];
+        if ([array count] == 3) {
+            prePrice = [[array objectAtIndex:1] floatValue];
+        }
+    }
     for (NSInteger i=start; i<[stockInfo.hundredDaysPrice count]; i++) {
         NSMutableArray* array = [stockInfo.hundredDaysPrice objectAtIndex:i];
-        [needTreatArray addObject:array];
+        if ([array count] == 3) {
+            float curPrice = [[array objectAtIndex:1] floatValue];
+            [needTreatArray addObject:array];
+            if ([stockInfo.hundredDaysVOL count] > i) {
+                if (curPrice >= prePrice) {
+                    [self.volValues addObject:[stockInfo.hundredDaysVOL objectAtIndex:i]];
+                } else {
+                    NSInteger vol = [[stockInfo.hundredDaysVOL objectAtIndex:i] integerValue];
+                    [self.volValues addObject:[NSNumber numberWithInteger:-1*vol]];
+                }
+                prePrice = curPrice;
+            } else {
+                [self.volValues addObject:[NSNumber numberWithInteger:0]];
+            }
+        }
     }
     startIndex = [needTreatArray count] - 35;
     if (startIndex < 0) {
@@ -110,16 +132,27 @@
     NSInteger startIndex = 20;
     NSInteger needMinuteCount = (20 + 35) * delta;
     NSInteger needLastFiveDayCount = 0;
+    float prePrice = 0;
     if (needMinuteCount > [stockInfo.todayPriceByMinutes count]) {
         needLastFiveDayCount = needMinuteCount - [stockInfo.todayPriceByMinutes count];
     }
     NSMutableArray* priceMinute = [[NSMutableArray alloc] init];
+    NSMutableArray* volMinute = [[NSMutableArray alloc] init];
     NSInteger start = [stockInfo.fiveDayPriceByMinutes count] - needLastFiveDayCount;
     if (start < 0) {
         start = 0;
     }
+    if (start - 1 >= 0 && [stockInfo.fiveDayPriceByMinutes count] > start - 1) {
+        NSNumber* number = [stockInfo.fiveDayPriceByMinutes objectAtIndex:start -1];
+        prePrice = [number floatValue];
+    }
     for (NSInteger i = start; i<[stockInfo.fiveDayPriceByMinutes count]; i++) {
         [priceMinute addObject:[stockInfo.fiveDayPriceByMinutes objectAtIndex:i]];
+        if ([stockInfo.fiveDayVOLByMinutes count] > i) {
+            [volMinute addObject:[stockInfo.fiveDayVOLByMinutes objectAtIndex:i]];
+        } else {
+            [volMinute addObject:[NSNumber numberWithInteger:0]];
+        }
     }
     start = [stockInfo.todayPriceByMinutes count] - needMinuteCount;
     if (start < 0) {
@@ -127,16 +160,25 @@
     }
     for (NSInteger i=start; i<[stockInfo.todayPriceByMinutes count]; i++) {
         [priceMinute addObject:[stockInfo.todayPriceByMinutes objectAtIndex:i]];
+        if ([stockInfo.todayVOLByMinutes count] > i) {
+            [volMinute addObject:[stockInfo.todayVOLByMinutes objectAtIndex:i]];
+        } else {
+            [volMinute addObject:[NSNumber numberWithInteger:0]];
+        }
     }
     NSMutableArray* needTreatArray = [[NSMutableArray alloc] init];
+    self.volValues = [[NSMutableArray alloc] init];
     for (NSInteger i=0; i<[priceMinute count];) {
         float h = -1;
         float c = 0;
         float l = 100000;
         NSInteger j = i;
+        NSInteger volCount = 0;
         for (j=i; j<delta+i; j++) {
             if (j<[priceMinute count]) {
                 NSNumber* price = [priceMinute objectAtIndex:j];
+                NSNumber* vol = [volMinute objectAtIndex:j];
+                volCount += [vol integerValue];
                 if ([price floatValue] > h) {
                     h = [price floatValue];
                 }
@@ -152,6 +194,15 @@
         [array addObject:[NSNumber numberWithFloat:c]]; // c
         [array addObject:[NSNumber numberWithFloat:l]]; // l
         [needTreatArray addObject:array];
+        
+        //VOL
+        if (c >= prePrice) {
+            [self.volValues addObject:[NSNumber numberWithInteger:volCount]];
+        } else {
+            [self.volValues addObject:[NSNumber numberWithInteger:-1*volCount]];
+        }
+        prePrice = c;
+        
         i+=delta;
     }
     startIndex = [needTreatArray count] - 35;

@@ -34,6 +34,7 @@
     }
     NSString* str2 = [str substringWithRange:NSMakeRange(6, 6)];
     self.neededNewInfo.todayUpdateDay = str2;
+    NSInteger preVol = 0;
     for (int i=2; i<[array count]; i++) {
         NSString* tmp = [array objectAtIndex:i];
         tmp = [tmp stringByReplacingOccurrencesOfString:@"\n" withString:@""];
@@ -43,6 +44,7 @@
         }
 //        NSString* timeStr = [tmpArray objectAtIndex:0];
         NSString* valueStr = [tmpArray objectAtIndex:1];
+        NSInteger vol = [[tmpArray objectAtIndex:2] integerValue];
 //        NSString* hourStr = [timeStr substringToIndex:2];
 //        NSString* minuteStr = [timeStr substringFromIndex:2];
 //        NSInteger hour = [hourStr integerValue];
@@ -54,6 +56,8 @@
 //        }
         float value = [valueStr floatValue];
         [self.neededNewInfo.todayPriceByMinutes addObject:[NSNumber numberWithFloat:value]];
+        [self.neededNewInfo.todayVOLByMinutes addObject:[NSNumber numberWithInteger:vol-preVol]];
+        preVol = vol;
     }
 }
 
@@ -61,7 +65,11 @@
     if (self.neededNewInfo.todayPriceByMinutes == nil) {
         self.neededNewInfo.todayPriceByMinutes = [[NSMutableArray alloc] init];
     }
+    if (self.neededNewInfo.todayVOLByMinutes == nil) {
+        self.neededNewInfo.todayVOLByMinutes = [[NSMutableArray alloc] init];
+    }
     [self.neededNewInfo.todayPriceByMinutes removeAllObjects];
+    [self.neededNewInfo.todayVOLByMinutes removeAllObjects];
     [self parseData:data];
     if (self.delegate) {
         dispatch_sync(dispatch_get_main_queue(), ^{

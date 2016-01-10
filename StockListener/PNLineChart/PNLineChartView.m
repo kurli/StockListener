@@ -85,6 +85,8 @@
     
     self.layer.borderWidth = 0.5;
     self.layer.borderColor = [[UIColor grayColor] CGColor];
+    
+    self.splitX = 0;
 }
 
 - (instancetype)init {
@@ -159,7 +161,7 @@
     // set text size and font
     CGContextSetTextMatrix(context, CGAffineTransformIdentity);
     CGContextSelectFont(context, [self.fontName UTF8String], self.xAxisFontSize, kCGEncodingMacRoman);
-    
+
     // draw yAxis
     for (int i=0; i<self.numberOfVerticalElements; i++) {
         int height =self.horizontalLineInterval*i;
@@ -196,7 +198,7 @@
     
     // draw x line
     if (self.xAxisInterval != 0) {
-        for (int i=1; i<DEVICE_WIDTH/self.xAxisInterval; i++) {
+        for (int i=0; i<(self.frame.size.width-startWidth)/self.xAxisInterval; i++) {
             int x = self.xAxisInterval * i;
             CGContextSetLineWidth(context, self.horizontalLineWidth);
             
@@ -230,7 +232,7 @@
             float floatValue = value.floatValue;
             
             float height = (floatValue-self.min)/self.interval*self.horizontalLineInterval-self.contentScroll.y+startHeight;
-            float width =startWidth + self.pointerInterval*(i)+self.contentScroll.x+ startHeight;
+            float width =startWidth + self.pointerInterval*(i)+self.contentScroll.x;
             
             if (i==0 || newLine) {
                 CGContextMoveToPoint(context,  width, height);
@@ -248,8 +250,8 @@
         int x = startWidth + self.pointerInterval*(self.splitX)+self.contentScroll.x+ startHeight;
         CGContextSetLineWidth(context, 1);
         [[UIColor blackColor] set];
-        CGContextMoveToPoint(context, startWidth + x, 0);
-        CGContextAddLineToPoint(context, startWidth + x, self.frame.size.height);
+        CGContextMoveToPoint(context,  x, 0);
+        CGContextAddLineToPoint(context, x, self.frame.size.height);
         CGContextStrokePath(context);
     }
     

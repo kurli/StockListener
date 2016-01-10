@@ -48,6 +48,7 @@
         [a addObject:[NSNumber numberWithFloat:price]];
         [a addObject:[NSNumber numberWithFloat:lowest]];
         [self.neededNewInfo.hundredDaysPrice addObject:a];
+        [self.neededNewInfo.hundredDaysVOL addObject:[NSNumber numberWithInteger:vol]];
     }
     self.neededNewInfo.hundredDayLastUpdateDay = date;
 }
@@ -57,6 +58,10 @@
         self.neededNewInfo.hundredDaysPrice = [[NSMutableArray alloc] init];
     }
     [self.neededNewInfo.hundredDaysPrice removeAllObjects];
+    if (self.neededNewInfo.hundredDaysVOL == nil) {
+        self.neededNewInfo.hundredDaysVOL = [[NSMutableArray alloc] init];
+    }
+    [self.neededNewInfo.hundredDaysVOL removeAllObjects];
     [self parseData:data];
     if (self.delegate) {
         dispatch_sync(dispatch_get_main_queue(), ^{

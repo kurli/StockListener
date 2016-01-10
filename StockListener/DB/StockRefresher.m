@@ -38,9 +38,9 @@
 }
 
 - (void)stockRefreshFired {
-    if ([self.dbHelper.stockList count] == 0) {
-        return;
-    }
+//    if ([self.dbHelper.stockList count] == 0) {
+//        return;
+//    }
     GetStockValueTask* task = [[GetStockValueTask alloc] initWithStocks:self.dbHelper.stockList];
     task.delegate = self;
     [[KingdaWorker getInstance] queue: task];

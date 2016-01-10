@@ -26,6 +26,7 @@
 
 -(void) parseDataValue:(NSString*) data {
     NSArray* array = [data componentsSeparatedByString:@"^"];
+    NSInteger preVol = 0;
     for (int i=0; i<[array count]; i++) {
         NSString* tmp = [array objectAtIndex:i];
         NSArray* arr2 = [tmp componentsSeparatedByString:@"~"];
@@ -33,8 +34,11 @@
             break;
         }
         NSString* price = [arr2 objectAtIndex:1];
+        NSInteger vol = [[arr2 objectAtIndex:2] integerValue];
         float value = [price floatValue];
         [self.neededNewInfo.fiveDayPriceByMinutes addObject:[NSNumber numberWithFloat:value]];
+        [self.neededNewInfo.fiveDayVOLByMinutes addObject:[NSNumber numberWithInteger:vol-preVol]];
+        preVol = vol;
     }
 }
 
@@ -59,8 +63,7 @@
             for (NSInteger i=[jsonArray count]-1; i>=0; i--) {
                 NSDictionary* dic = (NSDictionary*)[jsonArray objectAtIndex:i];
                 NSString* str1 = [dic objectForKey:@"date"];
-                NSLog(@"%@ %@", str1, self.neededNewInfo.todayUpdateDay);
-                //TODO
+//                NSLog(@"%@ %@", str1, self.neededNewInfo.todayUpdateDay);
                 if ([str1 isEqualToString:self.neededNewInfo.todayUpdateDay]) {
                     continue;
                 }
@@ -74,7 +77,11 @@
     if (self.neededNewInfo.fiveDayPriceByMinutes == nil) {
         self.neededNewInfo.fiveDayPriceByMinutes = [[NSMutableArray alloc] init];
     }
+    if (self.neededNewInfo.fiveDayVOLByMinutes == nil) {
+        self.neededNewInfo.fiveDayVOLByMinutes = [[NSMutableArray alloc] init];
+    }
     [self.neededNewInfo.fiveDayPriceByMinutes removeAllObjects];
+    [self.neededNewInfo.fiveDayVOLByMinutes removeAllObjects];
     [self parseData:data];
     if (self.delegate) {
         dispatch_sync(dispatch_get_main_queue(), ^{

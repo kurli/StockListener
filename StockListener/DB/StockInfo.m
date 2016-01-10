@@ -23,8 +23,10 @@
 #define BUY_SELL_DIC @"buy_sell_dic"
 #define UPDATE_DAY @"upreate_day"
 #define FIVE_DAY_PRICE_HISTORY @"five_day_price_history"
+#define FIVE_DAY_VOL_HISTORY @"five_day_vol_history"
 #define FIVE_DAY_LAST_UPDAT_DAY @"five_day_update_day"
 #define HUNDRED_DAY_PRICE_HISTORY @"hundred_day_price_history"
+#define HUNDRED_DAY_VOL_HISTORY @"hundred_day_vol_history"
 #define HUNDRED_DAY_UPDATE_DAY @"hundred_day_update_day"
 
 - (id) init {
@@ -65,8 +67,10 @@
         self.updateTime = @"";
         self.buySellDic = [[NSMutableDictionary alloc] init];
         self.fiveDayPriceByMinutes = [[NSMutableArray alloc] init];
+        self.fiveDayVOLByMinutes = [[NSMutableArray alloc] init];
         self.fiveDayLastUpdateDay = @"";
         self.hundredDaysPrice = [[NSMutableArray alloc] init];
+        self.hundredDaysVOL = [[NSMutableArray alloc] init];
         self.hundredDayLastUpdateDay = @"";
     }
     return self;
@@ -86,8 +90,10 @@
     info.buySellDic = [self.buySellDic copy];
     info.todayPriceByMinutes = [self.todayPriceByMinutes copy];
     info.fiveDayPriceByMinutes = [self.fiveDayPriceByMinutes copy];
+    info.fiveDayVOLByMinutes = [self.fiveDayVOLByMinutes copy];
     info.fiveDayLastUpdateDay = [self.fiveDayLastUpdateDay copy];
     info.hundredDayLastUpdateDay = [self.hundredDayLastUpdateDay copy];
+    info.hundredDaysVOL = [self.hundredDaysVOL copy];
     info.hundredDaysPrice = [self.hundredDaysPrice copy];
     return info;
 }
@@ -105,8 +111,14 @@
     if (self.fiveDayPriceByMinutes != nil) {
         [aCoder encodeObject:self.fiveDayPriceByMinutes forKey:FIVE_DAY_PRICE_HISTORY];
     }
+    if (self.fiveDayVOLByMinutes != nil) {
+        [aCoder encodeObject:self.fiveDayVOLByMinutes forKey:FIVE_DAY_VOL_HISTORY];
+    }
     if (self.hundredDaysPrice != nil) {
         [aCoder encodeObject:self.hundredDaysPrice forKey:HUNDRED_DAY_PRICE_HISTORY];
+    }
+    if (self.hundredDaysVOL != nil) {
+        [aCoder encodeObject:self.hundredDaysVOL forKey:HUNDRED_DAY_VOL_HISTORY];
     }
     if (self.hundredDayLastUpdateDay != nil) {
         [aCoder encodeObject:self.hundredDayLastUpdateDay forKey:HUNDRED_DAY_UPDATE_DAY];
@@ -122,7 +134,9 @@
         self.updateDay = [aDecoder decodeObjectForKey:UPDATE_DAY];
         self.fiveDayLastUpdateDay = [aDecoder decodeObjectForKey:FIVE_DAY_LAST_UPDAT_DAY];
         self.fiveDayPriceByMinutes = [aDecoder decodeObjectForKey:FIVE_DAY_PRICE_HISTORY];
+        self.fiveDayVOLByMinutes = [aDecoder decodeObjectForKey:FIVE_DAY_VOL_HISTORY];
         self.hundredDayLastUpdateDay = [aDecoder decodeObjectForKey:HUNDRED_DAY_UPDATE_DAY];
+        self.hundredDaysVOL = [aDecoder decodeObjectForKey:HUNDRED_DAY_VOL_HISTORY];
         self.hundredDaysPrice = [aDecoder decodeObjectForKey:HUNDRED_DAY_PRICE_HISTORY];
 
         if (self.buySellDic == nil) {
@@ -134,8 +148,14 @@
         if (self.fiveDayPriceByMinutes == nil) {
             self.fiveDayPriceByMinutes = [[NSMutableArray alloc] init];
         }
+        if (self.fiveDayVOLByMinutes == nil) {
+            self.fiveDayVOLByMinutes = [[NSMutableArray alloc] init];
+        }
         if (self.hundredDayLastUpdateDay == nil) {
             self.hundredDayLastUpdateDay = @"";
+        }
+        if (self.hundredDaysVOL == nil) {
+            self.hundredDaysVOL = [[NSMutableArray alloc] init];
         }
         if (self.hundredDaysPrice == nil) {
             self.hundredDaysPrice = [[NSMutableArray alloc] init];
@@ -152,20 +172,23 @@
         NSInteger history = [self.hundredDayLastUpdateDay integerValue];
         if (latest - history == 0) {
             [self.hundredDaysPrice removeLastObject];
+            [self.hundredDaysVOL removeLastObject];
             NSMutableArray* array = [[NSMutableArray alloc] init];
             [array addObject:[NSNumber numberWithFloat:self.todayHighestPrice]];
             [array addObject:[NSNumber numberWithFloat:self.price]];
             [array addObject:[NSNumber numberWithFloat:self.todayLoestPrice]];
             [self.hundredDaysPrice addObject:array];
+            [self.hundredDaysVOL addObject:[NSNumber numberWithInteger:self.dealCount/100]];
         } else if (latest - history > 0) {
             NSMutableArray* array = [[NSMutableArray alloc] init];
             [array addObject:[NSNumber numberWithFloat:self.todayHighestPrice]];
             [array addObject:[NSNumber numberWithFloat:self.price]];
             [array addObject:[NSNumber numberWithFloat:self.todayLoestPrice]];
             [self.hundredDaysPrice addObject:array];
+            [self.hundredDaysVOL addObject:[NSNumber numberWithInteger:self.dealCount/100]];
         }
     }
-    
+
     // Store price
     NSArray* timeArray = [self.updateTime componentsSeparatedByString:@":"];
     if ([timeArray count] != 3) {
@@ -182,6 +205,7 @@
     index++;
     if ([self.todayPriceByMinutes count] == 0) {
         [self.todayPriceByMinutes addObject:[NSNumber numberWithFloat:self.price]];
+        [self.todayVOLByMinutes addObject:[NSNumber numberWithInteger:self.dealCount]];
         return;
     }
     if (index >=242) {
@@ -189,10 +213,22 @@
     }
     if (index >= [self.todayPriceByMinutes count]) {
         [self.todayPriceByMinutes addObject:[NSNumber numberWithFloat:self.price]];
+        NSInteger preVol = 0;
+        for (int i=0; i<[self.todayVOLByMinutes count]; i++) {
+            preVol += [[self.todayVOLByMinutes objectAtIndex:i] integerValue];
+        }
+        [self.todayVOLByMinutes addObject:[NSNumber numberWithInteger:self.dealCount - preVol]];
         return;
     }
     [self.todayPriceByMinutes removeLastObject];
     [self.todayPriceByMinutes addObject:[NSNumber numberWithFloat:self.price]];
+    [self.todayVOLByMinutes removeLastObject];
+    
+    NSInteger preVol = 0;
+    for (int i=0; i<[self.todayVOLByMinutes count]; i++) {
+        preVol += [[self.todayVOLByMinutes objectAtIndex:i] integerValue];
+    }
+    [self.todayVOLByMinutes addObject:[NSNumber numberWithInteger:self.dealCount - preVol]];
     /*
     long second = [[timeArray objectAtIndex:2] longLongValue];
     long totalSecond = hour * 60 * 60;
