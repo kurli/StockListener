@@ -53,7 +53,7 @@
     c5.tabBarItem.title=@"Setting";
 //    c5.tabBarItem.image=[UIImage imageNamed:@"Play"];
     
-    self.tb.viewControllers =@[c1,c2,c3,c4,c5];
+    self.tb.viewControllers =@[c3,c1,c2,c4,c5];
     self.tb.selectedViewController = c1;
     [self.window makeKeyAndVisible];
     

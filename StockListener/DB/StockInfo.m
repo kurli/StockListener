@@ -151,11 +151,8 @@
         NSInteger latest = [str integerValue];
         NSInteger history = [self.hundredDayLastUpdateDay integerValue];
         if (latest - history == 0) {
-            ////
-            NSMutableArray* array = [self.hundredDaysPrice lastObject];
-            ////
             [self.hundredDaysPrice removeLastObject];
-            array = [[NSMutableArray alloc] init];
+            NSMutableArray* array = [[NSMutableArray alloc] init];
             [array addObject:[NSNumber numberWithFloat:self.todayHighestPrice]];
             [array addObject:[NSNumber numberWithFloat:self.price]];
             [array addObject:[NSNumber numberWithFloat:self.todayLoestPrice]];

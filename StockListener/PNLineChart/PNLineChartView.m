@@ -245,7 +245,7 @@
     }
     
     if (self.splitX > 0) {
-        int x = self.xAxisInterval * self.splitX;
+        int x = startWidth + self.pointerInterval*(self.splitX)+self.contentScroll.x+ startHeight;
         CGContextSetLineWidth(context, 1);
         [[UIColor blackColor] set];
         CGContextMoveToPoint(context, startWidth + x, 0);

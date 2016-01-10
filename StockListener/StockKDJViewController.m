@@ -157,7 +157,10 @@
     [self.averagePriceView setFrame:aRect];
 
     [kLineChartView setFrame:CGRectMake(0, rect.origin.y + rect.size.height+1, self.view.frame.size.width/7*6, 130)];
-    [kdjChartView setFrame:CGRectMake(0, rect.origin.y + rect.size.height + 131, self.view.frame.size.width/7*6, 100)];
+    ///
+    // VOL height 30 border 1
+    ///
+    [kdjChartView setFrame:CGRectMake(0, rect.origin.y + rect.size.height + 162, self.view.frame.size.width/7*6, 80)];
 
     [self refreshData];
 }
@@ -729,7 +732,15 @@
         self.kdj_k = _self.kdj_k;
         self.priceKValues = _self.priceKValues;
         todayStartIndex = _self.todayStartIndex;
+        
         [self refreshKDJ];
+        if (todayStartIndex == 0) {
+            NSInteger splitX = [self.stockInfo.todayPriceByMinutes count] - delta * [self.kdj_d count];
+            priceChartView.splitX = splitX;
+        } else {
+            priceChartView.splitX = 0;
+        }
+        [self refreshFenShi];
     };
     
     [self clearCharts];

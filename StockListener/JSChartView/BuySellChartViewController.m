@@ -207,8 +207,7 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
         price /= 100;
     }
     NSNumber* number = [_stockInfo.buySellDic objectForKey:[NSNumber numberWithFloat:price]];
-
-    return [number longLongValue];
+    return [number integerValue];
 }
 
 - (UIColor *)barChartView:(JBBarChartView *)barChartView colorForBarViewAtIndex:(NSUInteger)index

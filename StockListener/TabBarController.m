@@ -65,7 +65,7 @@
     button.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
     
     //  设定button大小为适应图片
-    button.frame = CGRectMake(0.0, 0.0, buttonImage.size.width, buttonImage.size.height);
+    CGRect rect = CGRectMake(0.0, 0.0, buttonImage.size.width, buttonImage.size.height);
     [button setImage:buttonImage forState:UIControlStateNormal];
     [button setImage:selectedImage forState:UIControlStateSelected];
     
@@ -77,14 +77,24 @@
      *  核心代码：设置button的center 和 tabBar的 center 做对齐操作， 同时做出相对的上浮
      */
     CGFloat heightDifference = buttonImage.size.height - self.tabBar.frame.size.height;
-    if (heightDifference < 0)
-        button.center = self.tabBar.center;
-    else
-    {
-        CGPoint center = self.tabBar.center;
-        center.y = center.y - heightDifference/2.0;
-        button.center = center;
-    }
+//    if (heightDifference < 0) {
+//        button.center = self.tabBar.center;
+//    } else {
+//        CGPoint center = self.tabBar.center;
+//        center.y = center.y - heightDifference/2.0;
+//        button.center = center;
+//    }
+    rect.origin.x = (self.tabBar.frame.size.width/5-rect.size.width)/2;
+    rect.origin.y = self.tabBar.frame.origin.y - heightDifference;
+//    if (heightDifference < 0) {
+////        button.center = self.tabBar.center;
+//        
+//    } else {
+//        CGPoint center = self.tabBar.center;
+//        center.y = center.y - heightDifference/2.0;
+//        button.center = center;
+//    }
+    button.frame = rect;
     
     [self.view addSubview:button];
 }
