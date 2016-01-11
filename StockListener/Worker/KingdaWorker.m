@@ -55,6 +55,7 @@ static KingdaWorker *static_worker;
             @try {
                 [self.mActiveTask run];
             } @catch (NSException* e) {
+                NSLog(@"%@", e.description);
             }
         }
     }

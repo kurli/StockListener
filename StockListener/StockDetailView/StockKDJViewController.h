@@ -9,6 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "ZSYPopoverListView.h"
 
+#define LEFT_PADDING 20
+#define MAX_DISPLAY_COUNT 35
+
 @class StockInfo;
 @interface StockKDJViewController : UIViewController <UIScrollViewDelegate,ZSYPopoverListDatasource, ZSYPopoverListDelegate>
 

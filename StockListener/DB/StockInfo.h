@@ -28,6 +28,8 @@
 @property (atomic, strong) NSMutableArray* hundredDaysPrice;
 @property (atomic, strong) NSMutableArray* hundredDaysVOL;
 @property (atomic, strong) NSString* hundredDayLastUpdateDay;
+// VOL average
+@property (atomic, strong) NSMutableDictionary* averageVolDic;
 
 // Used for play sound
 @property (atomic, unsafe_unretained) int step;                 // Used for play sound

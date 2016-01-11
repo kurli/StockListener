@@ -51,6 +51,63 @@
         [self.neededNewInfo.hundredDaysVOL addObject:[NSNumber numberWithInteger:vol]];
     }
     self.neededNewInfo.hundredDayLastUpdateDay = date;
+    [self calculateAP];
+}
+
+//Calculate average price
+//
+
+-(void) calculateAP {
+    if ([self.neededNewInfo.hundredDaysVOL count] != [self.neededNewInfo.hundredDaysPrice count]) {
+        return;
+    }
+    
+    float lowest = 100000;
+    float delta = 0.01;
+    for (int i=0; i<[self.neededNewInfo.hundredDaysPrice count]; i++) {
+        NSArray* array = [self.neededNewInfo.hundredDaysPrice objectAtIndex:i];
+        if ([array count] != 3) {
+            continue;
+        }
+        float l = [[array objectAtIndex:2] floatValue];
+        if (l < lowest) {
+            lowest = l;
+        }
+    }
+    if (lowest < 3) {
+        delta = 0.001;
+    }
+    [self.neededNewInfo.averageVolDic removeAllObjects];
+    for (int i=40; i<[self.neededNewInfo.hundredDaysPrice count]; i++) {
+        NSArray* array = [self.neededNewInfo.hundredDaysPrice objectAtIndex:i];
+//        NSArray* preArr = [self.neededNewInfo.hundredDaysPrice objectAtIndex:i-1];
+        if ([array count] != 3) {
+            continue;
+        }
+        NSInteger h = [[array objectAtIndex:0] floatValue] / delta;
+        NSInteger l = [[array objectAtIndex:2] floatValue] / delta;
+        NSInteger vol = [[self.neededNewInfo.hundredDaysVOL objectAtIndex:i] integerValue];
+
+//        NSInteger c = [[array objectAtIndex:1] floatValue] / delta;
+//        NSInteger pc = [[preArr objectAtIndex:1] floatValue] / delta;
+//        if (c < pc) {
+//            vol = -1*vol;
+//        }
+
+        NSInteger count = h - l;
+        if (count == 0) {
+            NSString* key = [NSString stringWithFormat:@"%ld", h];
+            NSInteger preVol = [[self.neededNewInfo.averageVolDic objectForKey:key] integerValue];
+            [self.neededNewInfo.averageVolDic setValue:[NSNumber numberWithInteger:preVol+vol] forKey:key];
+        } else {
+            NSInteger average = vol/count;
+            for (NSInteger j=0; j<count; j++) {
+                NSString* key = [NSString stringWithFormat:@"%ld", l+j];
+                NSInteger preVol = [[self.neededNewInfo.averageVolDic objectForKey:key] integerValue];
+                [self.neededNewInfo.averageVolDic setValue:[NSNumber numberWithInteger:preVol+average] forKey:key];
+            }
+        }
+    }
 }
 
 -(void) onComplete:(NSString *)data {

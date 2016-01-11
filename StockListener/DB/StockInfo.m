@@ -28,6 +28,7 @@
 #define HUNDRED_DAY_PRICE_HISTORY @"hundred_day_price_history"
 #define HUNDRED_DAY_VOL_HISTORY @"hundred_day_vol_history"
 #define HUNDRED_DAY_UPDATE_DAY @"hundred_day_update_day"
+#define AVERAGE_VOL_DIC @"average_vol_dic"
 
 - (id) init {
     if (self = [super init]) {
@@ -72,6 +73,7 @@
         self.hundredDaysPrice = [[NSMutableArray alloc] init];
         self.hundredDaysVOL = [[NSMutableArray alloc] init];
         self.hundredDayLastUpdateDay = @"";
+        self.averageVolDic = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -95,6 +97,7 @@
     info.hundredDayLastUpdateDay = [self.hundredDayLastUpdateDay copy];
     info.hundredDaysVOL = [self.hundredDaysVOL copy];
     info.hundredDaysPrice = [self.hundredDaysPrice copy];
+    info.averageVolDic = [self.averageVolDic copy];
     return info;
 }
 
@@ -123,6 +126,9 @@
     if (self.hundredDayLastUpdateDay != nil) {
         [aCoder encodeObject:self.hundredDayLastUpdateDay forKey:HUNDRED_DAY_UPDATE_DAY];
     }
+    if (self.averageVolDic != nil) {
+        [aCoder encodeObject:self.averageVolDic forKey:AVERAGE_VOL_DIC];
+    }
 }
 
 -(id)initWithCoder:(NSCoder *)aDecoder {
@@ -138,6 +144,7 @@
         self.hundredDayLastUpdateDay = [aDecoder decodeObjectForKey:HUNDRED_DAY_UPDATE_DAY];
         self.hundredDaysVOL = [aDecoder decodeObjectForKey:HUNDRED_DAY_VOL_HISTORY];
         self.hundredDaysPrice = [aDecoder decodeObjectForKey:HUNDRED_DAY_PRICE_HISTORY];
+        self.averageVolDic = [aDecoder decodeObjectForKey:AVERAGE_VOL_DIC];
 
         if (self.buySellDic == nil) {
             self.buySellDic = [[NSMutableDictionary alloc] init];
@@ -160,11 +167,17 @@
         if (self.hundredDaysPrice == nil) {
             self.hundredDaysPrice = [[NSMutableArray alloc] init];
         }
+        if (self.averageVolDic == nil) {
+            self.averageVolDic = [[NSMutableDictionary alloc] init];
+        }
     }
     return self;
 }
 
 -(void) newPriceGot {
+    if (self.price <= 0) {
+        return;
+    }
     if ([self.updateDay length] > 6 && [self.hundredDaysPrice count] > 0) {
         NSString* str = [self.updateDay stringByReplacingOccurrencesOfString:@"-" withString:@""];
         str = [str substringFromIndex:2];
@@ -178,14 +191,15 @@
             [array addObject:[NSNumber numberWithFloat:self.price]];
             [array addObject:[NSNumber numberWithFloat:self.todayLoestPrice]];
             [self.hundredDaysPrice addObject:array];
-            [self.hundredDaysVOL addObject:[NSNumber numberWithInteger:self.dealCount/100]];
+            [self.hundredDaysVOL addObject:[NSNumber numberWithInteger:self.dealCount]];
         } else if (latest - history > 0) {
             NSMutableArray* array = [[NSMutableArray alloc] init];
             [array addObject:[NSNumber numberWithFloat:self.todayHighestPrice]];
             [array addObject:[NSNumber numberWithFloat:self.price]];
             [array addObject:[NSNumber numberWithFloat:self.todayLoestPrice]];
             [self.hundredDaysPrice addObject:array];
-            [self.hundredDaysVOL addObject:[NSNumber numberWithInteger:self.dealCount/100]];
+            [self.hundredDaysVOL addObject:[NSNumber numberWithInteger:self.dealCount]];
+            self.hundredDayLastUpdateDay = [NSString stringWithFormat:@"%ld", latest];
         }
     }
 

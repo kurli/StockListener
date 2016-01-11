@@ -175,7 +175,7 @@
     float newPrice = [[array objectAtIndex:3] floatValue];
     info.todayHighestPrice = [[array objectAtIndex:4] floatValue];
     info.todayLoestPrice = [[array objectAtIndex:5] floatValue];
-    info.dealCount = [[array objectAtIndex:8] integerValue];
+    info.dealCount = [[array objectAtIndex:8] integerValue]/100;
     info.dealTotalMoney = [[array objectAtIndex:9] floatValue];
     
     NSString* updateDay = [array objectAtIndex:30];
@@ -221,9 +221,9 @@
 //    [info.buySellDic setObject:[NSNumber numberWithLongLong:8500000] forKey:[NSNumber numberWithFloat:0.848]];
     
 #ifndef ENABLE_TEST
-    if (info.updateTime != nil && [info.updateTime isEqualToString:[array objectAtIndex:31]]) {
-        return;
-    }
+//    if (info.updateTime != nil && [info.updateTime isEqualToString:[array objectAtIndex:31]]) {
+//        return;
+//    }
 #endif
     info.updateTime = [array objectAtIndex:31];
 
