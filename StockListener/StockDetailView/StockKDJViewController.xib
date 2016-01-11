@@ -11,8 +11,11 @@
                 <outlet property="chuangValue" destination="XpO-0p-EE3" id="8Jv-SI-8Kn"/>
                 <outlet property="fiveAPrice" destination="xE0-W2-sAz" id="cWt-5p-AmF"/>
                 <outlet property="kdjTypeSegment" destination="MBF-Xn-6lG" id="poI-kN-eb3"/>
+                <outlet property="nextKDJButton" destination="8Y4-6k-oFT" id="nAs-gi-S9t"/>
+                <outlet property="preKDJButton" destination="z6g-lg-NL5" id="MQv-ua-GPK"/>
                 <outlet property="rateLabel" destination="QKC-MN-9zd" id="2gK-5d-ptw"/>
                 <outlet property="shValue" destination="c7Y-DE-lrX" id="3w0-9P-ilm"/>
+                <outlet property="showKDJButton" destination="Jnt-Pe-5yi" id="Pp2-am-VoT"/>
                 <outlet property="stockNameButton" destination="hjS-yw-1aw" id="vkm-Dt-CGb"/>
                 <outlet property="szValue" destination="chQ-FA-uUH" id="bwO-Gr-d9u"/>
                 <outlet property="tenAPrice" destination="Lat-eW-VG3" id="xX6-2d-siy"/>
@@ -102,9 +105,10 @@
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                 </view>
-                <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" id="MBF-Xn-6lG">
+                <segmentedControl hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" id="MBF-Xn-6lG">
                     <rect key="frame" x="0.0" y="231" width="250" height="29"/>
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <segments>
                         <segment title="1分"/>
                         <segment title="5分"/>
@@ -166,6 +170,30 @@
                         </label>
                     </subviews>
                 </view>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Jnt-Pe-5yi">
+                    <rect key="frame" x="77" y="310" width="45" height="30"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                    <state key="normal" title="1分"/>
+                    <connections>
+                        <action selector="showKDJClicked:" destination="-1" eventType="touchUpInside" id="cWE-8y-4Tq"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="z6g-lg-NL5">
+                    <rect key="frame" x="40" y="310" width="30" height="30"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                    <state key="normal" title="&lt;-"/>
+                    <connections>
+                        <action selector="preKDJClicked:" destination="-1" eventType="touchUpInside" id="bBd-kN-p2r"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="8Y4-6k-oFT">
+                    <rect key="frame" x="132" y="310" width="30" height="30"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                    <state key="normal" title="-&gt;"/>
+                    <connections>
+                        <action selector="nextKDJClicked:" destination="-1" eventType="touchUpInside" id="IC3-Da-Sfu"/>
+                    </connections>
+                </button>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>

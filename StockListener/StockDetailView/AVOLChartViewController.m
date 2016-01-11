@@ -16,6 +16,8 @@
 #import "JBChartInformationView.h"
 #import "JBColorConstants.h"
 
+#define MAX_COUNT 380
+
 @interface AVOLChartViewController() <JBBarChartViewDelegate, JBBarChartViewDataSource> {
     UIView* view;
 }
@@ -116,6 +118,11 @@
 
 - (NSUInteger)numberOfBarsInBarChartView:(JBBarChartView *)barChartView
 {
+    NSInteger delta = self.max - self.min;
+    NSInteger mergeCount = delta / MAX_COUNT;
+    if (mergeCount > 2) {
+        return delta / mergeCount;
+    }
     return self.max - self.min;
 }
 
@@ -131,15 +138,32 @@
 
 - (CGFloat)barChartView:(JBBarChartView *)barChartView heightForBarViewAtIndex:(NSUInteger)index
 {
-    NSInteger key = self.min + index;
-    NSString* keyStr = [NSString stringWithFormat:@"%ld", key];
-    
-    NSInteger vol = [[self.stockInfo.averageVolDic objectForKey:keyStr] integerValue];
-    if (vol < 0) {
-        NSLog(@"Fu de: %ld", vol);
-        return 0;
+    NSInteger delta = self.max - self.min;
+    NSInteger mergeCount = delta / MAX_COUNT;
+    if (mergeCount > 2) {
+        NSInteger volCount = 0;
+        for (int i=0; i<mergeCount; i++) {
+            NSInteger key = self.min + index*mergeCount + i;
+            NSString* keyStr = [NSString stringWithFormat:@"%ld", key];
+            NSInteger vol = [[self.stockInfo.averageVolDic objectForKey:keyStr] integerValue];
+            if (vol < 0) {
+                continue;
+            }
+            volCount += vol;
+        }
+        return volCount;
+    } else {
+        NSInteger key = self.min + index;
+        NSString* keyStr = [NSString stringWithFormat:@"%ld", key];
+        
+        NSInteger vol = [[self.stockInfo.averageVolDic objectForKey:keyStr] integerValue];
+        if (vol < 0) {
+            NSLog(@"Fu de: %ld", vol);
+            return 0;
+        }
+        return vol;
     }
-    return vol;
+    return 0;
 }
 
 - (UIColor *)barChartView:(JBBarChartView *)barChartView colorForBarViewAtIndex:(NSUInteger)index

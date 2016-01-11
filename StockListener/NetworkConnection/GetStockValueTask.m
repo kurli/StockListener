@@ -221,9 +221,9 @@
 //    [info.buySellDic setObject:[NSNumber numberWithLongLong:8500000] forKey:[NSNumber numberWithFloat:0.848]];
     
 #ifndef ENABLE_TEST
-//    if (info.updateTime != nil && [info.updateTime isEqualToString:[array objectAtIndex:31]]) {
-//        return;
-//    }
+    if (info.updateTime != nil && [info.updateTime isEqualToString:[array objectAtIndex:31]]) {
+        return;
+    }
 #endif
     info.updateTime = [array objectAtIndex:31];
 

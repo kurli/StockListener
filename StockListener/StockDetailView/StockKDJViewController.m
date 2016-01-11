@@ -54,6 +54,9 @@
 @property (weak, nonatomic) IBOutlet UILabel *fiveAPrice;
 @property (weak, nonatomic) IBOutlet UILabel *tenAPrice;
 @property (weak, nonatomic) IBOutlet UILabel *twentyAPrice;
+@property (weak, nonatomic) IBOutlet UIButton *showKDJButton;
+@property (weak, nonatomic) IBOutlet UIButton *preKDJButton;
+@property (weak, nonatomic) IBOutlet UIButton *nextKDJButton;
 @end
 
 @implementation StockKDJViewController
@@ -135,30 +138,51 @@
     }
 
     CGRect aRect = self.averagePriceView.frame;
+    
+    // KDJ buttons and segment controller frame:
+    CGRect preKDJRect = self.preKDJButton.frame;
+    CGRect nextKDJRect = self.nextKDJButton.frame;
+    CGRect showkKdjRect = self.showKDJButton.frame;
+    
+    preKDJRect.origin.x = 0;
+    preKDJRect.origin.y = fenshiRect.origin.y + fenshiRect.size.height+1;
+    [self.preKDJButton setFrame:preKDJRect];
+    
+    showkKdjRect.origin.x = preKDJRect.size.width + 1;
+    showkKdjRect.origin.y = preKDJRect.origin.y;
+    [self.showKDJButton setFrame:showkKdjRect];
+
+    nextKDJRect.origin.x = showkKdjRect.origin.x + showkKdjRect.size.width + 1;
+    nextKDJRect.origin.y = showkKdjRect.origin.y;
+    [self.nextKDJButton setFrame:nextKDJRect];
 
     CGRect rect = self.kdjTypeSegment.frame;
-    rect.origin.y = fenshiRect.origin.y + fenshiRect.size.height+1;
+    rect.origin.y = nextKDJRect.origin.y + nextKDJRect.size.height+1;
     rect.origin.x = 1;
     rect.size.width = self.view.frame.size.width - aRect.size.width;
     [self.kdjTypeSegment setFrame:rect];
+    [self.kdjTypeSegment setHidden:YES];
+    
+    rect.origin.y = fenshiRect.origin.y + fenshiRect.size.height+1;
+    // End
 
-    aRect.origin.x = rect.origin.x + rect.size.width;
+    aRect.origin.x = nextKDJRect.origin.x + nextKDJRect.size.width + 5;
     aRect.origin.y = fenshiRect.origin.y + fenshiRect.size.height+1;
     [self.averagePriceView setFrame:aRect];
 
-    [klineViewController setFrame:CGRectMake(0, rect.origin.y + rect.size.height+1, leftWidth, 130)];
+    [klineViewController setFrame:CGRectMake(0, rect.origin.y + rect.size.height+1, leftWidth, KLINE_VIEW_HEIGHT)];
     if (volController == nil) {
         volController = [[VOLChartViewController alloc] initWithParentView:self.view];
-        CGRect rect2 = CGRectMake(LEFT_PADDING, rect.origin.y + rect.size.height+1+130, leftWidth-LEFT_PADDING, 45);
+        CGRect rect2 = CGRectMake(LEFT_PADDING, rect.origin.y + rect.size.height+1+KLINE_VIEW_HEIGHT, leftWidth-LEFT_PADDING, 45);
         [volController loadView:rect2];
     }
 
-    [kdjViewController setFrame:CGRectMake(0, rect.origin.y + rect.size.height + 176, leftWidth, 75)];
+    [kdjViewController setFrame:CGRectMake(0, rect.origin.y + rect.size.height + KLINE_VIEW_HEIGHT + 45 + 1, leftWidth, 75)];
 
-    offsetY = rect.origin.y + rect.size.height+1;
+    offsetY = rect.origin.y + 1;
     if (aVolController == nil) {
         aVolController = [[AVOLChartViewController alloc] initWithParentView:self.view];
-        CGRect rect = CGRectMake(leftWidth, offsetY, self.view.frame.size.width/7, 130);
+        CGRect rect = CGRectMake(leftWidth, offsetY, self.view.frame.size.width/7, KLINE_VIEW_HEIGHT + AVOL_EXPAND);
         [aVolController loadViewVertical:rect];
     }
     
@@ -336,9 +360,21 @@
     [aVolController setStockInfo:self.stockInfo];
     int ll = l/delta;
     int hh = h/delta;
-    [aVolController setMin:ll];
-    [aVolController setMax:hh];
+    
+    if (ll == hh) {
+        [aVolController setMin:0];
+        [aVolController setMax:0];
+        [aVolController reload];
+        return;
+    }
+    
+    float valuePerPixel = (float)KLINE_VIEW_HEIGHT / (float)(hh - ll);
+    int extend = valuePerPixel * (AVOL_EXPAND / 2);
+    [aVolController setMin:ll-extend];
+    [aVolController setMax:hh+extend];
     [aVolController reload];
+
+    NSLog(@"%d %d %d", ll, hh, hh-ll);
 }
 
 -(void) refreshVOL:(NSInteger) startIndex andVolValues:(NSArray*)volValues {
@@ -358,24 +394,31 @@
 
 - (IBAction)onKDJTypeChanged:(id)sender {
     int delta = 1;
+    NSString* str = @"1分";
     UISegmentedControl* control = self.kdjTypeSegment;
     switch (control.selectedSegmentIndex) {
         case 0:
             delta = 1;
+            str = @"1分";
             break;
         case 1:
             delta = 5;
+            str = @"5分";
             break;
         case 2:
             delta = 15;
+            str = @"15分";
             break;
         case 3:
             delta = 30;
+            str = @"30分";
             break;
         case 4:
             delta = 60;
+            str = @"60分";
             break;
         case 5:
+            str = @"日";
             delta = 240;
             break;
         case 6:
@@ -434,6 +477,9 @@
     [self clearCharts];
 
     [[KingdaWorker getInstance] queue:task];
+    
+    [self.kdjTypeSegment setHidden:YES];
+    [self.showKDJButton setTitle:str forState:UIControlStateNormal];
 }
 
 -(void) clearCharts {
@@ -451,6 +497,33 @@
     [self presentViewController:controller animated:YES completion:nil];
 }
 
+- (IBAction)nextKDJClicked:(id)sender {
+    NSInteger selected = self.kdjTypeSegment.selectedSegmentIndex;
+    selected ++;
+    if (selected >= 6) {
+        selected = 0;
+    }
+    [self.kdjTypeSegment setSelectedSegmentIndex:selected];
+    [self onKDJTypeChanged:nil];
+}
+- (IBAction)preKDJClicked:(id)sender {
+    NSInteger selected = self.kdjTypeSegment.selectedSegmentIndex;
+    selected --;
+    if (selected < 0) {
+        selected = 5;
+    }
+    [self.kdjTypeSegment setSelectedSegmentIndex:selected];
+    [self onKDJTypeChanged:nil];
+}
+- (IBAction)showKDJClicked:(id)sender {
+    if ([self.kdjTypeSegment isHidden]) {
+        [self.kdjTypeSegment setHidden:NO];
+        [self.view bringSubviewToFront:self.kdjTypeSegment];
+    } else {
+        [self.kdjTypeSegment setHidden:YES];
+    }
+    
+}
 #pragma mark -
 
 - (NSInteger)popoverListView:(ZSYPopoverListView *)tableView numberOfRowsInSection:(NSInteger)section
