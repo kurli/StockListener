@@ -8,6 +8,7 @@
 
 #import "CalculateKDJ.h"
 #import "StockInfo.h"
+#import "StockKDJViewController.h"
 
 @interface CalculateKDJ() {
     StockInfo* stockInfo;
@@ -17,10 +18,11 @@
 
 @implementation CalculateKDJ
 
--(id) initWithStockInfo:(StockInfo*)info andDelta:(int)_delta{
+-(id) initWithStockInfo:(StockInfo*)info andDelta:(int)_delta andCount:(NSInteger) count {
     if ((self = [super init]) != nil) {
         stockInfo = info;
         delta = _delta;
+        self.calculateCount = count;
         self.kdj_k = [[NSMutableArray alloc] init];
         self.kdj_d = [[NSMutableArray alloc] init];
         self.kdj_j = [[NSMutableArray alloc] init];
@@ -81,7 +83,7 @@
         return;
     }
     NSInteger startIndex = 20;
-    NSInteger needMinuteCount = (20 + 35);
+    NSInteger needMinuteCount = (20 + self.calculateCount);
     NSMutableArray* needTreatArray = [[NSMutableArray alloc] init];
     self.volValues = [[NSMutableArray alloc] init];
     NSInteger start = [stockInfo.weeklyPrice count]-needMinuteCount;
@@ -113,7 +115,7 @@
             }
         }
     }
-    startIndex = [needTreatArray count] - 35;
+    startIndex = [needTreatArray count] - self.calculateCount;
     if (startIndex < 0) {
         startIndex = 0;
     }
@@ -130,7 +132,7 @@
         return;
     }
     NSInteger startIndex = 20;
-    NSInteger needMinuteCount = (20 + 35);
+    NSInteger needMinuteCount = (20 + self.calculateCount);
     NSMutableArray* needTreatArray = [[NSMutableArray alloc] init];
     self.volValues = [[NSMutableArray alloc] init];
     NSInteger start = [stockInfo.hundredDaysPrice count]-needMinuteCount;
@@ -162,7 +164,7 @@
             }
         }
     }
-    startIndex = [needTreatArray count] - 35;
+    startIndex = [needTreatArray count] - self.calculateCount;
     if (startIndex < 0) {
         startIndex = 0;
     }
@@ -179,7 +181,7 @@
         return;
     }
     NSInteger startIndex = 20;
-    NSInteger needMinuteCount = (20 + 35) * delta;
+    NSInteger needMinuteCount = (20 + self.calculateCount) * delta;
     NSInteger needLastFiveDayCount = 0;
     float prePrice = 0;
     if (needMinuteCount > [stockInfo.todayPriceByMinutes count]) {
@@ -254,7 +256,7 @@
         
         i+=delta;
     }
-    startIndex = [needTreatArray count] - 35;
+    startIndex = [needTreatArray count] - self.calculateCount;
     if (startIndex < 0) {
         startIndex = 0;
     }
@@ -267,9 +269,9 @@
 }
 
 -(void) run {
-    if (delta == 240) {
+    if (delta == ONE_DAY) {
         [self calculateForDay];
-    } else if (delta == 1200) {
+    } else if (delta == ONE_WEEK) {
         [self calculateForWeek];
     } else {
         [self calculate];

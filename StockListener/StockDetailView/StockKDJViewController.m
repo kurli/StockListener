@@ -58,6 +58,8 @@
 @property (weak, nonatomic) IBOutlet UIButton *showKDJButton;
 @property (weak, nonatomic) IBOutlet UIButton *preKDJButton;
 @property (weak, nonatomic) IBOutlet UIButton *nextKDJButton;
+
+@property (nonatomic,strong) NSTimer *kdjTypeHideTimer;
 @end
 
 @implementation StockKDJViewController
@@ -160,9 +162,7 @@
     CGRect rect = self.kdjTypeSegment.frame;
     rect.origin.y = nextKDJRect.origin.y + nextKDJRect.size.height+1;
     rect.origin.x = 1;
-    rect.size.width = self.view.frame.size.width - aRect.size.width;
     [self.kdjTypeSegment setFrame:rect];
-    [self.kdjTypeSegment setHidden:YES];
     
     rect.origin.y = fenshiRect.origin.y + fenshiRect.size.height+1;
     // End
@@ -410,32 +410,32 @@
     UISegmentedControl* control = self.kdjTypeSegment;
     switch (control.selectedSegmentIndex) {
         case 0:
-            delta = 1;
+            delta = ONE_MINUTE;
             str = @"1分";
             break;
         case 1:
-            delta = 5;
+            delta = FIVE_MINUTES;
             str = @"5分";
             break;
         case 2:
-            delta = 15;
+            delta = FIFTEEN_MINUTES;
             str = @"15分";
             break;
         case 3:
-            delta = 30;
+            delta = THIRTY_MINUTES;
             str = @"30分";
             break;
         case 4:
-            delta = 60;
+            delta = ONE_HOUR;
             str = @"60分";
             break;
         case 5:
             str = @"日";
-            delta = 240;
+            delta = ONE_DAY;
             break;
         case 6:
             str = @"周";
-            delta = 1200;
+            delta = ONE_WEEK;
             break;
         case 7:
             [self moreClicked];
@@ -445,7 +445,7 @@
             break;
     }
     preSegment = control.selectedSegmentIndex;
-    CalculateKDJ* task = [[CalculateKDJ alloc] initWithStockInfo:self.stockInfo andDelta:delta];
+    CalculateKDJ* task = [[CalculateKDJ alloc] initWithStockInfo:self.stockInfo andDelta:delta andCount:MAX_DISPLAY_COUNT];
     task.onCompleteBlock = ^(CalculateKDJ* _self) {
         kdjViewController.kdj_d = _self.kdj_d;
         kdjViewController.kdj_j = _self.kdj_j;
@@ -490,11 +490,13 @@
         [fenshiViewController refresh:self.stockInfo];
     };
 
-    [self clearCharts];
+//    [self clearCharts];
 
     [[KingdaWorker getInstance] queue:task];
     
-    [self.kdjTypeSegment setHidden:YES];
+    if (sender != nil) {
+        [self onHideKDJTypeFired];
+    }
     [self.showKDJButton setTitle:str forState:UIControlStateNormal];
 }
 
@@ -522,6 +524,7 @@
     [self.kdjTypeSegment setSelectedSegmentIndex:selected];
     [self onKDJTypeChanged:nil];
 }
+
 - (IBAction)preKDJClicked:(id)sender {
     NSInteger selected = self.kdjTypeSegment.selectedSegmentIndex;
     selected --;
@@ -531,12 +534,20 @@
     [self.kdjTypeSegment setSelectedSegmentIndex:selected];
     [self onKDJTypeChanged:nil];
 }
+
+-(void)onHideKDJTypeFired {
+    [self.kdjTypeSegment setHidden:YES];
+    [self.kdjTypeHideTimer invalidate];
+    [self setKdjTypeHideTimer:nil];
+}
+
 - (IBAction)showKDJClicked:(id)sender {
     if ([self.kdjTypeSegment isHidden]) {
         [self.kdjTypeSegment setHidden:NO];
         [self.view bringSubviewToFront:self.kdjTypeSegment];
+        self.kdjTypeHideTimer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(onHideKDJTypeFired) userInfo:nil repeats:NO];
     } else {
-        [self.kdjTypeSegment setHidden:YES];
+        [self onHideKDJTypeFired];
     }
     
 }
