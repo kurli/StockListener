@@ -10,6 +10,13 @@
 #import "StockInfo.h"
 #import "SBJSON.h"
 
+@interface GetFiveDayStockValue() {
+    NSInteger preCount;
+    NSInteger preVOL;
+}
+
+@end
+
 @implementation GetFiveDayStockValue
 
 -(id) initWithStock:(StockInfo*) info {
@@ -24,9 +31,12 @@
     [self post];
 }
 
--(void) parseDataValue:(NSString*) data {
+-(NSInteger) parseDataValue:(NSString*) data {
     NSArray* array = [data componentsSeparatedByString:@"^"];
     NSInteger preVol = 0;
+    NSInteger retVol = 0;
+    float openPrice = 0;
+    NSInteger openVOL = 0;
     for (int i=0; i<[array count]; i++) {
         NSString* tmp = [array objectAtIndex:i];
         NSArray* arr2 = [tmp componentsSeparatedByString:@"~"];
@@ -36,10 +46,23 @@
         NSString* price = [arr2 objectAtIndex:1];
         NSInteger vol = [[arr2 objectAtIndex:2] integerValue];
         float value = [price floatValue];
-        [self.neededNewInfo.fiveDayPriceByMinutes addObject:[NSNumber numberWithFloat:value]];
-        [self.neededNewInfo.fiveDayVOLByMinutes addObject:[NSNumber numberWithInteger:vol-preVol]];
+
+        if (i == 0 || i == 121) {
+            openPrice = value;
+            openVOL = vol-preVol;
+            retVol = openVOL;
+        } else if (i == 1 || i == 122) {
+            [self.neededNewInfo.fiveDayPriceByMinutes addObject:[NSNumber numberWithFloat:value]];
+            retVol = openVOL+vol-preVol;
+            [self.neededNewInfo.fiveDayVOLByMinutes addObject:[NSNumber numberWithInteger:openVOL+vol-preVol]];
+        } else {
+            [self.neededNewInfo.fiveDayPriceByMinutes addObject:[NSNumber numberWithFloat:value]];
+            retVol = vol-preVol;
+            [self.neededNewInfo.fiveDayVOLByMinutes addObject:[NSNumber numberWithInteger:vol-preVol]];
+        }
         preVol = vol;
     }
+    return retVol;
 }
 
 -(void) parseData:(NSString*) data {
@@ -51,6 +74,8 @@
     data = [data stringByReplacingOccurrencesOfString:@"'" withString:@"\""];
     SBJsonParser* jsonParser = [[SBJsonParser alloc] init];
     id jsonObject = [jsonParser objectWithString:data];
+    NSInteger vol = 0;
+    NSString* date;
     if ([jsonObject isKindOfClass:[NSArray class]]) {
         NSArray* jsonArray = (NSArray*) jsonObject;
         if ([jsonArray count] > 0) {
@@ -59,21 +84,31 @@
                 return;
             }
             NSDictionary* dictionary = (NSDictionary*)firstObj;
-            self.neededNewInfo.fiveDayLastUpdateDay = [dictionary objectForKey:@"date"];
+            date = [dictionary objectForKey:@"date"];
             for (NSInteger i=[jsonArray count]-1; i>=0; i--) {
                 NSDictionary* dic = (NSDictionary*)[jsonArray objectAtIndex:i];
                 NSString* str1 = [dic objectForKey:@"date"];
-//                NSLog(@"%@ %@", str1, self.neededNewInfo.todayUpdateDay);
                 if ([str1 isEqualToString:self.neededNewInfo.todayUpdateDay]) {
                     continue;
                 }
-                [self parseDataValue:[dic objectForKey:@"data"]];
+                vol = [self parseDataValue:[dic objectForKey:@"data"]];
             }
         }
+    }
+    if (preCount == [self.neededNewInfo.fiveDayVOLByMinutes count] && preVOL == vol) {
+        NSInteger dateInt = [date integerValue];
+        dateInt++;
+        self.neededNewInfo.fiveDayLastUpdateDay = [NSString stringWithFormat:@"%ld", dateInt];
+    } else {
+        self.neededNewInfo.fiveDayLastUpdateDay = date;
     }
 }
 
 -(void) onComplete:(NSString *)data {
+    if ([self.neededNewInfo.fiveDayVOLByMinutes count] > 0) {
+        preVOL = [[self.neededNewInfo.fiveDayVOLByMinutes lastObject] integerValue];
+        preCount = [self.neededNewInfo.fiveDayVOLByMinutes count];
+    }
     if (self.neededNewInfo.fiveDayPriceByMinutes == nil) {
         self.neededNewInfo.fiveDayPriceByMinutes = [[NSMutableArray alloc] init];
     }

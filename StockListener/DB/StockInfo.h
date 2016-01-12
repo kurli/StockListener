@@ -30,6 +30,10 @@
 @property (atomic, strong) NSString* hundredDayLastUpdateDay;
 // VOL average
 @property (atomic, strong) NSMutableDictionary* averageVolDic;
+// Weekly price
+@property (atomic, strong) NSMutableArray* weeklyPrice;
+@property (atomic, strong) NSMutableArray* weeklyVOL;
+@property (atomic, strong) NSString* weeklyLastUpdateDay;
 
 // Used for play sound
 @property (atomic, unsafe_unretained) int step;                 // Used for play sound

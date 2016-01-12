@@ -76,6 +76,55 @@
     }
 }
 
+-(void) calculateForWeek {
+    if ([stockInfo.weeklyPrice count] == 0) {
+        return;
+    }
+    NSInteger startIndex = 20;
+    NSInteger needMinuteCount = (20 + 35);
+    NSMutableArray* needTreatArray = [[NSMutableArray alloc] init];
+    self.volValues = [[NSMutableArray alloc] init];
+    NSInteger start = [stockInfo.weeklyPrice count]-needMinuteCount;
+    if (start < 0) {
+        start = 0;
+    }
+    float prePrice = 0;
+    if (start - 1 >= 0 && [stockInfo.weeklyPrice count] > start -1) {
+        NSArray* array = [stockInfo.weeklyPrice objectAtIndex:start -1];
+        if ([array count] == 3) {
+            prePrice = [[array objectAtIndex:1] floatValue];
+        }
+    }
+    for (NSInteger i=start; i<[stockInfo.weeklyPrice count]; i++) {
+        NSMutableArray* array = [stockInfo.weeklyPrice objectAtIndex:i];
+        if ([array count] == 3) {
+            float curPrice = [[array objectAtIndex:1] floatValue];
+            [needTreatArray addObject:array];
+            if ([stockInfo.weeklyVOL count] > i) {
+                if (curPrice >= prePrice) {
+                    [self.volValues addObject:[stockInfo.weeklyVOL objectAtIndex:i]];
+                } else {
+                    NSInteger vol = [[stockInfo.weeklyVOL objectAtIndex:i] integerValue];
+                    [self.volValues addObject:[NSNumber numberWithInteger:-1*vol]];
+                }
+                prePrice = curPrice;
+            } else {
+                [self.volValues addObject:[NSNumber numberWithInteger:0]];
+            }
+        }
+    }
+    startIndex = [needTreatArray count] - 35;
+    if (startIndex < 0) {
+        startIndex = 0;
+    }
+    [self calculateKDJ:needTreatArray andStartIndex:startIndex];
+    self.priceKValues = needTreatArray;
+    self.todayStartIndex = 0;
+    if (self.todayStartIndex < 0) {
+        self.todayStartIndex = 0;
+    }
+}
+
 -(void) calculateForDay {
     if ([stockInfo.hundredDaysPrice count] == 0) {
         return;
@@ -220,6 +269,8 @@
 -(void) run {
     if (delta == 240) {
         [self calculateForDay];
+    } else if (delta == 1200) {
+        [self calculateForWeek];
     } else {
         [self calculate];
     }

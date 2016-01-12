@@ -118,8 +118,8 @@
 
 - (NSUInteger)numberOfBarsInBarChartView:(JBBarChartView *)barChartView
 {
-    NSInteger delta = self.max - self.min;
-    NSInteger mergeCount = delta / MAX_COUNT;
+    float delta = self.max - self.min;
+    float mergeCount = delta / MAX_COUNT;
     if (mergeCount > 2) {
         return delta / mergeCount;
     }
@@ -138,19 +138,23 @@
 
 - (CGFloat)barChartView:(JBBarChartView *)barChartView heightForBarViewAtIndex:(NSUInteger)index
 {
-    NSInteger delta = self.max - self.min;
-    NSInteger mergeCount = delta / MAX_COUNT;
+    float delta = self.max - self.min;
+    float mergeCount = delta / MAX_COUNT;
     if (mergeCount > 2) {
         NSInteger volCount = 0;
         for (int i=0; i<mergeCount; i++) {
-            NSInteger key = self.min + index*mergeCount + i;
+            float floatKey = self.min + index*mergeCount + i;
+            NSInteger key = floatKey;
             NSString* keyStr = [NSString stringWithFormat:@"%ld", key];
             NSInteger vol = [[self.stockInfo.averageVolDic objectForKey:keyStr] integerValue];
+//            NSLog(@"Calculate: key:%ld vol:%ld", key, vol);
             if (vol < 0) {
                 continue;
             }
             volCount += vol;
         }
+//        NSLog(@"vol: %ld", volCount);
+//        NSLog(@"========");
         return volCount;
     } else {
         NSInteger key = self.min + index;

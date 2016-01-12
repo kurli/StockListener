@@ -29,6 +29,7 @@
 #import "FenshiViewController.h"
 #import "KDJViewController.h"
 #import "KLineViewController.h"
+#import "GetWeeksStockValue.h"
 
 #define MAX_
 
@@ -243,7 +244,17 @@
         GetDaysStockValue* task5 = [[GetDaysStockValue alloc] initWithStock:self.stockInfo];
         [[KingdaWorker getInstance] queue:task5];
     }
-    
+
+    historyDateValue = [self.stockInfo.weeklyLastUpdateDay integerValue];
+//        historyDateValue = 0;
+    if (historyDateValue == 0 || latest - historyDateValue >= 2) {
+        GetWeeksStockValue* task6 = [[GetWeeksStockValue alloc] initWithStock:self.stockInfo];
+        [[KingdaWorker getInstance] queue:task6];
+    } else if (latest-historyDateValue == 1 && [self.stockInfo.hundredDaysPrice count] < 100) {
+        GetWeeksStockValue* task5 = [[GetWeeksStockValue alloc] initWithStock:self.stockInfo];
+        [[KingdaWorker getInstance] queue:task5];
+    }
+
     if (needSync) {
         SyncPoint* sync = [[SyncPoint alloc] init];
         sync.onCompleteBlock = ^(StockInfo* info) {
@@ -344,6 +355,7 @@
     [buySellController reload];
 
     [fenshiViewController refresh:self.stockInfo];
+    [self onKDJTypeChanged:nil];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -368,8 +380,8 @@
         return;
     }
     
-    float valuePerPixel = (float)KLINE_VIEW_HEIGHT / (float)(hh - ll);
-    int extend = valuePerPixel * (AVOL_EXPAND / 2);
+    float valuePerPixel = (float)(hh - ll)/(float)KLINE_VIEW_HEIGHT ;
+    float extend = valuePerPixel * (AVOL_EXPAND / 2);
     [aVolController setMin:ll-extend];
     [aVolController setMax:hh+extend];
     [aVolController reload];
@@ -422,6 +434,10 @@
             delta = 240;
             break;
         case 6:
+            str = @"周";
+            delta = 1200;
+            break;
+        case 7:
             [self moreClicked];
             [control setSelectedSegmentIndex:preSegment];
             return;
@@ -500,7 +516,7 @@
 - (IBAction)nextKDJClicked:(id)sender {
     NSInteger selected = self.kdjTypeSegment.selectedSegmentIndex;
     selected ++;
-    if (selected >= 6) {
+    if (selected >= 7) {
         selected = 0;
     }
     [self.kdjTypeSegment setSelectedSegmentIndex:selected];
@@ -510,7 +526,7 @@
     NSInteger selected = self.kdjTypeSegment.selectedSegmentIndex;
     selected --;
     if (selected < 0) {
-        selected = 5;
+        selected = 6;
     }
     [self.kdjTypeSegment setSelectedSegmentIndex:selected];
     [self onKDJTypeChanged:nil];

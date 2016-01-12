@@ -35,6 +35,8 @@
     NSString* str2 = [str substringWithRange:NSMakeRange(6, 6)];
     self.neededNewInfo.todayUpdateDay = str2;
     NSInteger preVol = 0;
+    float openPrice = 0;
+    NSInteger openVOL = 0;
     for (int i=2; i<[array count]; i++) {
         NSString* tmp = [array objectAtIndex:i];
         tmp = [tmp stringByReplacingOccurrencesOfString:@"\n" withString:@""];
@@ -42,21 +44,19 @@
         if ([tmpArray count] != 3) {
             return;
         }
-//        NSString* timeStr = [tmpArray objectAtIndex:0];
         NSString* valueStr = [tmpArray objectAtIndex:1];
         NSInteger vol = [[tmpArray objectAtIndex:2] integerValue];
-//        NSString* hourStr = [timeStr substringToIndex:2];
-//        NSString* minuteStr = [timeStr substringFromIndex:2];
-//        NSInteger hour = [hourStr integerValue];
-//        NSInteger minute = [minuteStr integerValue];
-//        NSInteger index = 0;
-//        index = (hour - 9) * 60 + minute;
-//        if (hour >= 13) {
-//            index -= 90;
-//        }
         float value = [valueStr floatValue];
-        [self.neededNewInfo.todayPriceByMinutes addObject:[NSNumber numberWithFloat:value]];
-        [self.neededNewInfo.todayVOLByMinutes addObject:[NSNumber numberWithInteger:vol-preVol]];
+        if (i == 2 || i == 123) {
+            openPrice = value;
+            openVOL = vol-preVol;
+        } else if (i == 3 || i == 124) {
+            [self.neededNewInfo.todayPriceByMinutes addObject:[NSNumber numberWithFloat:value]];
+            [self.neededNewInfo.todayVOLByMinutes addObject:[NSNumber numberWithInteger:openVOL+vol-preVol]];
+        } else {
+            [self.neededNewInfo.todayPriceByMinutes addObject:[NSNumber numberWithFloat:value]];
+            [self.neededNewInfo.todayVOLByMinutes addObject:[NSNumber numberWithInteger:vol-preVol]];
+        }
         preVol = vol;
     }
 }

@@ -1,0 +1,31 @@
+{
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+    "93596bd2-0dc3-f74b-bcd7-aa8426d3b99b++8664" : {
+
+    }
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "F1BC4876811AFC3F9EBAC1327B95940A459E2E4A" : 0,
+    "93596bd2-0dc3-f74b-bcd7-aa8426d3b99b++8664" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "711923EA-A841-413E-9A74-CB20B9E7C127",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "F1BC4876811AFC3F9EBAC1327B95940A459E2E4A" : "TheAmazingAudioEngine\/",
+    "93596bd2-0dc3-f74b-bcd7-aa8426d3b99b++8664" : "StockListener\/StockListener\/json\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "StockListener",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "StockListener.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "svn:\/\/sinofreely.f3322.org\/dlcm",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Subversion",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "93596bd2-0dc3-f74b-bcd7-aa8426d3b99b++8664"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/TheAmazingAudioEngine\/TheAmazingAudioEngine",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "F1BC4876811AFC3F9EBAC1327B95940A459E2E4A"
+    }
+  ]
+}

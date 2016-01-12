@@ -29,6 +29,9 @@
 #define HUNDRED_DAY_VOL_HISTORY @"hundred_day_vol_history"
 #define HUNDRED_DAY_UPDATE_DAY @"hundred_day_update_day"
 #define AVERAGE_VOL_DIC @"average_vol_dic"
+#define WEEKLY_PRICE_HISTORY @"weekly_price_history"
+#define WEEKLY_VOL_HISTORY @"weekly_vol_history"
+#define WEEKLY_UPDATE_DAY @"weekly_update_day"
 
 - (id) init {
     if (self = [super init]) {
@@ -74,6 +77,9 @@
         self.hundredDaysVOL = [[NSMutableArray alloc] init];
         self.hundredDayLastUpdateDay = @"";
         self.averageVolDic = [[NSMutableDictionary alloc] init];
+        self.weeklyPrice = [[NSMutableArray alloc] init];
+        self.weeklyVOL = [[NSMutableArray alloc] init];
+        self.weeklyLastUpdateDay = @"";
     }
     return self;
 }
@@ -98,6 +104,9 @@
     info.hundredDaysVOL = [self.hundredDaysVOL copy];
     info.hundredDaysPrice = [self.hundredDaysPrice copy];
     info.averageVolDic = [self.averageVolDic copy];
+    info.weeklyLastUpdateDay = [self.weeklyLastUpdateDay copy];
+    info.weeklyVOL = [self.weeklyVOL copy];
+    info.weeklyPrice = [self.weeklyPrice copy];
     return info;
 }
 
@@ -129,6 +138,15 @@
     if (self.averageVolDic != nil) {
         [aCoder encodeObject:self.averageVolDic forKey:AVERAGE_VOL_DIC];
     }
+    if (self.weeklyPrice != nil) {
+        [aCoder encodeObject:self.weeklyPrice forKey:WEEKLY_PRICE_HISTORY];
+    }
+    if (self.weeklyVOL != nil) {
+        [aCoder encodeObject:self.weeklyVOL forKey:WEEKLY_VOL_HISTORY];
+    }
+    if (self.weeklyLastUpdateDay != nil) {
+        [aCoder encodeObject:self.weeklyLastUpdateDay forKey:WEEKLY_UPDATE_DAY];
+    }
 }
 
 -(id)initWithCoder:(NSCoder *)aDecoder {
@@ -145,6 +163,9 @@
         self.hundredDaysVOL = [aDecoder decodeObjectForKey:HUNDRED_DAY_VOL_HISTORY];
         self.hundredDaysPrice = [aDecoder decodeObjectForKey:HUNDRED_DAY_PRICE_HISTORY];
         self.averageVolDic = [aDecoder decodeObjectForKey:AVERAGE_VOL_DIC];
+        self.weeklyLastUpdateDay = [aDecoder decodeObjectForKey:WEEKLY_UPDATE_DAY];
+        self.weeklyVOL = [aDecoder decodeObjectForKey:WEEKLY_VOL_HISTORY];
+        self.weeklyPrice = [aDecoder decodeObjectForKey:WEEKLY_PRICE_HISTORY];
 
         if (self.buySellDic == nil) {
             self.buySellDic = [[NSMutableDictionary alloc] init];
@@ -169,6 +190,15 @@
         }
         if (self.averageVolDic == nil) {
             self.averageVolDic = [[NSMutableDictionary alloc] init];
+        }
+        if (self.weeklyLastUpdateDay == nil) {
+            self.weeklyLastUpdateDay = @"";
+        }
+        if (self.weeklyVOL == nil) {
+            self.weeklyVOL = [[NSMutableArray alloc] init];
+        }
+        if (self.weeklyPrice == nil) {
+            self.weeklyPrice = [[NSMutableArray alloc] init];
         }
     }
     return self;
@@ -202,6 +232,31 @@
             self.hundredDayLastUpdateDay = [NSString stringWithFormat:@"%ld", latest];
         }
     }
+    //TODO
+//    if ([self.updateDay length] > 6 && [self.weeklyPrice count] > 0) {
+//        NSString* str = [self.updateDay stringByReplacingOccurrencesOfString:@"-" withString:@""];
+//        str = [str substringFromIndex:2];
+//        NSInteger latest = [str integerValue];
+//        NSInteger history = [self.weeklyLastUpdateDay integerValue];
+//        if (latest - history == 0) {
+//            [self.weeklyPrice removeLastObject];
+//            [self.weeklyVOL removeLastObject];
+//            NSMutableArray* array = [[NSMutableArray alloc] init];
+//            [array addObject:[NSNumber numberWithFloat:self.todayHighestPrice]];
+//            [array addObject:[NSNumber numberWithFloat:self.price]];
+//            [array addObject:[NSNumber numberWithFloat:self.todayLoestPrice]];
+//            [self.hundredDaysPrice addObject:array];
+//            [self.hundredDaysVOL addObject:[NSNumber numberWithInteger:self.dealCount]];
+//        } else if (latest - history > 0) {
+//            NSMutableArray* array = [[NSMutableArray alloc] init];
+//            [array addObject:[NSNumber numberWithFloat:self.todayHighestPrice]];
+//            [array addObject:[NSNumber numberWithFloat:self.price]];
+//            [array addObject:[NSNumber numberWithFloat:self.todayLoestPrice]];
+//            [self.hundredDaysPrice addObject:array];
+//            [self.hundredDaysVOL addObject:[NSNumber numberWithInteger:self.dealCount]];
+//            self.hundredDayLastUpdateDay = [NSString stringWithFormat:@"%ld", latest];
+//        }
+//    }
 
     // Store price
     NSArray* timeArray = [self.updateTime componentsSeparatedByString:@":"];

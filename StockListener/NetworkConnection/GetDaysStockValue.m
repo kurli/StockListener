@@ -9,6 +9,13 @@
 #import "GetDaysStockValue.h"
 #import "StockInfo.h"
 
+@interface GetDaysStockValue() {
+    NSInteger preCount;
+    NSInteger preVOL;
+}
+
+@end
+
 @implementation GetDaysStockValue
 -(id) initWithStock:(StockInfo*) info {
     if ((self = [super init]) != nil) {
@@ -29,7 +36,7 @@
     NSString* date;
     float lowest;
     float highest;
-    NSInteger vol;
+    NSInteger vol = 0;
     float price;
     for (int i=2; i<[tmpArray count]; i++) {
         NSString* tmp = [tmpArray objectAtIndex:i];
@@ -50,7 +57,13 @@
         [self.neededNewInfo.hundredDaysPrice addObject:a];
         [self.neededNewInfo.hundredDaysVOL addObject:[NSNumber numberWithInteger:vol]];
     }
-    self.neededNewInfo.hundredDayLastUpdateDay = date;
+    if (preCount == [self.neededNewInfo.hundredDaysVOL count] && preVOL == vol) {
+        NSInteger dateInt = [date integerValue];
+        dateInt++;
+        self.neededNewInfo.hundredDayLastUpdateDay = [NSString stringWithFormat:@"%ld", dateInt];
+    } else {
+        self.neededNewInfo.hundredDayLastUpdateDay = date;
+    }
     [self calculateAP];
 }
 
@@ -78,7 +91,7 @@
         delta = 0.001;
     }
     [self.neededNewInfo.averageVolDic removeAllObjects];
-    for (int i=40; i<[self.neededNewInfo.hundredDaysPrice count]; i++) {
+    for (int i=0; i<[self.neededNewInfo.hundredDaysPrice count]; i++) {
         NSArray* array = [self.neededNewInfo.hundredDaysPrice objectAtIndex:i];
 //        NSArray* preArr = [self.neededNewInfo.hundredDaysPrice objectAtIndex:i-1];
         if ([array count] != 3) {
@@ -111,6 +124,10 @@
 }
 
 -(void) onComplete:(NSString *)data {
+    if ([self.neededNewInfo.hundredDaysVOL count] > 0) {
+        preVOL = [[self.neededNewInfo.hundredDaysVOL lastObject] integerValue];
+        preCount = [self.neededNewInfo.hundredDaysVOL count];
+    }
     if (self.neededNewInfo.hundredDaysPrice == nil) {
         self.neededNewInfo.hundredDaysPrice = [[NSMutableArray alloc] init];
     }

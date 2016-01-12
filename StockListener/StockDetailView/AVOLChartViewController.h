@@ -14,8 +14,8 @@
 @interface AVOLChartViewController : NSObject
 
 @property (nonatomic, strong) StockInfo* stockInfo;
-@property (nonatomic, assign) NSInteger max;
-@property (nonatomic, assign) NSInteger min;
+@property (nonatomic, assign) float max;
+@property (nonatomic, assign) float min;
 
 -(void) loadViewVertical:(CGRect) rect;
 -(id) initWithParentView:(UIView*)view;
