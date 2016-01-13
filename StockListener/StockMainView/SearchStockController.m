@@ -7,18 +7,23 @@
 //
 
 #import "SearchStockController.h"
+#import "SearchStockByKeyword.h"
+#import "KingdaWorker.h"
 
 @implementation SearchStockController
 
 -(void) search:(NSString*) key {
-    if (self.searchList != nil) {
-        [self.searchList removeAllObjects];
-    } else {
-        self.searchList = [[NSMutableArray alloc] init];
+    if ([key length] == 0) {
+        self.searchList = nil;
+        return;
     }
-    
-    [self.searchList addObject:[NSString stringWithFormat:@"sz%@", key]];
-    [self.searchList addObject:[NSString stringWithFormat:@"sh%@", key]];
+    SearchStockByKeyword* task = [[SearchStockByKeyword alloc] initWithKeyword:key];
+    task.onStockListGotBlock = ^(NSArray* array) {
+        self.searchList = array;
+        self.onStockListGotBlock();
+    };
+    self.searchList = nil;
+    [[KingdaWorker getInstance] queue:task];
 }
 
 @end

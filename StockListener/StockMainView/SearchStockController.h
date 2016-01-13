@@ -10,7 +10,7 @@
 
 @interface SearchStockController : NSObject
 
-@property(nonatomic, strong) NSMutableArray* searchList;
-
+@property(nonatomic, strong) NSArray* searchList;
 -(void) search:(NSString*) key;
+@property (copy) void (^onStockListGotBlock)();
 @end

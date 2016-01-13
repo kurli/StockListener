@@ -22,7 +22,11 @@
 -(id) initWithStock:(StockInfo*) info {
     if ((self = [super init]) != nil) {
         self.neededNewInfo = info;
-        self.mURL =  [NSString stringWithFormat:@"http://data.gtimg.cn/flashdata/hushen/4day/sz/%@.js", info.sid];
+        NSString* prefix = @"sz";
+        if ([info.sid length] == 8) {
+            prefix = [info.sid substringToIndex:2];
+        }
+        self.mURL =  [NSString stringWithFormat:@"http://data.gtimg.cn/flashdata/hushen/4day/%@/%@.js", prefix, info.sid];
     }
     return self;
 }

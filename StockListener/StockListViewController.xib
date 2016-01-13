@@ -3,6 +3,8 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <capability name="Alignment constraints to the first baseline" minToolsVersion="6.0"/>
+        <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="StockListViewController">
@@ -17,17 +19,11 @@
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
-            <rect key="frame" x="0.0" y="0.0" width="320" height="519"/>
+            <rect key="frame" x="0.0" y="0.0" width="375" height="618"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="听股市" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Irj-B1-LmW">
-                    <rect key="frame" x="135" y="30" width="51" height="21"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                    <color key="textColor" red="0.96862745100000003" green="0.96862745100000003" blue="0.96862745100000003" alpha="1" colorSpace="calibratedRGB"/>
-                    <nil key="highlightedColor"/>
-                </label>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8v9-py-IlJ">
-                    <rect key="frame" x="0.0" y="59" width="320" height="15"/>
+                    <rect key="frame" x="0.0" y="59" width="375" height="15"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="沪:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6XU-fc-gHt">
                             <rect key="frame" x="2" y="2" width="20" height="15"/>
@@ -72,7 +68,7 @@
                     </constraints>
                 </view>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="MKw-kI-NnH">
-                    <rect key="frame" x="0.0" y="74" width="320" height="445"/>
+                    <rect key="frame" x="0.0" y="74" width="375" height="544"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <color key="sectionIndexBackgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <connections>
@@ -80,9 +76,12 @@
                         <outlet property="delegate" destination="-1" id="qP3-ja-j8B"/>
                     </connections>
                 </tableView>
-                <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="wS8-Um-tUB">
+                <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="wS8-Um-tUB">
                     <rect key="frame" x="233" y="27" width="79" height="29"/>
                     <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="79" id="b7m-C7-22u"/>
+                    </constraints>
                     <segments>
                         <segment title="单个"/>
                         <segment title="自动"/>
@@ -91,31 +90,61 @@
                         <action selector="onAutoSwitchChanged:" destination="-1" eventType="valueChanged" id="rgU-sX-VXU"/>
                     </connections>
                 </segmentedControl>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="听股市" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Irj-B1-LmW">
+                    <rect key="frame" x="162" y="30" width="51" height="21"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <color key="textColor" red="0.96862745100000003" green="0.96862745100000003" blue="0.96862745100000003" alpha="1" colorSpace="calibratedRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
             <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
                 <constraint firstItem="MKw-kI-NnH" firstAttribute="top" secondItem="8v9-py-IlJ" secondAttribute="bottom" id="4fP-io-DOL"/>
                 <constraint firstItem="MKw-kI-NnH" firstAttribute="centerX" secondItem="Irj-B1-LmW" secondAttribute="centerX" id="AxR-Ka-Gla"/>
                 <constraint firstItem="Irj-B1-LmW" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="30" id="EL0-uO-zCI"/>
+                <constraint firstAttribute="trailing" secondItem="8v9-py-IlJ" secondAttribute="trailing" id="ICn-rV-EAH"/>
+                <constraint firstItem="Irj-B1-LmW" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="IET-vm-gXQ"/>
                 <constraint firstAttribute="bottom" secondItem="8v9-py-IlJ" secondAttribute="bottom" constant="445" id="IUt-al-nGd"/>
                 <constraint firstItem="8v9-py-IlJ" firstAttribute="top" secondItem="Irj-B1-LmW" secondAttribute="bottom" constant="8" symbolic="YES" id="Jb4-kY-JDd"/>
+                <constraint firstItem="wS8-Um-tUB" firstAttribute="baseline" secondItem="Irj-B1-LmW" secondAttribute="firstBaseline" id="Msz-Jy-izK"/>
+                <constraint firstItem="wS8-Um-tUB" firstAttribute="firstBaseline" secondItem="Irj-B1-LmW" secondAttribute="baseline" id="P0F-d2-u5n"/>
                 <constraint firstItem="MKw-kI-NnH" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="REO-qU-qpv"/>
                 <constraint firstItem="8v9-py-IlJ" firstAttribute="leading" secondItem="MKw-kI-NnH" secondAttribute="leading" id="ZCJ-Ko-bPP"/>
                 <constraint firstItem="8v9-py-IlJ" firstAttribute="trailing" secondItem="MKw-kI-NnH" secondAttribute="trailing" id="ZZw-2D-nhk"/>
                 <constraint firstAttribute="bottom" secondItem="MKw-kI-NnH" secondAttribute="bottom" id="a0F-AS-WqY"/>
+                <constraint firstItem="wS8-Um-tUB" firstAttribute="baseline" secondItem="Irj-B1-LmW" secondAttribute="baseline" id="f0V-CU-boP"/>
+                <constraint firstAttribute="trailing" secondItem="wS8-Um-tUB" secondAttribute="trailing" constant="63" id="feW-pf-qKb"/>
+                <constraint firstAttribute="bottom" secondItem="MKw-kI-NnH" secondAttribute="bottom" id="gui-LD-qB6"/>
+                <constraint firstItem="wS8-Um-tUB" firstAttribute="centerY" secondItem="Irj-B1-LmW" secondAttribute="centerY" id="iUa-aY-lCV"/>
                 <constraint firstItem="8v9-py-IlJ" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="56" id="lhK-hk-68g"/>
+                <constraint firstItem="8v9-py-IlJ" firstAttribute="top" secondItem="wS8-Um-tUB" secondAttribute="bottom" constant="4" id="mzV-nb-H8F"/>
+                <constraint firstItem="Irj-B1-LmW" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="nY9-Vc-mxl"/>
                 <constraint firstItem="MKw-kI-NnH" firstAttribute="leading" secondItem="8v9-py-IlJ" secondAttribute="leading" id="rTg-rj-ftf"/>
+                <constraint firstItem="8v9-py-IlJ" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="tA7-6T-kA7"/>
                 <constraint firstAttribute="trailing" secondItem="MKw-kI-NnH" secondAttribute="trailing" id="tz8-oy-Ok9"/>
                 <constraint firstItem="MKw-kI-NnH" firstAttribute="trailing" secondItem="8v9-py-IlJ" secondAttribute="trailing" id="viW-C3-r4M"/>
+                <constraint firstAttribute="bottom" secondItem="MKw-kI-NnH" secondAttribute="bottom" id="vmb-Ek-jAT"/>
+                <constraint firstItem="wS8-Um-tUB" firstAttribute="leading" secondItem="Irj-B1-LmW" secondAttribute="trailing" constant="19" id="yZZ-cA-MkD"/>
             </constraints>
             <simulatedTabBarMetrics key="simulatedBottomBarMetrics" translucent="NO"/>
-            <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+            <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
             <variation key="default">
                 <mask key="constraints">
                     <exclude reference="IUt-al-nGd"/>
+                    <exclude reference="ZCJ-Ko-bPP"/>
+                    <exclude reference="ZZw-2D-nhk"/>
                     <exclude reference="lhK-hk-68g"/>
+                    <exclude reference="AxR-Ka-Gla"/>
+                    <exclude reference="a0F-AS-WqY"/>
+                    <exclude reference="gui-LD-qB6"/>
                     <exclude reference="rTg-rj-ftf"/>
                     <exclude reference="viW-C3-r4M"/>
+                    <exclude reference="IET-vm-gXQ"/>
+                    <exclude reference="Msz-Jy-izK"/>
+                    <exclude reference="P0F-d2-u5n"/>
+                    <exclude reference="f0V-CU-boP"/>
+                    <exclude reference="iUa-aY-lCV"/>
+                    <exclude reference="yZZ-cA-MkD"/>
                 </mask>
             </variation>
         </view>

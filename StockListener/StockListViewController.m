@@ -41,12 +41,16 @@
     _searchController.hidesNavigationBarDuringPresentation = NO;
     _searchController.searchBar.frame = CGRectMake(self.searchController.searchBar.frame.origin.x, self.searchController.searchBar.frame.origin.y, self.searchController.searchBar.frame.size.width, 44.0);
     self.tableView.tableHeaderView = self.searchController.searchBar;
-    _searchController.searchBar.placeholder = @"股票代码";
+    _searchController.searchBar.placeholder = @"股票代码/拼音简写/名称";
     
     // Init stock list
     [[DatabaseHelper getInstance] setDelegate:self];
     
     _searchStockController = [[SearchStockController alloc] init];
+    __weak StockListViewController* _self = self;
+    _searchStockController.onStockListGotBlock = ^() {
+        [_self.tableView reloadData];
+    };
     _stockTableItemViewController = [[StockTableItemViewController alloc] init];
     [_stockTableItemViewController setTableView:self.tableView];
     [_stockTableItemViewController setViewController:self];
@@ -56,6 +60,8 @@
     //    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     UIView* view = [[UIView alloc] initWithFrame:CGRectZero];
     self.tableView.tableFooterView = view;
+    self.edgesForExtendedLayout = UIRectEdgeAll;
+    self.tableView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, CGRectGetHeight(self.tabBarController.tabBar.frame), 0.0f);
     
     UIColor *tintColor = [UIColor redColor];
     [[CERoundProgressView appearance] setTintColor:tintColor];
@@ -113,7 +119,15 @@
         if (cell==nil) {
             cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:flag];
         }
-        [cell.textLabel setText:self.searchStockController.searchList[indexPath.row]];
+        NSString* tmp = self.searchStockController.searchList[indexPath.row];
+        NSArray* array = [tmp componentsSeparatedByString:@":"];
+        if ([array count] == 2) {
+            NSString* name = [array objectAtIndex:1];
+            NSString* sid = [array objectAtIndex:0];
+            [cell.textLabel setText:[NSString stringWithFormat:@"%@  %@", sid, name]];
+        } else {
+            [cell.textLabel setText:@""];
+        }
         return cell;
     }
     else{
@@ -133,7 +147,13 @@
         if (indexPath.row >= [self.searchStockController.searchList count]) {
             return;
         }
-        [self addBySID:[self.searchStockController.searchList objectAtIndex:indexPath.row]];
+        NSString* tmp = self.searchStockController.searchList[indexPath.row];
+        NSArray* array = [tmp componentsSeparatedByString:@":"];
+        if ([array count] == 2) {
+            NSString* sid = [array objectAtIndex:0];
+            [self addBySID:sid];
+        } else {
+        }
         [self.searchController setActive:NO];
     } else {
         [tableView selectRowAtIndexPath:nil animated:NO scrollPosition:UITableViewScrollPositionNone];
@@ -151,12 +171,6 @@
 
 -(void)updateSearchResultsForSearchController:(UISearchController *)searchController {
     NSString *searchString = [self.searchController.searchBar text];
-    if ([searchString length] == 0) {
-        [self.searchStockController.searchList removeAllObjects];
-        [self.tableView reloadData];
-        return;
-    }
-    
     [self.searchStockController search:searchString];
     [self.tableView reloadData];
 }
