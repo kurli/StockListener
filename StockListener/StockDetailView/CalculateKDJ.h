@@ -11,7 +11,7 @@
 @class StockInfo;
 @interface CalculateKDJ : KingdaTask
 
--(id) initWithStockInfo:(StockInfo*)info andDelta:(int)delta andCount:(NSInteger) count;
+-(id) initWithStockInfo:(StockInfo*)info andDelta:(NSInteger)delta andCount:(NSInteger) count;
 @property (nonatomic, strong) NSMutableArray* kdj_k;
 @property (nonatomic, strong) NSMutableArray* kdj_d;
 @property (nonatomic, strong) NSMutableArray* kdj_j;

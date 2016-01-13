@@ -12,13 +12,13 @@
 
 @interface CalculateKDJ() {
     StockInfo* stockInfo;
-    int delta;
+    NSInteger delta;
 }
 @end
 
 @implementation CalculateKDJ
 
--(id) initWithStockInfo:(StockInfo*)info andDelta:(int)_delta andCount:(NSInteger) count {
+-(id) initWithStockInfo:(StockInfo*)info andDelta:(NSInteger)_delta andCount:(NSInteger) count {
     if ((self = [super init]) != nil) {
         stockInfo = info;
         delta = _delta;

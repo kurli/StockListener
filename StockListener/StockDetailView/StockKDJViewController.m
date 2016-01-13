@@ -31,7 +31,8 @@
 #import "KLineViewController.h"
 #import "GetWeeksStockValue.h"
 
-#define MAX_
+#define LEFT_VIEW_WIDTH self.view.frame.size.width/40*34
+#define RIGHT_VIEW_WIDTH self.view.frame.size.width/40*6
 
 @interface StockKDJViewController (){
     BuySellChartViewController* buySellController;
@@ -128,7 +129,7 @@
         return;
     }
 
-    float leftWidth = ((int)(self.view.frame.size.width/7*6)/(MAX_DISPLAY_COUNT-1))*(MAX_DISPLAY_COUNT-1);
+    float leftWidth = ((int)(LEFT_VIEW_WIDTH)/(MAX_DISPLAY_COUNT-1))*(MAX_DISPLAY_COUNT-1);
 
     int offsetY = self.rateLabel.frame.size.height + self.rateLabel.frame.origin.y + 20;
     CGRect fenshiRect = CGRectMake(0, offsetY, leftWidth, 150);
@@ -136,7 +137,7 @@
 
     if (buySellController == nil) {
         buySellController = [[BuySellChartViewController alloc] initWithParentView:self.view];
-        CGRect rect = CGRectMake(leftWidth, offsetY, self.view.frame.size.width/7, 150);
+        CGRect rect = CGRectMake(leftWidth, offsetY, RIGHT_VIEW_WIDTH, 150);
         [buySellController loadViewVertical:rect];
     }
 
@@ -183,7 +184,7 @@
     offsetY = rect.origin.y + 1;
     if (aVolController == nil) {
         aVolController = [[AVOLChartViewController alloc] initWithParentView:self.view];
-        CGRect rect = CGRectMake(leftWidth, offsetY, self.view.frame.size.width/7, KLINE_VIEW_HEIGHT + AVOL_EXPAND);
+        CGRect rect = CGRectMake(leftWidth, offsetY, RIGHT_VIEW_WIDTH, KLINE_VIEW_HEIGHT + AVOL_EXPAND);
         [aVolController loadViewVertical:rect];
     }
     
@@ -479,7 +480,7 @@
         [self refreshAVOL:l andHighest:h];
         [self refreshVOL:startIndex andVolValues:_self.volValues];
 
-        [kdjViewController refresh];
+        [kdjViewController refresh:delta andStock:self.stockInfo];
         [klineViewController refresh];
         if (_self.todayStartIndex == 0) {
             NSInteger splitX = [self.stockInfo.todayPriceByMinutes count] - delta * [_self.kdj_d count];

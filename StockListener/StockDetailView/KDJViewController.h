@@ -17,7 +17,7 @@
 
 -(void) setFrame:(CGRect)rect;
 
--(void) refresh;
+-(void) refresh:(NSInteger)type andStock:(StockInfo*)info;
 
 -(void) setSplitX:(NSInteger)x;
 

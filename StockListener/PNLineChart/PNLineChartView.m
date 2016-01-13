@@ -87,6 +87,7 @@
     self.layer.borderColor = [[UIColor grayColor] CGColor];
     
     self.splitX = 0;
+    self.startIndex = 0;
 }
 
 - (instancetype)init {
@@ -221,7 +222,7 @@
         
         // draw lines
         BOOL newLine = NO;
-        for (int i=0; i<pointArray.count; i++) {
+        for (NSInteger i=self.startIndex; i<pointArray.count; i++) {
             NSObject* obj = [pointArray objectAtIndex:i];
             if ([obj isKindOfClass:[NSNumber class]] == NO) {
                 CGContextStrokePath(context);
@@ -232,9 +233,9 @@
             float floatValue = value.floatValue;
             
             float height = (floatValue-self.min)/self.interval*self.horizontalLineInterval-self.contentScroll.y+startHeight;
-            float width =startWidth + self.pointerInterval*(i)+self.contentScroll.x;
+            float width =startWidth + self.pointerInterval*(i-self.startIndex)+self.contentScroll.x;
             
-            if (i==0 || newLine) {
+            if (i==self.startIndex || newLine) {
                 CGContextMoveToPoint(context,  width, height);
                 newLine = NO;
             }
