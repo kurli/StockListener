@@ -187,10 +187,16 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
             break;
     }
     float price = 0;
-    if (_stockInfo.price < 2) {
-        price = _stockInfo.buyFivePrice + tmpIndex * 0.001;
+    float start = 0;
+    if (index >= 15) {
+        start = _stockInfo.sellFivePrice;
     } else {
-        price = _stockInfo.buyFivePrice + tmpIndex * 0.01;
+        start = _stockInfo.buyFivePrice;
+    }
+    if (_stockInfo.price < 2) {
+        price = start + tmpIndex * 0.001;
+    } else {
+        price = start + tmpIndex * 0.01;
     }
     if (_stockInfo.price < 2) {
         price *= 1000;
@@ -214,11 +220,54 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
 {
     long tmpIndex = index - 5;
     float price = 0;
-    if (_stockInfo.price < 2) {
-        price = _stockInfo.buyFivePrice + tmpIndex * 0.001;
-    } else {
-        price = _stockInfo.buyFivePrice + tmpIndex * 0.01;
+    switch (tmpIndex) {
+        case 0:
+            price = self.stockInfo.buyFivePrice;
+            break;
+        case 1:
+            price = self.stockInfo.buyFourPrice;
+            break;
+        case 2 :
+            price = self.stockInfo.buyThreePrice;
+            break;
+        case 3:
+            price = self.stockInfo.buyTwoPrice;
+            break;
+        case 4:
+            price = self.stockInfo.buyOnePrice;
+            break;
+        case 5:
+            price = self.stockInfo.sellOnePrice;
+            break;
+        case 6:
+            price = self.stockInfo.sellTwoPrice;
+            break;
+        case 7:
+            price = self.stockInfo.sellThreePrice;
+            break;
+        case 8:
+            price = self.stockInfo.sellFourPrice;
+            break;
+        case 9:
+            price = self.stockInfo.sellFivePrice;
+            break;
+        default:
+            break;
     }
+    if (price == 0) {
+        float start = 0;
+        if (index >= 15) {
+            start = _stockInfo.sellFivePrice;
+        } else {
+            start = _stockInfo.buyFivePrice;
+        }
+        if (_stockInfo.price < 2) {
+            price = start + tmpIndex * 0.001;
+        } else {
+            price = start + tmpIndex * 0.01;
+        }
+    }
+
     float average = _stockInfo.dealTotalMoney/_stockInfo.dealCount;
     float current = _stockInfo.price;
     
