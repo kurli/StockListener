@@ -271,7 +271,9 @@
     if (hour >= 13) {
         index -= 90;
     }
-    index++;
+    if (hour >= 11 && hour < 13 && minute >= 30) {
+        return;
+    }
     if ([self.todayPriceByMinutes count] == 0) {
         [self.todayPriceByMinutes addObject:[NSNumber numberWithFloat:self.price]];
         [self.todayVOLByMinutes addObject:[NSNumber numberWithInteger:self.dealCount]];
@@ -280,7 +282,7 @@
     if (index >=240) {
         return;
     }
-    if (index >= [self.todayPriceByMinutes count]) {
+    if (index > [self.todayPriceByMinutes count]-1) {
         [self.todayPriceByMinutes addObject:[NSNumber numberWithFloat:self.price]];
         NSInteger preVol = 0;
         for (int i=0; i<[self.todayVOLByMinutes count]; i++) {
