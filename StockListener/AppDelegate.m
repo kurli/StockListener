@@ -12,6 +12,7 @@
 #import "StockKDJViewController.h"
 #import "StockListViewController.h"
 #import "StockPlayerManager.h"
+#import "BuySellHistoryViewController.h"
 
 @interface AppDelegate () {
 }
@@ -32,26 +33,21 @@
     //b.创建子控制器
     StockListViewController *c1=[[StockListViewController alloc] init];
     c1.tabBarItem.title=@"Stock";
-
-//    c1.tabBarItem.image=[UIImage imageNamed:@"Play"];
+    //    c3.tabBarItem.image=[UIImage imageNamed:@"Play"];
 
     StockKDJViewController *c2=[[StockKDJViewController alloc] init];
     c2.tabBarItem.title=@"KDJ";
-//    c2.tabBarItem.image=[UIImage imageNamed:@"Play"];
     
     UIViewController *c3=[[UIViewController alloc]init];
     c3.view.backgroundColor=[UIColor yellowColor];
     c3.view.tag = 444;
-//    c3.tabBarItem.title=@"Play";
-//    c3.tabBarItem.image=[UIImage imageNamed:@"Play"];
-    UIViewController *c4=[[UIViewController alloc]init];
-    c4.view.backgroundColor=[UIColor grayColor];
+
+    BuySellHistoryViewController *c4=[[BuySellHistoryViewController alloc] initWithNibName:@"BuySellHistoryViewController" bundle:nil];
     c4.tabBarItem.title=@"Caculator";
-//    c4.tabBarItem.image=[UIImage imageNamed:@"Play"];
+
     UIViewController *c5=[[UIViewController alloc]init];
     c5.view.backgroundColor=[UIColor whiteColor];
     c5.tabBarItem.title=@"Setting";
-//    c5.tabBarItem.image=[UIImage imageNamed:@"Play"];
     
     self.tb.viewControllers =@[c3,c1,c2,c4,c5];
     self.tb.selectedViewController = c1;

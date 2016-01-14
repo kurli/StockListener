@@ -193,16 +193,22 @@
     if (start < 0) {
         start = 0;
     }
-    if (start - 1 >= 0 && [stockInfo.fiveDayPriceByMinutes count] > start - 1) {
-        NSNumber* number = [stockInfo.fiveDayPriceByMinutes objectAtIndex:start -1];
-        prePrice = [number floatValue];
-    }
     for (NSInteger i = start; i<[stockInfo.fiveDayPriceByMinutes count]; i++) {
         [priceMinute addObject:[stockInfo.fiveDayPriceByMinutes objectAtIndex:i]];
         if ([stockInfo.fiveDayVOLByMinutes count] > i) {
             [volMinute addObject:[stockInfo.fiveDayVOLByMinutes objectAtIndex:i]];
         } else {
             [volMinute addObject:[NSNumber numberWithInteger:0]];
+        }
+    }
+    if (start - 1 >= 0 && [stockInfo.fiveDayPriceByMinutes count] > start - 1) {
+        NSNumber* number = [stockInfo.fiveDayPriceByMinutes objectAtIndex:start -1];
+        prePrice = [number floatValue];
+    } else {
+        start = [stockInfo.todayPriceByMinutes count] - needMinuteCount;
+        if (start -1 >= 0 && [stockInfo.todayPriceByMinutes count] > start - 1) {
+            NSNumber* number = [stockInfo.todayPriceByMinutes objectAtIndex:start -1];
+            prePrice = [number floatValue];
         }
     }
     start = [stockInfo.todayPriceByMinutes count] - needMinuteCount;

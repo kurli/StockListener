@@ -165,7 +165,7 @@
 
     // draw yAxis
     for (int i=0; i<self.numberOfVerticalElements; i++) {
-        int height =self.horizontalLineInterval*i;
+        float height =self.horizontalLineInterval*i;
         float verticalLine = height + startHeight - self.contentScroll.y;
         
         CGContextSetLineWidth(context, self.horizontalLineWidth);

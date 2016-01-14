@@ -114,13 +114,13 @@
     //K line
     kLineChartView.max = h;
     kLineChartView.min = l;
-    kLineChartView.horizontalLineInterval = (kLineChartView.frame.size.height - 5) / 5;
+    kLineChartView.horizontalLineInterval = (float)(kLineChartView.frame.size.height-1) / 5.0;
     if (h == l) {
         kLineChartView.interval = 1;
     } else {
-        kLineChartView.interval = (h-l)/5;
+        kLineChartView.interval = (h-l)/5.0;
     }
-    float delta = (h - l)/6;
+    float delta = (h - l)/5.0;
     NSMutableArray* array = [[NSMutableArray alloc] init];
     for (int i=0; i<6; i++) {
         [array addObject:[NSNumber numberWithFloat:l+delta*i]];
@@ -133,7 +133,7 @@
     kLineChartView.yAxisValues = array;
     kLineChartView.numberOfVerticalElements = 6;
     kLineChartView.pointerInterval = (kLineChartView.frame.size.width - LEFT_PADDING - 1)/(MAX_DISPLAY_COUNT-1);
-    kLineChartView.xAxisInterval = (kLineChartView.frame.size.width - LEFT_PADDING)/(MAX_DISPLAY_COUNT-1);
+    kLineChartView.xAxisInterval = (kLineChartView.frame.size.width - LEFT_PADDING-1)/(MAX_DISPLAY_COUNT-1);
     kLineChartView.axisLeftLineWidth = LEFT_PADDING;
     kLineChartView.splitX = self.todayStartIndex;
     

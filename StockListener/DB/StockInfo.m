@@ -277,7 +277,7 @@
         [self.todayVOLByMinutes addObject:[NSNumber numberWithInteger:self.dealCount]];
         return;
     }
-    if (index >=242) {
+    if (index >=240) {
         return;
     }
     if (index >= [self.todayPriceByMinutes count]) {
