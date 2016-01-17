@@ -30,6 +30,7 @@
 #import "KDJViewController.h"
 #import "KLineViewController.h"
 #import "GetWeeksStockValue.h"
+#import "BuySellHistoryViewController.h"
 
 #define LEFT_VIEW_WIDTH self.view.frame.size.width/40*34
 #define RIGHT_VIEW_WIDTH self.view.frame.size.width/40*6
@@ -410,6 +411,55 @@
     [volController reload];
 }
 
+-(void) drawMarks {
+    ////
+    // Draw mark
+    float price = 0;
+    float isBuy = YES;
+    NSInteger dealCount = 0;
+    if ([self.stockInfo.buySellHistory count] > 0) {
+        NSString* data = [self.stockInfo.buySellHistory lastObject];
+        NSArray* array = [data componentsSeparatedByString:@":"];
+        if ([array count] == 2) {
+            price = [[array objectAtIndex:0] floatValue];
+            dealCount = [[array objectAtIndex:1] integerValue];
+            if (price == PRE_EARN_FLAG) {
+                price = 0;
+            } else {
+                if (dealCount > 0) {
+                    isBuy = YES;
+                } else {
+                    isBuy = NO;
+                }
+            }
+        }
+    }
+    if (price > 0) {
+        if (isBuy) {
+            float tax = [self.stockInfo getTaxForBuy:price andDealCount:dealCount];
+            tax += [self.stockInfo getTaxForSell:self.stockInfo.price andDealCount:dealCount];
+            price = tax/(float)dealCount + price;
+            [klineViewController setPriceMarkColor:[UIColor redColor]];
+            [fenshiViewController setPriceMarkColor:[UIColor redColor]];
+        } else {
+            [klineViewController setPriceMarkColor:[UIColor greenColor]];
+            [fenshiViewController setPriceMarkColor:[UIColor greenColor]];
+        }
+        [klineViewController setPriceMark:price];
+        float rate = (self.stockInfo.price-price)/price;
+        [klineViewController setPriceInfoStr:[NSString stringWithFormat:@"  %.2f%%", rate*100]];
+        // Set fen shi
+        rate = (price-self.stockInfo.lastDayPrice)/self.stockInfo.lastDayPrice;
+        [fenshiViewController setPriceMark:rate*100];
+        rate = (self.stockInfo.price-price)/price;
+        [fenshiViewController setPriceInfoStr:[NSString stringWithFormat:@"  %.2f%%", rate*100]];
+    } else {
+        [klineViewController setPriceMark:-10];
+        [fenshiViewController setPriceMark:-10];
+    }
+    ////
+}
+
 - (IBAction)onKDJTypeChanged:(id)sender {
     int delta = 1;
     NSString* str = @"1分";
@@ -494,6 +544,8 @@
             [fenshiViewController setSplitX:0];
         }
         [fenshiViewController refresh:self.stockInfo];
+        
+        [self drawMarks];
     };
 
 //    [self clearCharts];

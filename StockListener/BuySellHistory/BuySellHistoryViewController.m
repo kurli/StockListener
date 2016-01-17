@@ -26,8 +26,6 @@
 #define TAG_RATE 5
 #define TAG_DEAL_PRICE 6
 
-#define PRE_EARN_FLAG -12321
-
 #define TYPE_BUY 0
 #define TYPE_SELL 1
 
@@ -553,7 +551,7 @@
     self.totalStockCount.text = [NSString stringWithFormat:@"%ld", totalDealCount];
     self.totalStockPrice.text = [NSString stringWithFormat:@"%.2f", sellTotalPrice];
     if (buyTotalPrice != 0) {
-        self.profit.text = [NSString stringWithFormat:@"%.2f %.2f%%", sellTotalPrice-buyTotalPrice + preEarn, (sellTotalPrice-buyTotalPrice+preEarn)/buyTotalPrice];
+        self.profit.text = [NSString stringWithFormat:@"%.2f %.2f%%", sellTotalPrice-buyTotalPrice + preEarn, (sellTotalPrice-buyTotalPrice+preEarn)/buyTotalPrice * 100];
     } else {
         self.profit.text = [NSString stringWithFormat:@"%.2f", sellTotalPrice-buyTotalPrice + preEarn];
     }

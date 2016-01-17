@@ -29,6 +29,18 @@
     return self;
 }
 
+-(void) setPriceMark:(float)priceMark {
+    [kLineChartView setMarkY:priceMark];
+}
+
+-(void) setPriceMarkColor:(UIColor*)color {
+    [kLineChartView setMarkYColor:color];
+}
+
+-(void) setPriceInfoStr:(NSString*)str {
+    [kLineChartView setInfoStr:str];
+}
+
 -(void) setFrame:(CGRect)rect {
     [kLineChartView setFrame: rect];
 }

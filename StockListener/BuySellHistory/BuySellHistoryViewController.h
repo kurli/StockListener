@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "ZSYPopoverListView.h"
 
+#define PRE_EARN_FLAG -12321
+
 @interface BuySellHistoryViewController : UIViewController <ZSYPopoverListDatasource, ZSYPopoverListDelegate>
 
 @end

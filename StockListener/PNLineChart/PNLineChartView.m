@@ -51,10 +51,14 @@
 
 #pragma mark -
 
-@interface PNLineChartView ()
+@interface PNLineChartView () {
+    CGPoint longPressPoint;
+    BOOL showLongPress;
+}
 
 @property (nonatomic, strong) NSString* fontName;
 @property (nonatomic, assign) CGPoint contentScroll;
+@property (nonatomic, strong) NSTimer* hideLongPressTimer;
 @end
 
 
@@ -88,6 +92,34 @@
     
     self.splitX = 0;
     self.startIndex = 0;
+    self.markY = -10;
+    self.markYColor = [UIColor blackColor];
+    
+    UILongPressGestureRecognizer *longPressGR =
+    [[UILongPressGestureRecognizer alloc] initWithTarget:self
+                                                  action:@selector(handleLongPress:)];
+    longPressGR.allowableMovement=YES;
+    longPressGR.minimumPressDuration = 0.2;
+    [self addGestureRecognizer:longPressGR];
+    showLongPress = NO;
+}
+
+-(void) onHideLongPressFired {
+    showLongPress = NO;
+    [self setNeedsDisplay];
+}
+
+-(IBAction)handleLongPress:(UILongPressGestureRecognizer *)gestureRecognizer{
+    longPressPoint = [gestureRecognizer locationInView:self];
+    if(gestureRecognizer.state == UIGestureRecognizerStateBegan) {
+        showLongPress = YES;
+        [self.hideLongPressTimer invalidate];
+        [self setHideLongPressTimer:nil];
+    } else if(gestureRecognizer.state == UIGestureRecognizerStateEnded) {
+//        showLongPress = NO;
+        self.hideLongPressTimer = [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(onHideLongPressFired) userInfo:nil repeats:NO];
+    }
+    [self setNeedsDisplay];
 }
 
 - (instancetype)init {
@@ -254,6 +286,41 @@
         CGContextMoveToPoint(context,  x, 0);
         CGContextAddLineToPoint(context, x, self.frame.size.height);
         CGContextStrokePath(context);
+    }
+    
+    if (showLongPress == YES) {
+        NSLog(@"SHOW POINT");
+        CGContextSetLineWidth(context, 1);
+        [[UIColor blackColor] set];
+        CGContextMoveToPoint(context,  startWidth, self.frame.size.height - longPressPoint.y);
+        CGContextAddLineToPoint(context, self.frame.size.width, self.frame.size.height - longPressPoint.y);
+        CGContextStrokePath(context);
+        CGContextMoveToPoint(context,  longPressPoint.x, self.frame.size.height);
+        CGContextAddLineToPoint(context, longPressPoint.x, 0);
+        CGContextStrokePath(context);
+        float value = ((self.frame.size.height - longPressPoint.y)-startHeight)/self.horizontalLineInterval*self.interval +self.min;
+        NSString* str;
+        if (value < 3) {
+            str = [NSString stringWithFormat:@"%.3f", value];
+        } else {
+            str = [NSString stringWithFormat:@"%.2f", value];
+        }
+        NSInteger count = [str lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+        CGContextShowTextAtPoint(context, startWidth, self.frame.size.height - longPressPoint.y + 5, [str UTF8String], count);
+    }
+
+    if (self.markY > -10) {
+        float height = (self.markY-self.min)/self.interval*self.horizontalLineInterval+startHeight;
+        [self.markYColor set];
+        CGContextSetLineWidth(context, 1);
+        CGFloat lengths[] = {10,10};
+        CGContextSetLineDash(context, 0, lengths,2);
+        CGContextMoveToPoint(context,  startWidth, height);
+        CGContextAddLineToPoint(context, self.frame.size.width, height);
+        CGContextStrokePath(context);
+        [[UIColor blackColor] set];
+        NSInteger count = [self.infoStr lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+        CGContextShowTextAtPoint(context, startWidth, height + 5, [self.infoStr UTF8String], count);
     }
     
 //    // Draw vetical focus line

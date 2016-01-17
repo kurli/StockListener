@@ -33,6 +33,7 @@
 @property (nonatomic, assign) NSInteger numberOfVerticalElements;
 @property (nonatomic, assign) NSInteger splitX;
 @property (nonatomic, assign) NSInteger startIndex;
+@property (nonatomic, assign) float     markY;
 
 @property (nonatomic, strong) UIColor * horizontalLinesColor;
 
@@ -49,6 +50,8 @@
 @property (nonatomic, assign) float  axisBottomLinetHeight;  // xAxis line off the view
 @property (nonatomic, assign) float  axisLeftLineWidth;   //yAxis line between the view left
 @property (nonatomic, assign) float xAxisInterval;
+@property (nonatomic, strong) UIColor* markYColor;
+@property (nonatomic, strong) NSString* infoStr;
 
 @property (nonatomic, strong) NSString*  floatNumberFormatterString; // the yAxis label text should be formatted with
 

@@ -21,4 +21,10 @@
 
 -(void) setSplitX:(NSInteger)x;
 
+-(void) setPriceMark:(float)priceMark;
+
+-(void) setPriceMarkColor:(UIColor*)color;
+
+-(void) setPriceInfoStr:(NSString*)str;
+
 @end

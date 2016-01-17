@@ -32,6 +32,18 @@
     return self;
 }
 
+-(void) setPriceMark:(float)priceMark {
+    [priceChartView setMarkY:priceMark];
+}
+
+-(void) setPriceMarkColor:(UIColor*)color {
+    [priceChartView setMarkYColor:color];
+}
+
+-(void) setPriceInfoStr:(NSString*)str {
+    [priceChartView setInfoStr:str];
+}
+
 -(void) setFrame:(CGRect)rect {
     [priceChartView setFrame: rect];
 }
