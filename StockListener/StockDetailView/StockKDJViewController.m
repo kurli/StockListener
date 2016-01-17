@@ -44,6 +44,7 @@
     FenshiViewController* fenshiViewController;
     KDJViewController* kdjViewController;
     KLineViewController* klineViewController;
+    BOOL isRegisteredReceiver;
 }
 @property (nonatomic, strong) ADTickerLabel *priceLabel;
 @property (weak, nonatomic) IBOutlet UILabel *rateLabel;
@@ -68,6 +69,7 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
+        isRegisteredReceiver = NO;
     }
     return self;
 }
@@ -76,6 +78,7 @@
     [super viewDidDisappear:animated];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:STOCK_VALUE_REFRESHED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:STOCK_PLAYER_STETE_NOTIFICATION object:nil];
+    isRegisteredReceiver = NO;
 }
 
 - (void) viewDidLoad {
@@ -92,15 +95,6 @@
 
 -(void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(onPlayerStatusChanged:)
-                                                 name:STOCK_PLAYER_STETE_NOTIFICATION
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(onStockValueRefreshed)
-                                                 name:STOCK_VALUE_REFRESHED_NOTIFICATION
-                                               object:nil];
 
     if (self.stockInfo == nil) {
         StockInfo* info = [[StockPlayerManager getInstance] getCurrentPlayingInfo];
@@ -128,7 +122,18 @@
     if (self.view.frame.size.width > self.view.frame.size.height) {
         return;
     }
-
+    if (!isRegisteredReceiver) {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(onPlayerStatusChanged:)
+                                                     name:STOCK_PLAYER_STETE_NOTIFICATION
+                                                   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(onStockValueRefreshed)
+                                                     name:STOCK_VALUE_REFRESHED_NOTIFICATION
+                                                   object:nil];
+        isRegisteredReceiver = YES;
+    }
+    
     float leftWidth = ((int)(LEFT_VIEW_WIDTH)/(MAX_DISPLAY_COUNT-1))*(MAX_DISPLAY_COUNT-1);
 
     int offsetY = self.rateLabel.frame.size.height + self.rateLabel.frame.origin.y + 20;

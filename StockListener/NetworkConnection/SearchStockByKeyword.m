@@ -35,10 +35,12 @@
         return nil;
     }
     NSString* subStr = [sid substringToIndex:2];
-    if (![subStr isEqualToString:@"sh"] && ![subStr isEqualToString:@"sz"]) {
+    if (![subStr isEqualToString:@"sh"] && ![subStr isEqualToString:@"sz"]
+        &&![subStr isEqualToString:@"cf"]) {
         return nil;
     }
-    
+    sid = [sid stringByReplacingOccurrencesOfString:@"cf" withString:@"sz"];
+
     return [NSString stringWithFormat:@"%@:%@", sid, name];
 }
 

@@ -252,7 +252,7 @@
     } else if (info.todayLoestPrice < info.lastDayPrice) {
         [lowestLabel setTextColor:[UIColor colorWithRed:0 green:0.7 blue:0 alpha:1]];
     }
-    priceStr = [self valueToStr:info.dealTotalMoney/info.dealCount];
+    priceStr = [self valueToStr:info.dealTotalMoney/info.dealCount/100];
     [averageLabel setText:priceStr];
     
     // set steps

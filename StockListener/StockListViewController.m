@@ -40,6 +40,7 @@
     _searchController.dimsBackgroundDuringPresentation = NO;
     _searchController.hidesNavigationBarDuringPresentation = NO;
     _searchController.searchBar.frame = CGRectMake(self.searchController.searchBar.frame.origin.x, self.searchController.searchBar.frame.origin.y, self.searchController.searchBar.frame.size.width, 44.0);
+    _searchController.searchBar.returnKeyType = UIReturnKeySearch;
     self.tableView.tableHeaderView = self.searchController.searchBar;
     _searchController.searchBar.placeholder = @"股票代码/拼音简写/名称";
     

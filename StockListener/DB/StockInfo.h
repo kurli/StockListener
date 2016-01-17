@@ -39,6 +39,9 @@
 @property (atomic, unsafe_unretained) int step;                 // Used for play sound
 @property (atomic, unsafe_unretained) float speed;              // last change SPEED
 
+// Buy sell history
+@property (atomic, strong) NSMutableArray* buySellHistory;
+
 // Today detail
 @property (atomic, unsafe_unretained) float openPrice;          //1
 @property (atomic, unsafe_unretained) float lastDayPrice;       //2
@@ -71,6 +74,9 @@
 @property (atomic, strong) NSString* updateTime;                //31
 
 -(void) newPriceGot;
+
+-(float) getTaxForBuy:(float)price andDealCount:(NSInteger) dealCount;
+-(float) getTaxForSell:(float)price andDealCount:(NSInteger) dealCount;
 
 //temp data
 //@property (atomic, strong) NSMutableArray* changeRateArray;

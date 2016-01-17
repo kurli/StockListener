@@ -70,13 +70,27 @@
     }
     StockInfo* info = [[StockInfo alloc] init];
     info.sid = sid;
+    [self getNameASync:info];
+}
+
+-(void) getNameASync:(StockInfo*)info {
     GetStockValueTask* task = [[GetStockValueTask alloc] initWithStock:info];
     task.onCompleteBlock = ^(StockInfo* info) {
-        if (info == nil) {
+        if ([info.updateDay length] == 0) {
+            if ([info.name length] == 1) {
+                info.name = @" - ";
+                if ([info.sid containsString:@"sz"]) {
+                    info.sid = [info.sid stringByReplacingOccurrencesOfString:@"sz" withString:@"sh"];
+                } else {
+                    info.sid = [info.sid stringByReplacingOccurrencesOfString:@"sh" withString:@"sz"];
+                }
+                [self getNameASync:info];
+                return;
+            }
             return;
         }
         [self.stockList addObject:info];
-
+        
         [self saveToDB];
         if (self.delegate) {
             [self.delegate onStockListChanged];

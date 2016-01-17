@@ -32,6 +32,16 @@
 #define WEEKLY_PRICE_HISTORY @"weekly_price_history"
 #define WEEKLY_VOL_HISTORY @"weekly_vol_history"
 #define WEEKLY_UPDATE_DAY @"weekly_update_day"
+#define BUY_SELL_HISTORY @"buy_sell_history"
+
+////
+//Tax
+#define YIN_HUA_SHUI 0.001
+#define MAX_YONGJIN 0.003
+#define YONG_JIN 0.0003
+#define MIN_YONG_JIN 5
+#define GUO_HU_FEI 0.0006
+////
 
 - (id) init {
     if (self = [super init]) {
@@ -80,6 +90,7 @@
         self.weeklyPrice = [[NSMutableArray alloc] init];
         self.weeklyVOL = [[NSMutableArray alloc] init];
         self.weeklyLastUpdateDay = @"";
+        self.buySellHistory = [[NSMutableArray alloc] init];
     }
     return self;
 }
@@ -107,6 +118,7 @@
     info.weeklyLastUpdateDay = [self.weeklyLastUpdateDay copy];
     info.weeklyVOL = [self.weeklyVOL copy];
     info.weeklyPrice = [self.weeklyPrice copy];
+    info.buySellHistory = [self.buySellHistory copy];
     return info;
 }
 
@@ -147,6 +159,9 @@
     if (self.weeklyLastUpdateDay != nil) {
         [aCoder encodeObject:self.weeklyLastUpdateDay forKey:WEEKLY_UPDATE_DAY];
     }
+    if (self.buySellHistory != nil) {
+        [aCoder encodeObject:self.buySellHistory forKey:BUY_SELL_HISTORY];
+    }
 }
 
 -(id)initWithCoder:(NSCoder *)aDecoder {
@@ -166,6 +181,7 @@
         self.weeklyLastUpdateDay = [aDecoder decodeObjectForKey:WEEKLY_UPDATE_DAY];
         self.weeklyVOL = [aDecoder decodeObjectForKey:WEEKLY_VOL_HISTORY];
         self.weeklyPrice = [aDecoder decodeObjectForKey:WEEKLY_PRICE_HISTORY];
+        self.buySellHistory = [aDecoder decodeObjectForKey:BUY_SELL_HISTORY];
 
         if (self.buySellDic == nil) {
             self.buySellDic = [[NSMutableDictionary alloc] init];
@@ -199,6 +215,9 @@
         }
         if (self.weeklyPrice == nil) {
             self.weeklyPrice = [[NSMutableArray alloc] init];
+        }
+        if (self.buySellHistory == nil) {
+            self.buySellHistory = [[NSMutableArray alloc] init];
         }
     }
     return self;
@@ -395,6 +414,57 @@
 //        NSLog(@"%@", data);
     }
      */
+}
+
+-(float) getTaxForSell:(float)price andDealCount:(NSInteger) dealCount {
+    float yongjin = price*dealCount * YONG_JIN;
+    float maxYongjin = price*dealCount * MAX_YONGJIN;
+    if (yongjin > maxYongjin) {
+        yongjin = maxYongjin;
+    }
+    if (yongjin < 5.0) {
+        yongjin = 5.0;
+    }
+    float guohu = (float)dealCount * GUO_HU_FEI;
+    if (guohu < 1.0) {
+        guohu = 1;
+    }
+    if ([self.sid containsString:@"sz"]) {
+        guohu = 0;
+    }
+    float yinhua = price*dealCount * YIN_HUA_SHUI;
+    NSString* start = [self.sid substringWithRange:NSMakeRange(2, 1)];
+    if (![start isEqualToString:@"6"] && ![start isEqualToString:@"0"]
+        && ![start isEqualToString:@"3"]) {
+        guohu = 0;
+        yinhua = 0;
+    }
+    return guohu + yongjin + yinhua;
+}
+
+-(float) getTaxForBuy:(float)price andDealCount:(NSInteger) dealCount {
+    float yongjin = price*dealCount * YONG_JIN;
+    float maxYongjin = price*dealCount * MAX_YONGJIN;
+    if (yongjin > maxYongjin) {
+        yongjin = maxYongjin;
+    }
+    if (yongjin < 5.0) {
+        yongjin = 5.0;
+    }
+    float guohu = (float)dealCount * GUO_HU_FEI;
+    if (guohu < 1.0) {
+        guohu = 1;
+    }
+    if ([self.sid containsString:@"sz"]) {
+        guohu = 0;
+    }
+
+    NSString* start = [self.sid substringWithRange:NSMakeRange(2, 1)];
+    if (![start isEqualToString:@"6"] && ![start isEqualToString:@"0"]
+        && ![start isEqualToString:@"3"]) {
+        guohu = 0;
+    }
+    return guohu + yongjin;
 }
 
 @end
