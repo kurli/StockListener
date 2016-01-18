@@ -34,10 +34,9 @@
 @property (nonatomic, assign) NSInteger splitX;
 @property (nonatomic, assign) NSInteger startIndex;
 @property (nonatomic, assign) float     markY;
+@property (nonatomic, assign) BOOL      yAxisPercentage;
 
 @property (nonatomic, strong) UIColor * horizontalLinesColor;
-
-
 
 @property (nonatomic, assign) float  max; // max value in the axis
 @property (nonatomic, assign) float  min; // min value in the axis

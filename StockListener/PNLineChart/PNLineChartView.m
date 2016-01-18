@@ -103,6 +103,7 @@
     longPressGR.minimumPressDuration = 0.2;
     [self addGestureRecognizer:longPressGR];
     showLongPress = NO;
+    self.yAxisPercentage = NO;
 }
 
 -(void) onHideLongPressFired {
@@ -196,40 +197,119 @@
     CGContextSetTextMatrix(context, CGAffineTransformIdentity);
     CGContextSelectFont(context, [self.fontName UTF8String], self.xAxisFontSize, kCGEncodingMacRoman);
 
-    // draw yAxis
-    for (int i=0; i<self.numberOfVerticalElements; i++) {
-        float height =self.horizontalLineInterval*i;
-        float verticalLine = height + startHeight - self.contentScroll.y;
-        
-        CGContextSetLineWidth(context, self.horizontalLineWidth);
-        
-        [self.horizontalLinesColor set];
-        
-        NSNumber* yAxisVlue = [self.yAxisValues objectAtIndex:i];
-        
-        NSString* numberString = [NSString stringWithFormat:self.floatNumberFormatterString, yAxisVlue.floatValue];
-        
-        NSInteger count = [numberString lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
-        
-        if (i == 0) {
-            CGContextMoveToPoint(context, startWidth, verticalLine);
-            CGContextAddLineToPoint(context, self.bounds.size.width, verticalLine);
-            CGContextStrokePath(context);
-            [[UIColor blackColor] set];
-            CGContextShowTextAtPoint(context, 0, 1, [numberString UTF8String], count);
-        } else if (i == self.numberOfVerticalElements-1) {
-            CGContextMoveToPoint(context, startWidth, verticalLine);
-            CGContextAddLineToPoint(context, self.bounds.size.width, verticalLine);
-            CGContextStrokePath(context);
-            [[UIColor blackColor] set];
-            CGContextShowTextAtPoint(context, 0, verticalLine - self.xAxisFontSize, [numberString UTF8String], count);
+    if (self.yAxisPercentage == YES) {
+        if ([self.plots count] > 0) {
+            PNPlot* plot = [self.plots objectAtIndex:0];
+            NSArray* pointArray = plot.plottingValues;
+            //Find obj
+            NSObject* obj = nil;
+            for (NSInteger i=[pointArray count]-1; i>=0; i--) {
+                obj = [pointArray objectAtIndex:i];
+                if ([obj isKindOfClass:[NSNumber class]] == YES) {
+                    break;
+                }
+                obj = nil;
+            }
+            if (obj != nil) {
+                NSNumber* value = (NSNumber*)obj;
+                float base = [value floatValue];
+                float delta = self.max - self.min;
+                delta = delta/5;
+                delta = delta / base;
+                if (delta <= 0.0025) {
+                    delta = 0.002;
+                } else if (delta <= 0.0055) {
+                    delta = 0.005;
+                } else if (delta <= 0.015) {
+                    delta = 0.01;
+                } else if (delta <= 0.025) {
+                    delta = 0.02;
+                } else if (delta <= 0.055) {
+                    delta = 0.05;
+                } else if (delta <= 0.15) {
+                    delta = 0.1;
+                }
+
+                CGContextSetLineWidth(context, self.horizontalLineWidth);
+                [self.horizontalLinesColor set];
+                NSString* numberString = @"0%";
+                NSInteger count = [numberString lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+                
+                // Draw current
+                float height = (base-self.min)/self.interval*self.horizontalLineInterval-self.contentScroll.y+startHeight;
+                CGContextMoveToPoint(context, startWidth, height);
+                CGContextAddLineToPoint(context, self.bounds.size.width, height);
+                CGContextStrokePath(context);
+                [[UIColor blackColor] set];
+                CGContextShowTextAtPoint(context, 0, height - self.xAxisFontSize/2, [numberString UTF8String], count);
+
+                // Draw above
+                for (int i=1; i<15; i++) {
+                    numberString = [NSString stringWithFormat:@"%.1f%%", i*delta*100];
+                    NSInteger count = [numberString lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+                    height = (base*(1+i*delta)-self.min)/self.interval*self.horizontalLineInterval-self.contentScroll.y+startHeight;
+                    if (height > self.frame.size.height-10) {
+                        break;
+                    }
+                    [self.horizontalLinesColor set];
+                    CGContextMoveToPoint(context, startWidth, height);
+                    CGContextAddLineToPoint(context, self.bounds.size.width, height);
+                    CGContextStrokePath(context);
+                    [[UIColor blackColor] set];
+                    CGContextShowTextAtPoint(context, 0, height - self.xAxisFontSize/2, [numberString UTF8String], count);
+                }
+
+                // Draw down
+                for (int i=1; i<15; i++) {
+                    numberString = [NSString stringWithFormat:@"-%.1f%%", i*delta*100];
+                    NSInteger count = [numberString lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+                    height = (base*(1-i*delta)-self.min)/self.interval*self.horizontalLineInterval-self.contentScroll.y+startHeight;
+                    if (height < 10) {
+                        break;
+                    }
+                    [self.horizontalLinesColor set];
+                    CGContextMoveToPoint(context, startWidth, height);
+                    CGContextAddLineToPoint(context, self.bounds.size.width, height);
+                    CGContextStrokePath(context);
+                    [[UIColor blackColor] set];
+                    CGContextShowTextAtPoint(context, 0, height - self.xAxisFontSize/2, [numberString UTF8String], count);
+                }
+            }
         }
-        else {
+    } else {
+        // draw yAxis
+        for (int i=0; i<self.numberOfVerticalElements; i++) {
+            float height =self.horizontalLineInterval*i;
+            float verticalLine = height + startHeight - self.contentScroll.y;
+            
+            CGContextSetLineWidth(context, self.horizontalLineWidth);
+            
+            [self.horizontalLinesColor set];
+            
+            NSNumber* yAxisVlue = [self.yAxisValues objectAtIndex:i];
+            
+            NSString* numberString = [NSString stringWithFormat:self.floatNumberFormatterString, yAxisVlue.floatValue];
+            
+            NSInteger count = [numberString lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+            
             CGContextMoveToPoint(context, startWidth, verticalLine);
-            CGContextAddLineToPoint(context, self.bounds.size.width, verticalLine);
-            CGContextStrokePath(context);
-            [[UIColor blackColor] set];
-            CGContextShowTextAtPoint(context, 0, verticalLine - self.xAxisFontSize/2, [numberString UTF8String], count);
+            if (i == 0) {
+                CGContextAddLineToPoint(context, self.bounds.size.width, verticalLine);
+                CGContextStrokePath(context);
+                [[UIColor blackColor] set];
+                CGContextShowTextAtPoint(context, 0, 1, [numberString UTF8String], count);
+            } else if (i == self.numberOfVerticalElements-1) {
+                CGContextAddLineToPoint(context, self.bounds.size.width, verticalLine);
+                CGContextStrokePath(context);
+                [[UIColor blackColor] set];
+                CGContextShowTextAtPoint(context, 0, verticalLine - self.xAxisFontSize, [numberString UTF8String], count);
+            }
+            else {
+                CGContextAddLineToPoint(context, self.bounds.size.width, verticalLine);
+                CGContextStrokePath(context);
+                [[UIColor blackColor] set];
+                CGContextShowTextAtPoint(context, 0, verticalLine - self.xAxisFontSize/2, [numberString UTF8String], count);
+            }
         }
     }
     

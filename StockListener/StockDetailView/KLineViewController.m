@@ -25,6 +25,7 @@
         kLineChartView = [[PNLineChartView alloc] init];
         [kLineChartView setBackgroundColor:[UIColor whiteColor]];
         [parentView addSubview:kLineChartView];
+        [kLineChartView setYAxisPercentage:YES];
     }
     return self;
 }
