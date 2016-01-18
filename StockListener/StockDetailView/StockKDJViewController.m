@@ -31,6 +31,7 @@
 #import "KLineViewController.h"
 #import "GetWeeksStockValue.h"
 #import "BuySellHistoryViewController.h"
+#import "CalculateAVOL.h"
 
 #define LEFT_VIEW_WIDTH self.view.frame.size.width/40*34
 #define RIGHT_VIEW_WIDTH self.view.frame.size.width/40*6
@@ -370,6 +371,14 @@
     // Dispose of any resources that can be recreated.
 }
 
+-(void) refreshAVOLAsync:(float)l andHighest:(float)h{
+    CalculateAVOL* task = [[CalculateAVOL alloc] initWithStockInfo:self.stockInfo];
+    task.onCompleteBlock = ^() {
+        [self refreshAVOL:l andHighest:h];
+    };
+    [[KingdaWorker getInstance] queue:task];
+}
+
 -(void) refreshAVOL:(float)l andHighest:(float)h{
     // Average VOL
     float delta = 0.01;
@@ -392,8 +401,6 @@
     [aVolController setMin:ll-extend];
     [aVolController setMax:hh+extend];
     [aVolController reload];
-
-    NSLog(@"%d %d %d", ll, hh, hh-ll);
 }
 
 -(void) refreshVOL:(NSInteger) startIndex andVolValues:(NSArray*)volValues {
@@ -532,7 +539,7 @@
                 l = [p floatValue];
             }
         }
-        [self refreshAVOL:l andHighest:h];
+        [self refreshAVOLAsync:l andHighest:h];
         [self refreshVOL:startIndex andVolValues:_self.volValues];
 
         [kdjViewController refresh:delta andStock:self.stockInfo];

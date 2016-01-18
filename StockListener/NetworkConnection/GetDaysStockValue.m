@@ -64,7 +64,7 @@
     } else {
         self.neededNewInfo.hundredDayLastUpdateDay = date;
     }
-    [self calculateAP];
+//    [self calculateAP];
 }
 
 //Calculate average price

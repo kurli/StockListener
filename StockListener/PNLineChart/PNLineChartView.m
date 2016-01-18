@@ -37,6 +37,7 @@
 #define HORIZONTAL_START_LINE (0.17)
 #define POINTER_WIDTH_INTERVAL  (50)
 #define AXIS_FONT_SIZE    (10)
+#define AXIS_FONT_SIZE_DOUBLE    (20)
 
 #define AXIS_BOTTOM_LINE_HEIGHT (1)
 #define AXIS_LEFT_LINE_WIDTH (1)
@@ -214,17 +215,20 @@
             CGContextMoveToPoint(context, startWidth, verticalLine);
             CGContextAddLineToPoint(context, self.bounds.size.width, verticalLine);
             CGContextStrokePath(context);
+            [[UIColor blackColor] set];
             CGContextShowTextAtPoint(context, 0, 1, [numberString UTF8String], count);
         } else if (i == self.numberOfVerticalElements-1) {
             CGContextMoveToPoint(context, startWidth, verticalLine);
             CGContextAddLineToPoint(context, self.bounds.size.width, verticalLine);
             CGContextStrokePath(context);
+            [[UIColor blackColor] set];
             CGContextShowTextAtPoint(context, 0, verticalLine - self.xAxisFontSize, [numberString UTF8String], count);
         }
         else {
             CGContextMoveToPoint(context, startWidth, verticalLine);
             CGContextAddLineToPoint(context, self.bounds.size.width, verticalLine);
             CGContextStrokePath(context);
+            [[UIColor blackColor] set];
             CGContextShowTextAtPoint(context, 0, verticalLine - self.xAxisFontSize/2, [numberString UTF8String], count);
         }
     }
@@ -289,7 +293,6 @@
     }
     
     if (showLongPress == YES) {
-        NSLog(@"SHOW POINT");
         CGContextSetLineWidth(context, 1);
         [[UIColor blackColor] set];
         CGContextMoveToPoint(context,  startWidth, self.frame.size.height - longPressPoint.y);
@@ -306,6 +309,7 @@
             str = [NSString stringWithFormat:@"%.2f", value];
         }
         NSInteger count = [str lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+        CGContextSelectFont(context, [self.fontName UTF8String], self.xAxisFontSize*1.5, kCGEncodingMacRoman);
         CGContextShowTextAtPoint(context, startWidth, self.frame.size.height - longPressPoint.y + 5, [str UTF8String], count);
     }
 
@@ -320,6 +324,7 @@
         CGContextStrokePath(context);
         [[UIColor blackColor] set];
         NSInteger count = [self.infoStr lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+        CGContextSelectFont(context, [self.fontName UTF8String], self.xAxisFontSize*1.5, kCGEncodingMacRoman);
         CGContextShowTextAtPoint(context, startWidth, height + 5, [self.infoStr UTF8String], count);
     }
     
