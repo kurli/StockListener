@@ -386,6 +386,9 @@
     if (l < 3) {
         delta = 0.001;
     }
+    if (l > 1000) {
+        delta = 1;
+    }
     [aVolController setStockInfo:self.stockInfo];
     int ll = l/delta;
     int hh = h/delta;

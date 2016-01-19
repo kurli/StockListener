@@ -40,6 +40,9 @@
     if (lowest < 3) {
         delta = 0.001;
     }
+    if (lowest > 1000) {
+        delta = 1;
+    }
     [neededNewInfo.averageVolDic removeAllObjects];
     for (int i=0; i<[neededNewInfo.hundredDaysPrice count]; i++) {
         NSArray* array = [neededNewInfo.hundredDaysPrice objectAtIndex:i];

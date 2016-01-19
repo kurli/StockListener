@@ -156,15 +156,17 @@
 
     StockInfo* info = [[DatabaseHelper getInstance] getInfoById:sid];
     if (info == nil) {
-        info = [[DatabaseHelper getInstance] getDapanInfoById:sid];
-    }
-    if (info == nil) {
         if (self.neededNewInfo!= nil && [sid isEqualToString:self.neededNewInfo.sid]) {
             info = self.neededNewInfo;
         } else {
-            return;
+            if (info == nil) {
+                info = [[DatabaseHelper getInstance] getDapanInfoById:sid];
+            } else {
+                return;
+            }
         }
     }
+
     info.lastDayPrice = [[array objectAtIndex:2] floatValue];
     if (info.lastDayPrice == 0) {
         return;
