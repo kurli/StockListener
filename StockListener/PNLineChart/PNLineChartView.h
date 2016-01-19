@@ -35,6 +35,7 @@
 @property (nonatomic, assign) NSInteger startIndex;
 @property (nonatomic, assign) float     markY;
 @property (nonatomic, assign) BOOL      yAxisPercentage;
+@property (nonatomic, assign) BOOL      handleLongClick;
 
 @property (nonatomic, strong) UIColor * horizontalLinesColor;
 

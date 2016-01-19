@@ -10,10 +10,12 @@
 #import "PNLineChartView.h"
 #import "StockKDJViewController.h"
 #import "PNPlot.h"
+#import "KLineSettingViewController.h"
 
 @interface KLineViewController() {
     PNLineChartView *kLineChartView;
     UIView* parentView;
+    UIButton* infoButton;
 }
 
 @end
@@ -26,8 +28,18 @@
         [kLineChartView setBackgroundColor:[UIColor whiteColor]];
         [parentView addSubview:kLineChartView];
         [kLineChartView setYAxisPercentage:YES];
+//        infoButton = [[UIButton alloc] init];
+        infoButton = [UIButton buttonWithType:UIButtonTypeInfoDark];
+        [infoButton addTarget:self action:@selector(infoClicked:) forControlEvents:UIControlEventTouchUpInside];
+//        [infoButton setImage:[UIImage imageNamed:@"setting_small"] forState:UIControlStateNormal];
+        [parentView addSubview:infoButton];
     }
     return self;
+}
+
+-(void) infoClicked:(id)btn {
+    KLineSettingViewController* controller = [[KLineSettingViewController alloc] init];
+    [self.viewController presentViewController:controller animated:YES completion:nil];
 }
 
 -(void) setPriceMark:(float)priceMark {
@@ -44,6 +56,12 @@
 
 -(void) setFrame:(CGRect)rect {
     [kLineChartView setFrame: rect];
+    CGRect rectInfo = infoButton.frame;
+    rectInfo.origin.x = rect.origin.x+20;
+    rectInfo.origin.y = rect.origin.y;
+//    rectInfo.size.width = 20;
+//    rectInfo.size.height = 20;
+    [infoButton setFrame:rectInfo];
 }
 
 -(void) setSplitX:(NSInteger)x {

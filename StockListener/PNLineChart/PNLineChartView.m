@@ -104,6 +104,7 @@
     [self addGestureRecognizer:longPressGR];
     showLongPress = NO;
     self.yAxisPercentage = NO;
+    self.handleLongClick = YES;
 }
 
 -(void) onHideLongPressFired {
@@ -112,6 +113,9 @@
 }
 
 -(IBAction)handleLongPress:(UILongPressGestureRecognizer *)gestureRecognizer{
+    if (!self.handleLongClick) {
+        return;
+    }
     longPressPoint = [gestureRecognizer locationInView:self];
     if(gestureRecognizer.state == UIGestureRecognizerStateBegan) {
         showLongPress = YES;
@@ -382,15 +386,48 @@
         CGContextAddLineToPoint(context, longPressPoint.x, 0);
         CGContextStrokePath(context);
         float value = ((self.frame.size.height - longPressPoint.y)-startHeight)/self.horizontalLineInterval*self.interval +self.min;
+        
+        NSObject* curValue = nil;
+        if ([self.plots count] > 0) {
+            PNPlot* plot = [self.plots objectAtIndex:0];
+            NSArray* pointArray = plot.plottingValues;
+            //Find obj
+            for (NSInteger i=[pointArray count]-1; i>=0; i--) {
+                curValue = [pointArray objectAtIndex:i];
+                if ([curValue isKindOfClass:[NSNumber class]] == YES) {
+                    break;
+                }
+                curValue = nil;
+            }
+        }
+
         NSString* str;
         if (value < 3) {
-            str = [NSString stringWithFormat:@"%.3f", value];
+            if (curValue != nil) {
+                float curValueF = [(NSNumber*)curValue floatValue];
+                if (curValueF != 0) {
+                    str = [NSString stringWithFormat:@"%.3f (%.2f%%)", value, (value-curValueF)/curValueF*100];
+                } else {
+                    str = [NSString stringWithFormat:@"%.3f", value];
+                }
+            } else {
+                str = [NSString stringWithFormat:@"%.3f", value];
+            }
         } else {
-            str = [NSString stringWithFormat:@"%.2f", value];
+            if (curValue != nil) {
+                float curValueF = [(NSNumber*)curValue floatValue];
+                if (curValueF != 0) {
+                    str = [NSString stringWithFormat:@"%.2f (%.2f%%)", value, (value-curValueF)/curValueF*100];
+                } else {
+                    str = [NSString stringWithFormat:@"%.2f", value];
+                }
+            } else {
+                str = [NSString stringWithFormat:@"%.2f", value];
+            }
         }
         NSInteger count = [str lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
         CGContextSelectFont(context, [self.fontName UTF8String], self.xAxisFontSize*1.5, kCGEncodingMacRoman);
-        CGContextShowTextAtPoint(context, startWidth, self.frame.size.height - longPressPoint.y + 5, [str UTF8String], count);
+        CGContextShowTextAtPoint(context, self.frame.size.width - 100, self.frame.size.height - longPressPoint.y + 5, [str UTF8String], count);
     }
 
     if (self.markY > -10) {

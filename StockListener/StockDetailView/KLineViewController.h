@@ -33,4 +33,5 @@
 @property (weak, nonatomic) IBOutlet UILabel *fiveAPrice;
 @property (weak, nonatomic) IBOutlet UILabel *tenAPrice;
 @property (weak, nonatomic) IBOutlet UILabel *twentyAPrice;
+@property (nonatomic, strong) UIViewController* viewController;
 @end

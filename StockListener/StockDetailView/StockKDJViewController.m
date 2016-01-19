@@ -91,6 +91,7 @@
     [klineViewController setFiveAPrice:self.fiveAPrice];
     [klineViewController setTenAPrice:self.tenAPrice];
     [klineViewController setTwentyAPrice:self.twentyAPrice];
+    [klineViewController setViewController:self];
 
     kdjViewController = [[KDJViewController alloc] initWithParentView:self.view];
 }

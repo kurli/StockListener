@@ -16,6 +16,7 @@
 @interface FenshiViewController() {
     PNLineChartView *priceChartView;
     UIView* parentView;
+    UIButton* infoButton;
 }
 
 @end
@@ -28,8 +29,18 @@
         priceChartView = [[PNLineChartView alloc] init];
         [priceChartView setBackgroundColor:[UIColor whiteColor]];
         [parentView addSubview:priceChartView];
+        [priceChartView setHandleLongClick:NO];
+//        infoButton = [[UIButton alloc] init];
+        infoButton = [UIButton buttonWithType:UIButtonTypeInfoDark];
+        [infoButton addTarget:self action:@selector(infoClicked:) forControlEvents:UIControlEventTouchUpInside];
+//        [infoButton setImage:[UIImage imageNamed:@"setting_small"] forState:UIControlStateNormal];
+        [parentView addSubview:infoButton];
     }
     return self;
+}
+
+-(void) infoClicked:(id)btn {
+    NSLog(@"TODO");
 }
 
 -(void) setPriceMark:(float)priceMark {
@@ -46,6 +57,12 @@
 
 -(void) setFrame:(CGRect)rect {
     [priceChartView setFrame: rect];
+    CGRect rectInfo = infoButton.frame;
+    rectInfo.origin.x = rect.origin.x+20;
+    rectInfo.origin.y = rect.origin.y;
+//    rectInfo.size.width = 20;
+//    rectInfo.size.height = 20;
+    [infoButton setFrame:rectInfo];
 }
 
 -(void) setSplitX:(NSInteger)x {
@@ -154,6 +171,8 @@
         [priceChartView addPlot:plot];
     }
     
+    [priceChartView setNeedsDisplay];
+
     // Current stock
     {
         NSMutableArray* array = [[NSMutableArray alloc] init];
@@ -168,21 +187,19 @@
             average /= (index+1);
             [averageArray addObject:[NSNumber numberWithFloat:average]];
         }
-
+        
         PNPlot *plot2 = [[PNPlot alloc] init];
         plot2.plottingValues = averageArray;
         plot2.lineColor = [UIColor yellowColor];
         plot2.lineWidth = 2;
         [priceChartView addPlot:plot2];
-        
+
         PNPlot *plot = [[PNPlot alloc] init];
         plot.plottingValues = array;
         plot.lineColor = [UIColor redColor];
         plot.lineWidth = 2;
         [priceChartView addPlot:plot];
     }
-    
-    [priceChartView setNeedsDisplay];
 }
 
 @end
