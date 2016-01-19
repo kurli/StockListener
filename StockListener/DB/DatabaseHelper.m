@@ -154,6 +154,10 @@
 }
 
 -(StockInfo*)getDapanInfoById:(NSString*)sid {
+    StockInfo* dapanInfo = [self getInfoById:sid];
+    if (dapanInfo != nil) {
+        return dapanInfo;
+    }
     for (int i=0; i<[self.dapanList count]; i++) {
         StockInfo* info = [self.dapanList objectAtIndex:i];
         if ([info.sid isEqualToString:sid]) {
