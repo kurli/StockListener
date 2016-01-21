@@ -137,7 +137,7 @@
         isRegisteredReceiver = YES;
     }
     
-    float leftWidth = ((int)(LEFT_VIEW_WIDTH)/(MAX_DISPLAY_COUNT-1))*(MAX_DISPLAY_COUNT-1);
+    float leftWidth = ((int)(LEFT_VIEW_WIDTH)/(DEFAULT_DISPLAY_COUNT-1))*(DEFAULT_DISPLAY_COUNT-1);
 
     int offsetY = self.rateLabel.frame.size.height + self.rateLabel.frame.origin.y + 20;
     CGRect fenshiRect = CGRectMake(0, offsetY, leftWidth, 150);
@@ -156,17 +156,17 @@
     CGRect nextKDJRect = self.nextKDJButton.frame;
     CGRect showkKdjRect = self.showKDJButton.frame;
     
-    preKDJRect.origin.x = 0;
-    preKDJRect.origin.y = fenshiRect.origin.y + fenshiRect.size.height+1;
-    [self.preKDJButton setFrame:preKDJRect];
-    
-    showkKdjRect.origin.x = preKDJRect.size.width + 1;
-    showkKdjRect.origin.y = preKDJRect.origin.y;
-    [self.showKDJButton setFrame:showkKdjRect];
-
-    nextKDJRect.origin.x = showkKdjRect.origin.x + showkKdjRect.size.width + 1;
-    nextKDJRect.origin.y = showkKdjRect.origin.y;
+    nextKDJRect.origin.x = leftWidth - nextKDJRect.size.width;
+    nextKDJRect.origin.y = fenshiRect.origin.y + fenshiRect.size.height+1;
     [self.nextKDJButton setFrame:nextKDJRect];
+    
+    showkKdjRect.origin.x = nextKDJRect.origin.x - showkKdjRect.size.width;
+    showkKdjRect.origin.y = nextKDJRect.origin.y;
+    [self.showKDJButton setFrame:showkKdjRect];
+    
+    preKDJRect.origin.x = showkKdjRect.origin.x - preKDJRect.size.width;
+    preKDJRect.origin.y = nextKDJRect.origin.y;
+    [self.preKDJButton setFrame:preKDJRect];
 
     CGRect rect = self.kdjTypeSegment.frame;
     rect.origin.y = nextKDJRect.origin.y + nextKDJRect.size.height+1;
@@ -176,7 +176,7 @@
     rect.origin.y = fenshiRect.origin.y + fenshiRect.size.height+1;
     // End
 
-    aRect.origin.x = nextKDJRect.origin.x + nextKDJRect.size.width + 5;
+    aRect.origin.x = 5;
     aRect.origin.y = fenshiRect.origin.y + fenshiRect.size.height+1;
     [self.averagePriceView setFrame:aRect];
 
@@ -196,8 +196,8 @@
         [aVolController loadViewVertical:rect];
     }
     
-    self.averagePriceView.layer.borderWidth = 0.5;
-    self.averagePriceView.layer.borderColor = [[UIColor grayColor] CGColor];
+//    self.averagePriceView.layer.borderWidth = 0.5;
+//    self.averagePriceView.layer.borderColor = [[UIColor grayColor] CGColor];
 
     [self refreshData];
 }
@@ -416,7 +416,8 @@
         [volController.volValues addObject:vol];
     }
     // Insert zero for remaining
-    for (NSInteger i=0; i<[volController.volValues count] - MAX_DISPLAY_COUNT + 1; i++) {
+    NSInteger count = [volController.volValues count] - DEFAULT_DISPLAY_COUNT + 1;
+    for (NSInteger i=0; i<count; i++) {
         [volController.volValues addObject:[NSNumber numberWithInteger:0]];
     }
     [volController reload];
@@ -512,7 +513,7 @@
             break;
     }
     preSegment = control.selectedSegmentIndex;
-    CalculateKDJ* task = [[CalculateKDJ alloc] initWithStockInfo:self.stockInfo andDelta:delta andCount:MAX_DISPLAY_COUNT];
+    CalculateKDJ* task = [[CalculateKDJ alloc] initWithStockInfo:self.stockInfo andDelta:delta andCount:DEFAULT_DISPLAY_COUNT];
     task.onCompleteBlock = ^(CalculateKDJ* _self) {
         kdjViewController.kdj_d = _self.kdj_d;
         kdjViewController.kdj_j = _self.kdj_j;
@@ -520,7 +521,9 @@
         kdjViewController.todayStartIndex = _self.todayStartIndex;
 
         klineViewController.todayStartIndex = _self.todayStartIndex;
+        [klineViewController setSplitX:_self.todayStartIndex];
         klineViewController.priceKValues = _self.priceKValues;
+        [klineViewController setStockInfo:self.stockInfo];
 
         NSInteger startIndex = [_self.priceKValues count] - [_self.kdj_d count];
         if (startIndex < 0) {

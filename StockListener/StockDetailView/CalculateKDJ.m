@@ -85,6 +85,11 @@
     NSInteger startIndex = 20;
     NSInteger needMinuteCount = (20 + self.calculateCount);
     NSMutableArray* needTreatArray = [[NSMutableArray alloc] init];
+    
+    if (self.calculateCount == MAX_COUNT) {
+        needMinuteCount = [stockInfo.weeklyPrice count];
+    }
+    
     self.volValues = [[NSMutableArray alloc] init];
     NSInteger start = [stockInfo.weeklyPrice count]-needMinuteCount;
     if (start < 0) {
@@ -119,6 +124,9 @@
     if (startIndex < 0) {
         startIndex = 0;
     }
+    if (self.calculateCount == MAX_COUNT) {
+        startIndex = 0;
+    }
     [self calculateKDJ:needTreatArray andStartIndex:startIndex];
     self.priceKValues = needTreatArray;
     self.todayStartIndex = 0;
@@ -134,6 +142,11 @@
     NSInteger startIndex = 20;
     NSInteger needMinuteCount = (20 + self.calculateCount);
     NSMutableArray* needTreatArray = [[NSMutableArray alloc] init];
+    
+    if (self.calculateCount == MAX_COUNT) {
+        needMinuteCount = [stockInfo.hundredDaysPrice count];
+    }
+    
     self.volValues = [[NSMutableArray alloc] init];
     NSInteger start = [stockInfo.hundredDaysPrice count]-needMinuteCount;
     if (start < 0) {
@@ -168,6 +181,9 @@
     if (startIndex < 0) {
         startIndex = 0;
     }
+    if (self.calculateCount == MAX_COUNT) {
+        startIndex = 0;
+    }
     [self calculateKDJ:needTreatArray andStartIndex:startIndex];
     self.priceKValues = needTreatArray;
     self.todayStartIndex = [self.kdj_k count]-2;
@@ -183,6 +199,9 @@
     NSInteger startIndex = 20;
     NSInteger needMinuteCount = (20 + self.calculateCount) * delta;
     NSInteger needLastFiveDayCount = 0;
+    if (self.calculateCount == MAX_COUNT) {
+        needMinuteCount = [stockInfo.fiveDayPriceByMinutes count] + [stockInfo.todayPriceByMinutes count];
+    }
     float prePrice = 0;
     if (needMinuteCount > [stockInfo.todayPriceByMinutes count]) {
         needLastFiveDayCount = needMinuteCount - [stockInfo.todayPriceByMinutes count];
@@ -264,6 +283,9 @@
     }
     startIndex = [needTreatArray count] - self.calculateCount;
     if (startIndex < 0) {
+        startIndex = 0;
+    }
+    if (self.calculateCount == MAX_COUNT) {
         startIndex = 0;
     }
     [self calculateKDJ:needTreatArray andStartIndex:startIndex];

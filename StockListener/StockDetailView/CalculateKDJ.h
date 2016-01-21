@@ -8,6 +8,8 @@
 
 #import "KingdaTask.h"
 
+#define MAX_COUNT -1
+
 @class StockInfo;
 @interface CalculateKDJ : KingdaTask
 

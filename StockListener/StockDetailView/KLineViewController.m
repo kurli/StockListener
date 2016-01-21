@@ -39,6 +39,7 @@
 
 -(void) infoClicked:(id)btn {
     KLineSettingViewController* controller = [[KLineSettingViewController alloc] init];
+    [controller setStockInfo:self.stockInfo];
     [self.viewController presentViewController:controller animated:YES completion:nil];
 }
 
@@ -62,6 +63,10 @@
 //    rectInfo.size.width = 20;
 //    rectInfo.size.height = 20;
     [infoButton setFrame:rectInfo];
+}
+
+-(void) hideInfoButton {
+    [infoButton setHidden:YES];
 }
 
 -(void) setSplitX:(NSInteger)x {
@@ -145,6 +150,10 @@
     //K line
     kLineChartView.max = h;
     kLineChartView.min = l;
+    
+    NSInteger maxCount = [cPriceArray count];
+    kLineChartView.pointerInterval = (kLineChartView.frame.size.width - 20 - 1)/(maxCount-1);
+    kLineChartView.xAxisInterval = (kLineChartView.frame.size.width - 20-1)/(maxCount-1);
     kLineChartView.horizontalLineInterval = (float)(kLineChartView.frame.size.height-1) / 5.0;
     if (h == l) {
         kLineChartView.interval = 1;
@@ -163,10 +172,8 @@
     }
     kLineChartView.yAxisValues = array;
     kLineChartView.numberOfVerticalElements = 6;
-    kLineChartView.pointerInterval = (kLineChartView.frame.size.width - LEFT_PADDING - 1)/(MAX_DISPLAY_COUNT-1);
-    kLineChartView.xAxisInterval = (kLineChartView.frame.size.width - LEFT_PADDING-1)/(MAX_DISPLAY_COUNT-1);
     kLineChartView.axisLeftLineWidth = LEFT_PADDING;
-    kLineChartView.splitX = self.todayStartIndex;
+//    kLineChartView.splitX = self.todayStartIndex;
     
     [kLineChartView clearPlot];
     

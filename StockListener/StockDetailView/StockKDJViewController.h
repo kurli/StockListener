@@ -10,7 +10,7 @@
 #import "ZSYPopoverListView.h"
 
 #define LEFT_PADDING 20
-#define MAX_DISPLAY_COUNT 35
+#define DEFAULT_DISPLAY_COUNT 35
 #define KLINE_VIEW_HEIGHT 130
 #define AVOL_EXPAND 60
 

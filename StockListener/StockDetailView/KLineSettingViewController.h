@@ -8,6 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
+@class StockInfo;
 @interface KLineSettingViewController : UIViewController
+
+@property (nonatomic, strong) StockInfo* stockInfo;
 
 @end

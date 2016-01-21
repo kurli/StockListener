@@ -80,7 +80,7 @@
     self.horizontalLineInterval = HORIZONTAL_LINE_SPACES;
     self.horizontalLineWidth = HORIZONTAL_LINE_WIDTH;
     
-    self.pointerInterval = DEVICE_WIDTH/35;
+    self.pointerInterval = 0;
     
     self.axisBottomLinetHeight = AXIS_BOTTOM_LINE_HEIGHT;
     self.axisLeftLineWidth = AXIS_LEFT_LINE_WIDTH;
@@ -200,7 +200,7 @@
     // set text size and font
     CGContextSetTextMatrix(context, CGAffineTransformIdentity);
     CGContextSelectFont(context, [self.fontName UTF8String], self.xAxisFontSize, kCGEncodingMacRoman);
-
+    
     if (self.yAxisPercentage == YES) {
         if ([self.plots count] > 0) {
             PNPlot* plot = [self.plots objectAtIndex:0];

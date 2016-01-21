@@ -85,8 +85,8 @@
     kdjChartView.interval = 20;
     kdjChartView.yAxisValues = @[@"0", @"20", @"40", @"60", @"80", @"100"];
     kdjChartView.numberOfVerticalElements = 6;
-    kdjChartView.pointerInterval = (kdjChartView.frame.size.width - LEFT_PADDING-1)/(MAX_DISPLAY_COUNT-1);
-    kdjChartView.xAxisInterval = (kdjChartView.frame.size.width - LEFT_PADDING)-1/(MAX_DISPLAY_COUNT-1);
+//    kdjChartView.pointerInterval = (kdjChartView.frame.size.width - LEFT_PADDING-1)/(MAX_DISPLAY_COUNT-1);
+//    kdjChartView.xAxisInterval = (kdjChartView.frame.size.width - LEFT_PADDING)-1/(MAX_DISPLAY_COUNT-1);
     kdjChartView.axisLeftLineWidth = LEFT_PADDING;
     //2
     rect.origin.x = rect.origin.x + rect.size.width + 5;
@@ -167,6 +167,9 @@
     plot3.lineWidth = 1;
     [kdjChartView  addPlot:plot3];
     [kdjChartView setNeedsDisplay];
+    NSInteger maxCount = [self.kdj_d count];
+    kdjChartView.pointerInterval = (kdjChartView.frame.size.width - 20 - 1)/(maxCount-1);
+    kdjChartView.xAxisInterval = (kdjChartView.frame.size.width - 20-1)/(maxCount-1);
     
     if (type == ONE_MINUTE) {
         delta1 = FIVE_MINUTES;
