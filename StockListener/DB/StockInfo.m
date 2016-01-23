@@ -236,6 +236,7 @@
             [self.hundredDaysPrice removeLastObject];
             [self.hundredDaysVOL removeLastObject];
             NSMutableArray* array = [[NSMutableArray alloc] init];
+            [array addObject:[NSNumber numberWithFloat:self.openPrice]];
             [array addObject:[NSNumber numberWithFloat:self.todayHighestPrice]];
             [array addObject:[NSNumber numberWithFloat:self.price]];
             [array addObject:[NSNumber numberWithFloat:self.todayLoestPrice]];
@@ -243,6 +244,7 @@
             [self.hundredDaysVOL addObject:[NSNumber numberWithInteger:self.dealCount]];
         } else if (latest - history > 0) {
             NSMutableArray* array = [[NSMutableArray alloc] init];
+            [array addObject:[NSNumber numberWithFloat:self.openPrice]];
             [array addObject:[NSNumber numberWithFloat:self.todayHighestPrice]];
             [array addObject:[NSNumber numberWithFloat:self.price]];
             [array addObject:[NSNumber numberWithFloat:self.todayLoestPrice]];
@@ -252,30 +254,6 @@
         }
     }
     //TODO
-//    if ([self.updateDay length] > 6 && [self.weeklyPrice count] > 0) {
-//        NSString* str = [self.updateDay stringByReplacingOccurrencesOfString:@"-" withString:@""];
-//        str = [str substringFromIndex:2];
-//        NSInteger latest = [str integerValue];
-//        NSInteger history = [self.weeklyLastUpdateDay integerValue];
-//        if (latest - history == 0) {
-//            [self.weeklyPrice removeLastObject];
-//            [self.weeklyVOL removeLastObject];
-//            NSMutableArray* array = [[NSMutableArray alloc] init];
-//            [array addObject:[NSNumber numberWithFloat:self.todayHighestPrice]];
-//            [array addObject:[NSNumber numberWithFloat:self.price]];
-//            [array addObject:[NSNumber numberWithFloat:self.todayLoestPrice]];
-//            [self.hundredDaysPrice addObject:array];
-//            [self.hundredDaysVOL addObject:[NSNumber numberWithInteger:self.dealCount]];
-//        } else if (latest - history > 0) {
-//            NSMutableArray* array = [[NSMutableArray alloc] init];
-//            [array addObject:[NSNumber numberWithFloat:self.todayHighestPrice]];
-//            [array addObject:[NSNumber numberWithFloat:self.price]];
-//            [array addObject:[NSNumber numberWithFloat:self.todayLoestPrice]];
-//            [self.hundredDaysPrice addObject:array];
-//            [self.hundredDaysVOL addObject:[NSNumber numberWithInteger:self.dealCount]];
-//            self.hundredDayLastUpdateDay = [NSString stringWithFormat:@"%ld", latest];
-//        }
-//    }
 
     // Store price
     NSArray* timeArray = [self.updateTime componentsSeparatedByString:@":"];

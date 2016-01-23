@@ -26,6 +26,8 @@
         self.kdj_k = [[NSMutableArray alloc] init];
         self.kdj_d = [[NSMutableArray alloc] init];
         self.kdj_j = [[NSMutableArray alloc] init];
+        self.lowest = 10000;
+        self.highest = -1000;
     }
     return self;
 }
@@ -41,17 +43,17 @@
     [self.kdj_j removeAllObjects];
     [self.kdj_k removeAllObjects];
     for(NSInteger i = index;i < (data.count);i++){
-        float h  = [[[data objectAtIndex:i] objectAtIndex:0] floatValue];
-        float l = [[[data objectAtIndex:i] objectAtIndex:2] floatValue];
-        float c = [[[data objectAtIndex:i] objectAtIndex:1] floatValue];
+        float h  = [[[data objectAtIndex:i] objectAtIndex:1] floatValue];
+        float l = [[[data objectAtIndex:i] objectAtIndex:3] floatValue];
+        float c = [[[data objectAtIndex:i] objectAtIndex:2] floatValue];
         if (i > 10) {
             for(NSInteger j=i;j>i-10;j--){
-                if([[[data objectAtIndex:j] objectAtIndex:0] floatValue] > h){
-                    h = [[[data objectAtIndex:j] objectAtIndex:0] floatValue];
+                if([[[data objectAtIndex:j] objectAtIndex:1] floatValue] > h){
+                    h = [[[data objectAtIndex:j] objectAtIndex:1] floatValue];
                 }
                 
-                if([[[data objectAtIndex:j] objectAtIndex:2] floatValue] < l){
-                    l = [[[data objectAtIndex:j] objectAtIndex:2] floatValue];
+                if([[[data objectAtIndex:j] objectAtIndex:3] floatValue] < l){
+                    l = [[[data objectAtIndex:j] objectAtIndex:3] floatValue];
                 }
             }
         }
@@ -95,26 +97,27 @@
     if (start < 0) {
         start = 0;
     }
-    float prePrice = 0;
-    if (start - 1 >= 0 && [stockInfo.weeklyPrice count] > start -1) {
-        NSArray* array = [stockInfo.weeklyPrice objectAtIndex:start -1];
-        if ([array count] == 3) {
-            prePrice = [[array objectAtIndex:1] floatValue];
-        }
-    }
     for (NSInteger i=start; i<[stockInfo.weeklyPrice count]; i++) {
         NSMutableArray* array = [stockInfo.weeklyPrice objectAtIndex:i];
-        if ([array count] == 3) {
-            float curPrice = [[array objectAtIndex:1] floatValue];
+        if ([array count] == 4) {
+            float curPrice = [[array objectAtIndex:2] floatValue];
+            float open = [[array objectAtIndex:0] floatValue];
+            float h = [[array objectAtIndex:1] floatValue];
+            float l = [[array objectAtIndex:3] floatValue];
+            if (h > self.highest) {
+                self.highest = h;
+            }
+            if (l < self.lowest) {
+                self.lowest = l;
+            }
             [needTreatArray addObject:array];
             if ([stockInfo.weeklyVOL count] > i) {
-                if (curPrice >= prePrice) {
+                if (curPrice >= open) {
                     [self.volValues addObject:[stockInfo.weeklyVOL objectAtIndex:i]];
                 } else {
                     NSInteger vol = [[stockInfo.weeklyVOL objectAtIndex:i] integerValue];
                     [self.volValues addObject:[NSNumber numberWithInteger:-1*vol]];
                 }
-                prePrice = curPrice;
             } else {
                 [self.volValues addObject:[NSNumber numberWithInteger:0]];
             }
@@ -130,9 +133,6 @@
     [self calculateKDJ:needTreatArray andStartIndex:startIndex];
     self.priceKValues = needTreatArray;
     self.todayStartIndex = 0;
-    if (self.todayStartIndex < 0) {
-        self.todayStartIndex = 0;
-    }
 }
 
 -(void) calculateForDay {
@@ -152,26 +152,27 @@
     if (start < 0) {
         start = 0;
     }
-    float prePrice = 0;
-    if (start - 1 >= 0 && [stockInfo.hundredDaysPrice count] > start -1) {
-        NSArray* array = [stockInfo.hundredDaysPrice objectAtIndex:start -1];
-        if ([array count] == 3) {
-            prePrice = [[array objectAtIndex:1] floatValue];
-        }
-    }
     for (NSInteger i=start; i<[stockInfo.hundredDaysPrice count]; i++) {
         NSMutableArray* array = [stockInfo.hundredDaysPrice objectAtIndex:i];
-        if ([array count] == 3) {
-            float curPrice = [[array objectAtIndex:1] floatValue];
+        if ([array count] == 4) {
+            float curPrice = [[array objectAtIndex:2] floatValue];
+            float open = [[array objectAtIndex:0] floatValue];
+            float h = [[array objectAtIndex:1] floatValue];
+            float l = [[array objectAtIndex:3] floatValue];
+            if (h > self.highest) {
+                self.highest = h;
+            }
+            if (l < self.lowest) {
+                self.lowest = l;
+            }
             [needTreatArray addObject:array];
             if ([stockInfo.hundredDaysVOL count] > i) {
-                if (curPrice >= prePrice) {
+                if (curPrice >= open) {
                     [self.volValues addObject:[stockInfo.hundredDaysVOL objectAtIndex:i]];
                 } else {
                     NSInteger vol = [[stockInfo.hundredDaysVOL objectAtIndex:i] integerValue];
                     [self.volValues addObject:[NSNumber numberWithInteger:-1*vol]];
                 }
-                prePrice = curPrice;
             } else {
                 [self.volValues addObject:[NSNumber numberWithInteger:0]];
             }
@@ -186,10 +187,7 @@
     }
     [self calculateKDJ:needTreatArray andStartIndex:startIndex];
     self.priceKValues = needTreatArray;
-    self.todayStartIndex = [self.kdj_k count]-2;
-    if (self.todayStartIndex < 0) {
-        self.todayStartIndex = 0;
-    }
+    self.todayStartIndex = 0;
 }
 
 -(void) calculate {
@@ -242,6 +240,12 @@
             [volMinute addObject:[NSNumber numberWithInteger:0]];
         }
     }
+    if (prePrice == 0) {
+        if ([priceMinute count] > 0) {
+            NSNumber* number = [priceMinute objectAtIndex:0];
+            prePrice = [number floatValue];
+        }
+    }
     NSMutableArray* needTreatArray = [[NSMutableArray alloc] init];
     self.volValues = [[NSMutableArray alloc] init];
     for (NSInteger i=0; i<[priceMinute count];) {
@@ -264,8 +268,15 @@
                 c = [price floatValue];
             }
         }
+        if (h > self.highest) {
+            self.highest = h;
+        }
+        if (l < self.lowest) {
+            self.lowest = l;
+        }
 
         NSMutableArray* array = [[NSMutableArray alloc] init];
+        [array addObject:[NSNumber numberWithFloat:prePrice]];
         [array addObject:[NSNumber numberWithFloat:h]]; // h
         [array addObject:[NSNumber numberWithFloat:c]]; // c
         [array addObject:[NSNumber numberWithFloat:l]]; // l
@@ -290,7 +301,7 @@
     }
     [self calculateKDJ:needTreatArray andStartIndex:startIndex];
     self.priceKValues = needTreatArray;
-    self.todayStartIndex = [self.kdj_k count] - ([stockInfo.todayPriceByMinutes count]/delta)-1;
+    self.todayStartIndex = [self.kdj_k count] - ([stockInfo.todayPriceByMinutes count]/delta);
     if (self.todayStartIndex < 0) {
         self.todayStartIndex = 0;
     }

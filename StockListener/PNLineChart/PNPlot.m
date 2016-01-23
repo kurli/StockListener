@@ -26,6 +26,7 @@
 
 - (instancetype)init {
   if((self = [super init])) {
+      self.isKLine = NO;
   }
   return self;
 }

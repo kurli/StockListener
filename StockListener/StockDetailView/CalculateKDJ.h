@@ -22,4 +22,6 @@
 @property (nonatomic, unsafe_unretained) NSInteger todayStartIndex;
 @property (nonatomic, unsafe_unretained) NSInteger calculateCount;
 @property (copy) void (^onCompleteBlock)(CalculateKDJ* _self);
+@property (nonatomic, assign) float lowest;
+@property (nonatomic, assign) float highest;
 @end

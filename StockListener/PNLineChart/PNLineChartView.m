@@ -189,6 +189,63 @@
 #pragma mark -
 #pragma mark Draw the lineChart
 
+-(float) getHeightByPrice:(float)price {
+    return (price-self.min)/self.interval*self.horizontalLineInterval-self.contentScroll.y+self.axisBottomLinetHeight;
+}
+
+#define UIColorFromHex(hex) [UIColor colorWithRed:((float)((hex & 0xFF0000) >> 16))/255.0 green:((float)((hex & 0xFF00) >> 8))/255.0 blue:((float)(hex & 0xFF))/255.0 alpha:1.0]
+
+-(void) drawKLine:(CGContextRef)context andPlot:(PNPlot*)plot {
+    [plot.lineColor set];
+    CGContextSetLineWidth(context, plot.lineWidth);
+    
+    NSArray* pointArray = plot.plottingValues;
+    
+    // draw lines
+    for (NSInteger i=self.startIndex; i<pointArray.count; i++) {
+        NSObject* obj = [pointArray objectAtIndex:i];
+        if ([obj isKindOfClass:[NSArray class]] == NO) {
+            continue;
+        }
+        
+        NSArray* value = [pointArray objectAtIndex:i];
+        if ([value count] != 4) {
+            continue;
+        }
+        float open = [[value objectAtIndex:0] floatValue];
+        float highest = [[value objectAtIndex:1] floatValue];
+        float curPrice = [[value objectAtIndex:2] floatValue];
+        float lowest = [[value objectAtIndex:3] floatValue];
+        
+        float openY = [self getHeightByPrice:open];
+        float curY = [self getHeightByPrice:curPrice];
+        float hY = [self getHeightByPrice:highest];
+        float lY = [self getHeightByPrice:lowest];
+        float width =self.axisLeftLineWidth + self.pointerInterval*(i-self.startIndex)+self.contentScroll.x;
+        
+        if (openY > curY) {
+            [[UIColor colorWithRed:0.7 green:0.7 blue:0.7 alpha:1] set];
+            [UIColorFromHex(0x34b234) set];
+        } else {
+            [[UIColor redColor] set];
+        }
+        // Draw highest & lowest
+        CGContextMoveToPoint(context, width+self.pointerInterval/2, lY);
+        CGContextAddLineToPoint(context, width+self.pointerInterval/2, hY);
+        CGContextStrokePath(context);
+
+        // Draw rect
+        float h = curY - openY;
+        if (h == 0) {
+            h = plot.lineWidth;
+        }
+        CGContextFillRect(context, CGRectMake(width, openY, self.pointerInterval, h));
+        CGContextStrokePath(context);
+    }
+    
+    CGContextStrokePath(context);
+}
+
 -(void)drawRect:(CGRect)rect{
     CGFloat startHeight = self.axisBottomLinetHeight;
     CGFloat startWidth = self.axisLeftLineWidth;
@@ -209,13 +266,18 @@
             NSObject* obj = nil;
             for (NSInteger i=[pointArray count]-1; i>=0; i--) {
                 obj = [pointArray objectAtIndex:i];
-                if ([obj isKindOfClass:[NSNumber class]] == YES) {
+                if ([obj isKindOfClass:[NSNumber class]] == YES ||
+                    [obj isKindOfClass:[NSArray class]] == YES) {
                     break;
                 }
                 obj = nil;
             }
             if (obj != nil) {
                 NSNumber* value = (NSNumber*)obj;
+                if (plot.isKLine == YES) {
+                    NSArray* array = (NSArray*)obj;
+                    value = [array objectAtIndex:2];
+                }
                 float base = [value floatValue];
                 float delta = self.max - self.min;
                 delta = delta/5;
@@ -334,6 +396,10 @@
     for (int i=0; i<self.plots.count; i++)
     {
         PNPlot* plot = [self.plots objectAtIndex:i];
+        if (plot.isKLine == YES) {
+            [self drawKLine:context andPlot:plot];
+            continue;
+        }
         
         [plot.lineColor set];
         CGContextSetLineWidth(context, plot.lineWidth);
@@ -353,7 +419,7 @@
             float floatValue = value.floatValue;
             
             float height = (floatValue-self.min)/self.interval*self.horizontalLineInterval-self.contentScroll.y+startHeight;
-            float width =startWidth + self.pointerInterval*(i-self.startIndex)+self.contentScroll.x;
+            float width =startWidth + self.pointerInterval*(i-self.startIndex)+self.contentScroll.x + self.pointerInterval/2;
             
             if (i==self.startIndex || newLine) {
                 CGContextMoveToPoint(context,  width, height);
@@ -444,44 +510,6 @@
         CGContextSelectFont(context, [self.fontName UTF8String], self.xAxisFontSize*1.5, kCGEncodingMacRoman);
         CGContextShowTextAtPoint(context, startWidth, height + 5, [self.infoStr UTF8String], count);
     }
-    
-//    // Draw vetical focus line
-//    if ([self.plots count] > 0) {
-//        PNPlot* plot = [self.plots objectAtIndex:0];
-//        if ([plot.plottingValues count] >= 2) {
-//            float width =startWidth + self.pointerInterval*([plot.plottingPointsLabels count]-2)+self.contentScroll.x+ startHeight;
-//            CGContextSetLineWidth(context, self.axisLineWidth);
-//            CGContextMoveToPoint(context,  width, 0);
-//            CGContextAddLineToPoint(context, width, self.bounds.size.height);
-//            CGContextStrokePath(context);
-//        }
-//    }
-    
-//    [self.xAxisFontColor set];
-//    CGContextSetLineWidth(context, self.axisLineWidth);
-//    CGContextMoveToPoint(context, startWidth, startHeight);
-//    
-//    CGContextAddLineToPoint(context, startWidth, self.bounds.size.height);
-//    CGContextStrokePath(context);
-//    
-//    CGContextMoveToPoint(context, startWidth, startHeight);
-//    CGContextAddLineToPoint(context, self.bounds.size.width, startHeight);
-//    CGContextStrokePath(context);
-    
-    // x axis text
-//    for (int i=0; i<self.xAxisValues.count; i++) {
-//        float width =self.pointerInterval*(i+1)+self.contentScroll.x+ startHeight;
-//        float height = self.xAxisFontSize;
-//        
-//        if (width<startWidth) {
-//            continue;
-//        }
-//
-//        
-//        NSInteger count = [[self.xAxisValues objectAtIndex:i] lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
-//        CGContextShowTextAtPoint(context, width, height, [[self.xAxisValues objectAtIndex:i] UTF8String], count);
-//    }
-    
 }
 
 #pragma mark -

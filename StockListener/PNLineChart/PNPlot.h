@@ -29,5 +29,6 @@
 @property (nonatomic, strong) NSArray *plottingPointsLabels;
 @property (nonatomic, strong) UIColor* lineColor;
 @property (nonatomic, assign) float lineWidth;
+@property (nonatomic, assign) BOOL isKLine;
 
 @end

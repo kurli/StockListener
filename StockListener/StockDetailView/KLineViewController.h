@@ -16,7 +16,7 @@
 
 -(void) setFrame:(CGRect)rect;
 
--(void) refresh;
+-(void) refresh:(float)lowest andHighest:(float)highest andDrawKLine:(BOOL)drawKLine;
 
 -(void) setSplitX:(NSInteger)x;
 

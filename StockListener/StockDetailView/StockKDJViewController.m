@@ -233,7 +233,7 @@
     NSInteger latest = [str integerValue];
     
     NSInteger historyDateValue = [self.stockInfo.fiveDayLastUpdateDay integerValue];
-//    historyDateValue = 0;
+    historyDateValue = 0;
     if (historyDateValue == 0 || latest - historyDateValue >= 2) {
         GetFiveDayStockValue* task = [[GetFiveDayStockValue alloc] initWithStock:self.stockInfo];
         [[KingdaWorker getInstance] queue:task];
@@ -245,7 +245,7 @@
     }
 
     historyDateValue = [self.stockInfo.hundredDayLastUpdateDay integerValue];
-//    historyDateValue = 0;
+    historyDateValue = 0;
     if (historyDateValue == 0 || latest - historyDateValue >= 2) {
         GetDaysStockValue* task5 = [[GetDaysStockValue alloc] initWithStock:self.stockInfo];
         [[KingdaWorker getInstance] queue:task5];
@@ -255,7 +255,7 @@
     }
 
     historyDateValue = [self.stockInfo.weeklyLastUpdateDay integerValue];
-//        historyDateValue = 0;
+    historyDateValue = 0;
     if (historyDateValue == 0 || latest - historyDateValue >= 2) {
         GetWeeksStockValue* task6 = [[GetWeeksStockValue alloc] initWithStock:self.stockInfo];
         [[KingdaWorker getInstance] queue:task6];
@@ -407,16 +407,15 @@
     [aVolController reload];
 }
 
--(void) refreshVOL:(NSInteger) startIndex andVolValues:(NSArray*)volValues {
+-(void) refreshVOL:(NSInteger) startIndex andVolValues:(NSArray*)volValues andMaxCount:(NSInteger)maxCount {
     //VOL
-    startIndex++;
     volController.volValues = [[NSMutableArray alloc] init];
     for (NSInteger i=startIndex; i<[volValues count]; i++) {
         NSNumber* vol = [volValues objectAtIndex:i];
         [volController.volValues addObject:vol];
     }
     // Insert zero for remaining
-    NSInteger count = [volController.volValues count] - DEFAULT_DISPLAY_COUNT + 1;
+    NSInteger count = [volController.volValues count] - maxCount;
     for (NSInteger i=0; i<count; i++) {
         [volController.volValues addObject:[NSNumber numberWithInteger:0]];
     }
@@ -476,34 +475,44 @@
     int delta = 1;
     NSString* str = @"1分";
     UISegmentedControl* control = self.kdjTypeSegment;
+    int maxCount = 10;
+    BOOL drawKLine = YES;
     switch (control.selectedSegmentIndex) {
         case 0:
             delta = ONE_MINUTE;
             str = @"1分";
+            drawKLine = NO;
+            maxCount = 30;
             break;
         case 1:
             delta = FIVE_MINUTES;
             str = @"5分";
+            maxCount = 24;
             break;
         case 2:
             delta = FIFTEEN_MINUTES;
             str = @"15分";
+            maxCount = 16;
             break;
         case 3:
             delta = THIRTY_MINUTES;
             str = @"30分";
+            maxCount = 16;
             break;
         case 4:
             delta = ONE_HOUR;
             str = @"60分";
+            maxCount = 20;
             break;
         case 5:
             str = @"日";
             delta = ONE_DAY;
+            maxCount = 20;
             break;
         case 6:
             str = @"周";
             delta = ONE_WEEK;
+            maxCount = 20;
             break;
         case 7:
             [self moreClicked];
@@ -513,8 +522,8 @@
             break;
     }
     preSegment = control.selectedSegmentIndex;
-    CalculateKDJ* task = [[CalculateKDJ alloc] initWithStockInfo:self.stockInfo andDelta:delta andCount:DEFAULT_DISPLAY_COUNT];
-    task.onCompleteBlock = ^(CalculateKDJ* _self) {
+    CalculateKDJ* task = [[CalculateKDJ alloc] initWithStockInfo:self.stockInfo andDelta:delta andCount:maxCount];
+    task.onCompleteBlock = ^(CalculateKDJ* _self) { 
         kdjViewController.kdj_d = _self.kdj_d;
         kdjViewController.kdj_j = _self.kdj_j;
         kdjViewController.kdj_k = _self.kdj_k;
@@ -530,27 +539,12 @@
             startIndex = 0;
         }
         klineViewController.startIndex = startIndex;
-        
-        float l = 100000;
-        float h = -1;
-        for (NSInteger i=startIndex; i<[_self.priceKValues count]; i++) {
-            NSArray* array = [_self.priceKValues objectAtIndex:i];
-            if ([array count] != 3) {
-                continue;
-            }
-            NSNumber* p = [array objectAtIndex:1];
-            if ([p floatValue] > h) {
-                h = [p floatValue];
-            }
-            if ([p floatValue] < l) {
-                l = [p floatValue];
-            }
-        }
-        [self refreshAVOLAsync:l andHighest:h];
-        [self refreshVOL:startIndex andVolValues:_self.volValues];
+
+        [self refreshAVOLAsync:_self.lowest andHighest:_self.highest];
+        [self refreshVOL:startIndex andVolValues:_self.volValues andMaxCount:maxCount];
 
         [kdjViewController refresh:delta andStock:self.stockInfo];
-        [klineViewController refresh];
+        [klineViewController refresh:_self.lowest andHighest:_self.highest andDrawKLine:drawKLine];
         if (_self.todayStartIndex == 0) {
             NSInteger splitX = [self.stockInfo.todayPriceByMinutes count] - delta * [_self.kdj_d count];
             [fenshiViewController setSplitX:splitX];

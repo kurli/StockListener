@@ -82,27 +82,37 @@
 - (IBAction)typeSegmentChanged:(id)sender {
     int delta = 1;
     UISegmentedControl* control = self.typeSegmentController;
+    BOOL isKLine = YES;
+    int maxCount = 10;
     switch (control.selectedSegmentIndex) {
         case 0:
             delta = ONE_MINUTE;
+            isKLine = NO;
+            maxCount = 30;
             break;
         case 1:
             delta = FIVE_MINUTES;
+            maxCount = 24;
             break;
         case 2:
             delta = FIFTEEN_MINUTES;
+            maxCount = 16;
             break;
         case 3:
             delta = THIRTY_MINUTES;
+            maxCount = 16;
             break;
         case 4:
             delta = ONE_HOUR;
+            maxCount = 20;
             break;
         case 5:
             delta = ONE_DAY;
+            maxCount = 20;
             break;
         case 6:
             delta = ONE_WEEK;
+            maxCount = 20;
             break;
         default:
             break;
@@ -114,7 +124,7 @@
 
         [self refreshVOL:0 andVolValues:_self.volValues];
         
-        [klineViewController refresh];
+        [klineViewController refresh:_self.lowest andHighest:_self.highest andDrawKLine:isKLine];
     };
 
     [[KingdaWorker getInstance] queue:task];

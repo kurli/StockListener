@@ -167,7 +167,7 @@
     plot3.lineWidth = 1;
     [kdjChartView  addPlot:plot3];
     [kdjChartView setNeedsDisplay];
-    NSInteger maxCount = [self.kdj_d count];
+    NSInteger maxCount = [self.kdj_d count] + 1;
     kdjChartView.pointerInterval = (kdjChartView.frame.size.width - 20 - 1)/(maxCount-1);
     kdjChartView.xAxisInterval = (kdjChartView.frame.size.width - 20-1)/(maxCount-1);
     

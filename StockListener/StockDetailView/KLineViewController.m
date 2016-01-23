@@ -78,37 +78,32 @@
     [kLineChartView setNeedsDisplay];
 }
 
--(void) refresh {
-    float l = 100000;
-    float h = -1;
-
-    NSMutableArray* cPriceArray = [[NSMutableArray alloc] init];
+-(void) refresh:(float)lowest andHighest:(float)highest andDrawKLine:(BOOL)drawKLine {
+//    NSMutableArray* cPriceArray = [[NSMutableArray alloc] init];
     NSMutableArray* ma5Array = [[NSMutableArray alloc] init];
     NSMutableArray* ma10Array = [[NSMutableArray alloc] init];
     NSMutableArray* ma20Array = [[NSMutableArray alloc] init];
+    NSMutableArray* cArray = [[NSMutableArray alloc] init];
     for (NSInteger i = self.startIndex; i<[self.priceKValues count]; i++) {
         NSArray* array = [self.priceKValues objectAtIndex:i];
-        if ([array count] != 3) {
+        if ([array count] != 4) {
             continue;
         }
-        NSNumber* p = [array objectAtIndex:1];
-        if ([p floatValue] > h) {
-            h = [p floatValue];
+        if (drawKLine == YES) {
+            [cArray addObject:array];
+        } else {
+            NSNumber* number = [array objectAtIndex:2];
+            [cArray addObject:number];
         }
-        if ([p floatValue] < l) {
-            l = [p floatValue];
-        }
-        [cPriceArray addObject:p];
-        
         //MA5
         if (i-5 >= 0) {
             float average = 0;
             for (int j=0; j<5; j++) {
                 NSArray* array = [self.priceKValues objectAtIndex:i-5+j];
-                if ([array count] != 3) {
+                if ([array count] != 4) {
                     continue;
                 }
-                NSNumber* p = [array objectAtIndex:1];
+                NSNumber* p = [array objectAtIndex:2];
                 average += [p floatValue];
             }
             [ma5Array addObject:[NSNumber numberWithFloat:average/5]];
@@ -120,10 +115,10 @@
             float average = 0;
             for (int j=0; j<10; j++) {
                 NSArray* array = [self.priceKValues objectAtIndex:i-10+j];
-                if ([array count] != 3) {
+                if ([array count] != 4) {
                     continue;
                 }
-                NSNumber* p = [array objectAtIndex:1];
+                NSNumber* p = [array objectAtIndex:2];
                 average += [p floatValue];
             }
             [ma10Array addObject:[NSNumber numberWithFloat:average/10]];
@@ -135,10 +130,10 @@
             float average = 0;
             for (int j=0; j<20; j++) {
                 NSArray* array = [self.priceKValues objectAtIndex:i-20+j];
-                if ([array count] != 3) {
+                if ([array count] != 4) {
                     continue;
                 }
-                NSNumber* p = [array objectAtIndex:1];
+                NSNumber* p = [array objectAtIndex:2];
                 average += [p floatValue];
             }
             [ma20Array addObject:[NSNumber numberWithFloat:average/20]];
@@ -148,24 +143,24 @@
     }
 
     //K line
-    kLineChartView.max = h;
-    kLineChartView.min = l;
+    kLineChartView.max = highest;
+    kLineChartView.min = lowest;
     
-    NSInteger maxCount = [cPriceArray count];
+    NSInteger maxCount = [cArray count] + 1;
     kLineChartView.pointerInterval = (kLineChartView.frame.size.width - 20 - 1)/(maxCount-1);
     kLineChartView.xAxisInterval = (kLineChartView.frame.size.width - 20-1)/(maxCount-1);
     kLineChartView.horizontalLineInterval = (float)(kLineChartView.frame.size.height-1) / 5.0;
-    if (h == l) {
+    if (highest == lowest) {
         kLineChartView.interval = 1;
     } else {
-        kLineChartView.interval = (h-l)/5.0;
+        kLineChartView.interval = (highest-lowest)/5.0;
     }
-    float delta = (h - l)/5.0;
+    float delta = (highest - lowest)/5.0;
     NSMutableArray* array = [[NSMutableArray alloc] init];
     for (int i=0; i<6; i++) {
-        [array addObject:[NSNumber numberWithFloat:l+delta*i]];
+        [array addObject:[NSNumber numberWithFloat:lowest+delta*i]];
     }
-    if (l > 3) {
+    if (lowest > 3) {
         kLineChartView.floatNumberFormatterString = @"%.2f";
     } else {
         kLineChartView.floatNumberFormatterString = @"%.3f";
@@ -173,14 +168,14 @@
     kLineChartView.yAxisValues = array;
     kLineChartView.numberOfVerticalElements = 6;
     kLineChartView.axisLeftLineWidth = LEFT_PADDING;
-//    kLineChartView.splitX = self.todayStartIndex;
     
     [kLineChartView clearPlot];
     
     PNPlot *plot1 = [[PNPlot alloc] init];
-    plot1.plottingValues = [cPriceArray mutableCopy];
+    plot1.plottingValues = [cArray mutableCopy];
     plot1.lineColor = [UIColor redColor];
     plot1.lineWidth = 2;
+    plot1.isKLine = drawKLine;
     [kLineChartView addPlot:plot1];
     
     PNPlot *plot2 = [[PNPlot alloc] init];

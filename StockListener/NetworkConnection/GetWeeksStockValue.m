@@ -34,6 +34,7 @@
     //160108 83.99 88.32 88.32 80.00 191607
     NSArray* array;
     NSString* date;
+    float open;
     float lowest;
     float highest;
     NSInteger vol = 0;
@@ -46,11 +47,13 @@
             continue;
         }
         date = [array objectAtIndex:0];
+        open = [[array objectAtIndex:1] floatValue];
         price = [[array objectAtIndex:2] floatValue];
         highest = [[array objectAtIndex:3] floatValue];
         lowest = [[array objectAtIndex:4] floatValue];
         vol = [[array objectAtIndex:5] integerValue];
         NSMutableArray* a = [[NSMutableArray alloc] init];
+        [a addObject:[NSNumber numberWithFloat:open]];
         [a addObject:[NSNumber numberWithFloat:highest]];
         [a addObject:[NSNumber numberWithFloat:price]];
         [a addObject:[NSNumber numberWithFloat:lowest]];
