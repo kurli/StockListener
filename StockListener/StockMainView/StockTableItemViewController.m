@@ -29,11 +29,18 @@
 #define INFO_BUTTON 113
 #define KDJ_BUTTON 114
 
+#define CHI_CANG 120
+#define SHI_ZHI 121
+#define YING_KUI 122
+
 #define HEADSET_HIDE 0.2
 #define HEADSET_SHOW 1
 
-@interface StockTableItemViewController()
+@interface StockTableItemViewController() <UIAlertViewDelegate> {
+    StockInfo* deleteInfo;
+}
 //@property (nonatomic, strong) NSMutableDictionary* buySellViewDictionary;
+
 @end
 
 @implementation StockTableItemViewController
@@ -148,6 +155,12 @@
     [self.viewController presentViewController:controller animated:YES completion:nil];
 }
 
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    if (buttonIndex == 0) {
+        [[DatabaseHelper getInstance] removeStockBySID:deleteInfo.sid];
+    }
+}
+
 -(void) deleteButtonClicked:(id)b {
     UIButton *button = (UIButton *)b;
     UIView *contentView;
@@ -167,7 +180,10 @@
         return;
     }
     StockInfo* info = [[DatabaseHelper getInstance].stockList objectAtIndex:indexPath.row];
-    [[DatabaseHelper getInstance] removeStockBySID:info.sid];
+
+    deleteInfo = info;
+    UIAlertView* a=[[UIAlertView alloc] initWithTitle:@"" message:[NSString stringWithFormat:@"确认删除%@吗？", info.name]delegate:self cancelButtonTitle:@"确定"otherButtonTitles: @"取消",nil];
+    [a show];
 }
 
 -(UITableViewCell*) getTableViewCell:(UITableView*)tableView andInfo:(StockInfo*)info andSelected:(BOOL)selected; {
@@ -204,6 +220,12 @@
 //    [currentPriceLabel setHidden:NO];
     UILabel* greenLabel = [cell viewWithTag:GREEN_STEP];
     UILabel* redLabel = [cell viewWithTag:RED_STEP];
+    
+    UILabel* chicangLabel = [cell viewWithTag:CHI_CANG];
+    UILabel* shizhiLabel = [cell viewWithTag:SHI_ZHI];
+    UILabel* yingkui = [cell viewWithTag:YING_KUI];
+    
+    [info showStockInfo:chicangLabel andShizhiLabel:shizhiLabel andYingkuiLabel:yingkui];
 
     if (nowPLayingSID != nil) {
         if ([nowPLayingSID isEqualToString:info.sid]) {

@@ -7,6 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+
+#define PRE_EARN_FLAG -12321
 
 @interface StockInfo : NSObject <NSCopying, NSCoding>
 
@@ -78,6 +81,7 @@
 -(float) getTaxForBuy:(float)price andDealCount:(NSInteger) dealCount;
 -(float) getTaxForSell:(float)price andDealCount:(NSInteger) dealCount;
 
+-(void) showStockInfo:(UILabel*)chicangLabel andShizhiLabel:(UILabel*)shizhiLabel andYingkuiLabel:(UILabel*)yingkui;
 //temp data
 //@property (atomic, strong) NSMutableArray* changeRateArray;
 

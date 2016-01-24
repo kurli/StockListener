@@ -445,4 +445,50 @@
     return guohu + yongjin;
 }
 
+-(void) showStockInfo:(UILabel*)chicangLabel andShizhiLabel:(UILabel*)shizhiLabel andYingkuiLabel:(UILabel*)yingkui {
+    if ([self.buySellHistory count] == 0) {
+        chicangLabel.text = @"-";
+        shizhiLabel.text = @"-";
+        yingkui.text = @"-";
+        return;
+    }
+    NSInteger totalDealCount = 0;
+    float buyTotalPrice = 0;
+    float curPrice = self.price;
+    float totalBuyTax = 0;
+    float preEarn = 0;
+    for (int i=0; i<[self.buySellHistory count]; i++) {
+        NSString* data = [self.buySellHistory objectAtIndex:i];
+        NSArray* array = [data componentsSeparatedByString:@":"];
+        if ([array count] == 2) {
+            float price = [[array objectAtIndex:0] floatValue];
+            float dealCount = [[array objectAtIndex:1] integerValue];
+            if (dealCount < 0) {
+                continue;
+            }
+            if (price == PRE_EARN_FLAG) {
+                float dealCount = [[array objectAtIndex:1] floatValue];
+                preEarn += dealCount;
+                continue;
+            }
+            totalDealCount += dealCount;
+            buyTotalPrice += (price*dealCount);
+            float tax = [self getTaxForBuy:price andDealCount:dealCount];
+            totalBuyTax += tax;
+        }
+    }
+    float tax = 0;
+    if (totalDealCount != 0) {
+        tax = [self getTaxForSell:curPrice andDealCount:totalDealCount];
+    }
+    float sellTotalPrice = 0;
+    sellTotalPrice += (totalDealCount * curPrice - tax - totalBuyTax);
+    chicangLabel.text = [NSString stringWithFormat:@"%ld", totalDealCount];
+    shizhiLabel.text = [NSString stringWithFormat:@"%.2f", sellTotalPrice];
+    if (buyTotalPrice != 0) {
+        yingkui.text = [NSString stringWithFormat:@"%.2f %.2f%%", sellTotalPrice-buyTotalPrice + preEarn, (sellTotalPrice-buyTotalPrice+preEarn)/buyTotalPrice * 100];
+    } else {
+        yingkui.text = [NSString stringWithFormat:@"%.2f", sellTotalPrice-buyTotalPrice + preEarn];
+    }
+}
 @end
