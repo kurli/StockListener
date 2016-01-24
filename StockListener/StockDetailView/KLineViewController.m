@@ -7,8 +7,8 @@
 //
 
 #import "KLineViewController.h"
-#import "PNLineChartView.h"
 #import "StockKDJViewController.h"
+#import "PNLineChartView.h"
 #import "PNPlot.h"
 #import "KLineSettingViewController.h"
 
@@ -33,6 +33,17 @@
         [infoButton addTarget:self action:@selector(infoClicked:) forControlEvents:UIControlEventTouchUpInside];
 //        [infoButton setImage:[UIImage imageNamed:@"setting_small"] forState:UIControlStateNormal];
         [parentView addSubview:infoButton];
+        __weak KLineViewController* weakSelf = self;
+        [kLineChartView setOnScroll:^(NSInteger delta, BOOL finished) {
+            if (weakSelf.onScroll != nil) {
+                weakSelf.onScroll(delta, finished);
+            }
+        }];
+        [kLineChartView setOnScale:^(float zoom, BOOL finished) {
+            if (weakSelf.onScale != nil) {
+                weakSelf.onScale(zoom, finished);
+            }
+        }];
     }
     return self;
 }
@@ -76,6 +87,10 @@
 -(void) clearPlot {
     [kLineChartView clearPlot];
     [kLineChartView setNeedsDisplay];
+}
+
+-(float) getPointerInterval {
+    return kLineChartView.pointerInterval;
 }
 
 -(void) refresh:(float)lowest andHighest:(float)highest andDrawKLine:(BOOL)drawKLine {

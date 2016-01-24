@@ -30,6 +30,8 @@
 
 -(void) hideInfoButton;
 
+-(float) getPointerInterval;
+
 @property (nonatomic, assign) NSInteger todayStartIndex;
 @property (nonatomic, assign) NSInteger startIndex;
 @property (nonatomic, strong) NSMutableArray* priceKValues;
@@ -38,4 +40,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *twentyAPrice;
 @property (nonatomic, strong) UIViewController* viewController;
 @property (nonatomic, strong) StockInfo* stockInfo;
+@property (copy) void (^onScroll)(NSInteger delta, BOOL finished);
+@property (copy) void (^onScale)(float delta, BOOL finished);
 @end

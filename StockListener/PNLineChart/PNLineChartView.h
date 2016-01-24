@@ -36,6 +36,8 @@
 @property (nonatomic, assign) float     markY;
 @property (nonatomic, assign) BOOL      yAxisPercentage;
 @property (nonatomic, assign) BOOL      handleLongClick;
+@property (copy) void (^onScroll)(NSInteger delta, BOOL finished);
+@property (copy) void (^onScale)(float delta, BOOL finished);
 
 @property (nonatomic, strong) UIColor * horizontalLinesColor;
 

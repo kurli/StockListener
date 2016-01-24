@@ -55,10 +55,10 @@
 @interface PNLineChartView () {
     CGPoint longPressPoint;
     BOOL showLongPress;
+    float lastScale;
 }
 
 @property (nonatomic, strong) NSString* fontName;
-@property (nonatomic, assign) CGPoint contentScroll;
 @property (nonatomic, strong) NSTimer* hideLongPressTimer;
 @end
 
@@ -102,14 +102,52 @@
     longPressGR.allowableMovement=YES;
     longPressGR.minimumPressDuration = 0.2;
     [self addGestureRecognizer:longPressGR];
+    
+    UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
+    [self addGestureRecognizer:pan];
+    
+    UIPinchGestureRecognizer *zoom = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleZoom:)];
+    [self addGestureRecognizer:zoom];
+
     showLongPress = NO;
     self.yAxisPercentage = NO;
     self.handleLongClick = YES;
+    
 }
 
 -(void) onHideLongPressFired {
     showLongPress = NO;
     [self setNeedsDisplay];
+}
+
+-(void) handleZoom:(UIPinchGestureRecognizer*)rec {
+    
+    if (rec.state == UIGestureRecognizerStateEnded) {
+        if (self.onScale != nil) {
+            self.onScale(rec.scale - lastScale, true);
+        }
+    } else if (rec.state == UIGestureRecognizerStateBegan) {
+        lastScale = rec.scale;
+    } else {
+        if (self.onScale != nil) {
+            self.onScale(rec.scale - lastScale, false);
+        }
+    }
+    lastScale = rec.scale;
+}
+
+- (void) handlePan: (UIPanGestureRecognizer *)rec{
+    CGPoint point = [rec translationInView:self];
+    
+    if (rec.state == UIGestureRecognizerStateEnded) {
+        if (self.onScroll != nil) {
+            self.onScroll(point.x, true);
+        }
+    } else {
+        if (self.onScroll != nil) {
+            self.onScroll(point.x, false);
+        }
+    }
 }
 
 -(IBAction)handleLongPress:(UILongPressGestureRecognizer *)gestureRecognizer{
@@ -190,7 +228,7 @@
 #pragma mark Draw the lineChart
 
 -(float) getHeightByPrice:(float)price {
-    return (price-self.min)/self.interval*self.horizontalLineInterval-self.contentScroll.y+self.axisBottomLinetHeight;
+    return (price-self.min)/self.interval*self.horizontalLineInterval+self.axisBottomLinetHeight;
 }
 
 #define UIColorFromHex(hex) [UIColor colorWithRed:((float)((hex & 0xFF0000) >> 16))/255.0 green:((float)((hex & 0xFF00) >> 8))/255.0 blue:((float)(hex & 0xFF))/255.0 alpha:1.0]
@@ -221,7 +259,7 @@
         float curY = [self getHeightByPrice:curPrice];
         float hY = [self getHeightByPrice:highest];
         float lY = [self getHeightByPrice:lowest];
-        float width =self.axisLeftLineWidth + self.pointerInterval*(i-self.startIndex)+self.contentScroll.x;
+        float width =self.axisLeftLineWidth + self.pointerInterval*(i-self.startIndex);
         
         if (openY > curY) {
             [[UIColor colorWithRed:0.7 green:0.7 blue:0.7 alpha:1] set];
@@ -302,7 +340,7 @@
                 NSInteger count = [numberString lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
                 
                 // Draw current
-                float height = (base-self.min)/self.interval*self.horizontalLineInterval-self.contentScroll.y+startHeight;
+                float height = (base-self.min)/self.interval*self.horizontalLineInterval+startHeight;
                 CGContextMoveToPoint(context, startWidth, height);
                 CGContextAddLineToPoint(context, self.bounds.size.width, height);
                 CGContextStrokePath(context);
@@ -313,7 +351,7 @@
                 for (int i=1; i<15; i++) {
                     numberString = [NSString stringWithFormat:@"%.1f%%", i*delta*100];
                     NSInteger count = [numberString lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
-                    height = (base*(1+i*delta)-self.min)/self.interval*self.horizontalLineInterval-self.contentScroll.y+startHeight;
+                    height = (base*(1+i*delta)-self.min)/self.interval*self.horizontalLineInterval+startHeight;
                     if (height > self.frame.size.height-10) {
                         break;
                     }
@@ -329,7 +367,7 @@
                 for (int i=1; i<15; i++) {
                     numberString = [NSString stringWithFormat:@"-%.1f%%", i*delta*100];
                     NSInteger count = [numberString lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
-                    height = (base*(1-i*delta)-self.min)/self.interval*self.horizontalLineInterval-self.contentScroll.y+startHeight;
+                    height = (base*(1-i*delta)-self.min)/self.interval*self.horizontalLineInterval+startHeight;
                     if (height < 10) {
                         break;
                     }
@@ -346,7 +384,7 @@
         // draw yAxis
         for (int i=0; i<self.numberOfVerticalElements; i++) {
             float height =self.horizontalLineInterval*i;
-            float verticalLine = height + startHeight - self.contentScroll.y;
+            float verticalLine = height + startHeight;
             
             CGContextSetLineWidth(context, self.horizontalLineWidth);
             
@@ -418,8 +456,8 @@
             NSNumber* value = [pointArray objectAtIndex:i];
             float floatValue = value.floatValue;
             
-            float height = (floatValue-self.min)/self.interval*self.horizontalLineInterval-self.contentScroll.y+startHeight;
-            float width =startWidth + self.pointerInterval*(i-self.startIndex)+self.contentScroll.x + self.pointerInterval/2;
+            float height = (floatValue-self.min)/self.interval*self.horizontalLineInterval+startHeight;
+            float width =startWidth + self.pointerInterval*(i-self.startIndex) + self.pointerInterval/2;
             
             if (i==self.startIndex || newLine) {
                 CGContextMoveToPoint(context,  width, height);
@@ -434,7 +472,7 @@
     }
     
     if (self.splitX > 0) {
-        int x = startWidth + self.pointerInterval*(self.splitX)+self.contentScroll.x+ startHeight;
+        int x = startWidth + self.pointerInterval*(self.splitX) + startHeight;
         CGContextSetLineWidth(context, 1);
         [[UIColor blackColor] set];
         CGContextMoveToPoint(context,  x, 0);
@@ -516,7 +554,6 @@
 #pragma mark touch handling
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    
 }
 
 -(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
@@ -553,11 +590,9 @@
 
 -(void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    
 }
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    
 }
 
 
