@@ -27,4 +27,6 @@
 
 -(void) setPriceInfoStr:(NSString*)str;
 
+-(void) hideInfoButton;
+
 @end

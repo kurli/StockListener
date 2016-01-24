@@ -92,8 +92,12 @@
     [klineViewController setTenAPrice:self.tenAPrice];
     [klineViewController setTwentyAPrice:self.twentyAPrice];
     [klineViewController setViewController:self];
-
+    
+    [klineViewController hideInfoButton];
+    [fenshiViewController hideInfoButton];
+    
     kdjViewController = [[KDJViewController alloc] initWithParentView:self.view];
+    
 }
 
 -(void) viewWillAppear:(BOOL)animated {

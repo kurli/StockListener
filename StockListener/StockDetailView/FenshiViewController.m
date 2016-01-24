@@ -69,6 +69,10 @@
     priceChartView.splitX = x;
 }
 
+-(void) hideInfoButton {
+    [infoButton setHidden:YES];
+}
+
 -(void) refresh:(StockInfo*)stockInfo {
     float highest = -100;
     float lowest = 100;
