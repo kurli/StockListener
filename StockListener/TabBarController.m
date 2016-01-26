@@ -12,6 +12,7 @@
 #import "StockInfo.h"
 #import "StockTableItemViewController.h"
 #import "StockPlayerManager.h"
+#import "ConfigHelper.h"
 
 @interface TabBarController () <UITabBarControllerDelegate>
 
@@ -101,6 +102,11 @@
 
 -(void)pressChange:(id)sender
 {
+//    if ([ConfigHelper getInstance].isRongDuan) {
+//        button.selected = NO;
+//        return;
+//    }
+    
     button.selected = !button.selected;
     if (![[StockPlayerManager getInstance] isPlaying]) {
         [[StockPlayerManager getInstance] play];

@@ -141,6 +141,11 @@
 
 - (void) stopRefreshStock {
     [self.stockRefresher stopRefreshStock];
+    [[StockPlayerManager getInstance] pause];
+}
+
+-(BOOL) isRefreshing {
+    return [self.stockRefresher isRefreshing];
 }
 
 -(StockInfo*)getInfoById:(NSString*)sid {

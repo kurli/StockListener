@@ -220,14 +220,6 @@
         [self.chuangValue setTextColor:[UIColor redColor]];
     }
 }
-- (IBAction)onAutoSwitchChanged:(id)sender {
-    UISegmentedControl* control = (UISegmentedControl*)sender;
-    if (control.selectedSegmentIndex == 0) {
-        [[StockPlayerManager getInstance] setIsAudoChoose:NO];
-    } else {
-        [[StockPlayerManager getInstance] setIsAudoChoose:YES];
-    }
-}
 
 -(void) onPlayerStatusChanged:(NSNotification*)notification {
     StockInfo* info = [notification object];

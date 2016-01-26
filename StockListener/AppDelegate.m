@@ -13,6 +13,7 @@
 #import "StockListViewController.h"
 #import "StockPlayerManager.h"
 #import "BuySellHistoryViewController.h"
+#import "SettingsViewController.h"
 
 @interface AppDelegate () {
 }
@@ -45,8 +46,7 @@
     BuySellHistoryViewController *c4=[[BuySellHistoryViewController alloc] initWithNibName:@"BuySellHistoryViewController" bundle:nil];
     c4.tabBarItem.title=@"Caculator";
 
-    UIViewController *c5=[[UIViewController alloc]init];
-    c5.view.backgroundColor=[UIColor whiteColor];
+    SettingsViewController* c5=[[SettingsViewController alloc] init];
     c5.tabBarItem.title=@"Setting";
     
     self.tb.viewControllers =@[c3,c1,c2,c4,c5];

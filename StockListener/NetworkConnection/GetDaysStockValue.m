@@ -62,7 +62,7 @@
     }
     if (preCount == [self.neededNewInfo.hundredDaysVOL count] && preVOL == vol) {
         NSInteger dateInt = [date integerValue];
-        dateInt++;
+//        dateInt++;
         self.neededNewInfo.hundredDayLastUpdateDay = [NSString stringWithFormat:@"%ld", dateInt];
     } else {
         self.neededNewInfo.hundredDayLastUpdateDay = date;

@@ -18,4 +18,6 @@
 
 -(void) stopRefreshStock;
 
+-(BOOL) isRefreshing;
+
 @end

@@ -31,6 +31,7 @@
 -(void) removeStockBySID:(NSString*)sid;
 -(void) startRefreshStock;
 -(void) stopRefreshStock;
+-(BOOL) isRefreshing;
 
 -(StockInfo*)getInfoById:(NSString*)sid;
 -(StockInfo*)getDapanInfoById:(NSString*)sid;

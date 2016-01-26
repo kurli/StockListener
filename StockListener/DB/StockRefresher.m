@@ -11,9 +11,7 @@
 #import "KingdaWorker.h"
 #import "DatabaseHelper.h"
 #import "StockInfo.h"
-
-#define REFRESH_RATE 6
-//#define REFRESH_RATE 1
+#import "ConfigHelper.h"
 
 @interface StockRefresher()
 
@@ -25,8 +23,12 @@
 @implementation StockRefresher
 
 -(void) startRefresh:(DatabaseHelper*) dbhelper {
+    if ([ConfigHelper getInstance].stockRefreshInterval == 0) {
+        [self stopRefreshStock];
+        return;
+    }
     if (_stockRefreshTimer == nil) {
-        _stockRefreshTimer = [NSTimer scheduledTimerWithTimeInterval:REFRESH_RATE target:self selector:@selector(stockRefreshFired) userInfo:nil repeats:YES];
+        _stockRefreshTimer = [NSTimer scheduledTimerWithTimeInterval:[ConfigHelper getInstance].stockRefreshInterval target:self selector:@selector(stockRefreshFired) userInfo:nil repeats:YES];
     }
     self.dbHelper = dbhelper;
     [self stockRefreshFired];
@@ -35,6 +37,10 @@
 -(void) stopRefreshStock {
     [_stockRefreshTimer invalidate];
     [self setStockRefreshTimer:nil];
+}
+
+-(BOOL) isRefreshing {
+    return self.stockRefreshTimer != nil;
 }
 
 - (void)stockRefreshFired {

@@ -101,7 +101,7 @@
     }
     if (preCount == [self.neededNewInfo.fiveDayVOLByMinutes count] && preVOL == vol) {
         NSInteger dateInt = [date integerValue];
-        dateInt++;
+//        dateInt++;
         self.neededNewInfo.fiveDayLastUpdateDay = [NSString stringWithFormat:@"%ld", dateInt];
     } else {
         self.neededNewInfo.fiveDayLastUpdateDay = date;

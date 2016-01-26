@@ -15,6 +15,7 @@
 #import "StockRefresher.h"
 #import "DatabaseHelper.h"
 #import "TheAmazingAudioEngine.h"
+#import "ConfigHelper.h"
 
 #define UP_SOUND @"up"
 #define DOWN_SOUND @"down"
@@ -23,8 +24,6 @@
 #define STOCK_UP 1
 #define STOCK_DOWN 2
 
-#define SPEACH_COUNTER 60
-
 //#define NSLog(a)
 
 #if 1
@@ -32,7 +31,7 @@
 @interface StockPlayerManager() {
     int _currentPlayIndex;
     BOOL _continueRefresh;
-    int speachCounter;
+    NSInteger speachCounter;
 }
 
 @property (nonatomic, strong) AEAudioController *audioController;
@@ -142,7 +141,7 @@
 
     if (!switched) {
         speachCounter++;
-        if (speachCounter == SPEACH_COUNTER) {
+        if (speachCounter >= [ConfigHelper getInstance].speakInterval) {
             [self stockSpeachFired];
             return;
         }
@@ -315,6 +314,11 @@
  * =======================================
  */
 - (void) play {
+//    if ([ConfigHelper getInstance].isRongDuan) {
+//        _continueRefresh = false;
+//        return;
+//    }
+
     if ([[DatabaseHelper getInstance].stockList count] == 0) {
         _continueRefresh = false;
         return;
@@ -327,9 +331,9 @@
     StockInfo* info = [[DatabaseHelper getInstance].stockList objectAtIndex:_currentPlayIndex];
     [self setCurrentPlaySID:info.sid];
     
-    speachCounter = SPEACH_COUNTER - 2;
+    speachCounter = [ConfigHelper getInstance].speakInterval - 2;
     [self onStockValueRefreshed];
-    
+
     [self playMusic];
     
 //    if (self.delegate) {
