@@ -59,19 +59,6 @@
         _continueRefresh = NO;
         self.playList =[[NSMutableArray alloc] init];
         
-        self.audioController = [[AEAudioController alloc]
-                                initWithAudioDescription:AEAudioStreamBasicDescriptionNonInterleaved16BitStereo
-                                inputEnabled:NO];
-        _audioController.preferredBufferDuration = 0.005;
-        _audioController.useMeasurementMode = NO;
-        [_audioController setAllowMixingWithOtherApps:NO];
-
-        self.musicPlayer = [AEAudioFilePlayer audioFilePlayerWithURL:[[NSBundle mainBundle] URLForResource:MUSIC_SOUND withExtension:@"mp3"] error:NULL];
-        _musicPlayer.volume = 0.05;
-        _musicPlayer.loop = YES;
-        _musicPlayer.channelIsMuted = YES;
-        [_audioController addChannels:@[_musicPlayer]];
-
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(onStockValueRefreshed)
                                                      name:STOCK_VALUE_REFRESHED_NOTIFICATION
@@ -80,6 +67,25 @@
         speachCounter = 0;
     }
     return self;
+}
+
+-(void) initAudio {
+    if (_audioController != nil) {
+        return;
+    }
+    self.audioController = [[AEAudioController alloc]
+                            initWithAudioDescription:AEAudioStreamBasicDescriptionNonInterleaved16BitStereo
+                            inputEnabled:NO];
+    _audioController.preferredBufferDuration = 0.005;
+    _audioController.useMeasurementMode = NO;
+    [_audioController setAllowMixingWithOtherApps:NO];
+    
+    self.musicPlayer = [AEAudioFilePlayer audioFilePlayerWithURL:[[NSBundle mainBundle] URLForResource:MUSIC_SOUND withExtension:@"mp3"] error:NULL];
+    _musicPlayer.volume = 0.001;
+    _musicPlayer.loop = YES;
+    _musicPlayer.channelIsMuted = YES;
+    [_audioController addChannels:@[_musicPlayer]];
+    [self setAllowMixing:[ConfigHelper getInstance].isPlayBackground];
 }
 
 /*
@@ -318,6 +324,7 @@
 //        _continueRefresh = false;
 //        return;
 //    }
+    [self initAudio];
 
     if ([[DatabaseHelper getInstance].stockList count] == 0) {
         _continueRefresh = false;
@@ -398,6 +405,13 @@
     StockInfo* info = [[DatabaseHelper getInstance] getInfoById:_currentPlaySID];
     return info;
 }
+
+-(void) setAllowMixing:(BOOL)enable {
+    [self pause];
+    [self initAudio];
+    [_audioController setAllowMixingWithOtherApps:enable];
+}
+
 
 @end
 #endif

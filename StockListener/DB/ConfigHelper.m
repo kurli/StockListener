@@ -71,7 +71,7 @@
     if (isPlayBackground == nil) {
         _isPlayBackground = NO;
     } else {
-        _isPlayBackground = YES;
+        _isPlayBackground = [isPlayBackground boolValue];
     }
     [[StockPlayerManager getInstance] setIsAudoChoose:isAutoSwitchStock];
 }
@@ -122,6 +122,7 @@
     _isPlayBackground = isPlayBackground;
     [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInteger:isPlayBackground] forKey:IS_PLAY_BACKGROUND];
     [[NSUserDefaults standardUserDefaults] synchronize];
+    [[StockPlayerManager getInstance] setAllowMixing:isPlayBackground];
 }
 
 @end

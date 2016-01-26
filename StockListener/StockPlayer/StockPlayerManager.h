@@ -45,4 +45,6 @@
 
 -(StockInfo*) getCurrentPlayingInfo;
 
+-(void) setAllowMixing:(BOOL)enable;
+
 @end
