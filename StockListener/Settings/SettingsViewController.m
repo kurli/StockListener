@@ -177,7 +177,7 @@
 //        return;
 //    }
     UISwitch* switcher = (UISwitch*)sender;
-    [ConfigHelper getInstance].isAutoSwitchStock = switcher.isOn;
+    [[ConfigHelper getInstance] setIsAutoSwitchStock:switcher.isOn];
 }
 
 - (IBAction)backgroundSoundChanged:(id)sender {

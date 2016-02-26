@@ -27,4 +27,5 @@
 @property (nonatomic, strong) NSMutableArray* kdj_k;
 @property (nonatomic, strong) NSMutableArray* kdj_d;
 @property (nonatomic, strong) NSMutableArray* kdj_j;
+@property (nonatomic, assign) BOOL isShowSnapshot;
 @end

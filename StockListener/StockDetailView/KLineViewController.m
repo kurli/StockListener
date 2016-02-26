@@ -16,6 +16,8 @@
     PNLineChartView *kLineChartView;
     UIView* parentView;
     UIButton* infoButton;
+    UIButton* lineButton1;
+    UIButton* lineButton2;
 }
 
 @end
@@ -33,6 +35,22 @@
         [infoButton addTarget:self action:@selector(infoClicked:) forControlEvents:UIControlEventTouchUpInside];
 //        [infoButton setImage:[UIImage imageNamed:@"setting_small"] forState:UIControlStateNormal];
         [parentView addSubview:infoButton];
+        
+        lineButton1 = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 25, 25)];
+        [lineButton1 setImage:[UIImage imageNamed:@"selection_normal.png"] forState:UIControlStateNormal];
+        [lineButton1 addTarget:self action:@selector(dragMoving:withEvent: )
+              forControlEvents: UIControlEventTouchDragInside];
+        [parentView addSubview:lineButton1];
+
+        lineButton2 = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 25, 25)];
+        [lineButton2 addTarget:self action:@selector(dragMoving:withEvent: )
+              forControlEvents: UIControlEventTouchDragInside];
+        [lineButton2 setImage:[UIImage imageNamed:@"selection_normal.png"] forState:UIControlStateNormal];
+        [parentView addSubview:lineButton2];
+        
+        [lineButton1 setHidden:YES];
+        [lineButton2 setHidden:YES];
+        
         __weak KLineViewController* weakSelf = self;
         [kLineChartView setOnScroll:^(NSInteger delta, BOOL finished) {
             if (weakSelf.onScroll != nil) {
@@ -52,6 +70,11 @@
     KLineSettingViewController* controller = [[KLineSettingViewController alloc] init];
     [controller setStockInfo:self.stockInfo];
     [self.viewController presentViewController:controller animated:YES completion:nil];
+}
+
+- (void) dragMoving: (UIControl *) c withEvent:ev
+{
+    c.center = [[[ev allTouches] anyObject] locationInView:parentView];
 }
 
 -(void) setPriceMark:(float)priceMark {
@@ -74,6 +97,16 @@
 //    rectInfo.size.width = 20;
 //    rectInfo.size.height = 20;
     [infoButton setFrame:rectInfo];
+    
+    CGRect rect2 = lineButton1.frame;
+    rect2.origin.x = rect.size.width/3;
+    rect2.origin.y = rect.size.height/2 + rect.origin.y;
+    [lineButton1 setFrame:rect2];
+    
+    rect2 = lineButton2.frame;
+    rect2.origin.x = rect.size.width/3 * 2;
+    rect2.origin.y = rect.size.height/2 + rect.origin.y;
+    [lineButton2 setFrame:rect2];
 }
 
 -(void) hideInfoButton {
@@ -237,6 +270,16 @@
     }
 
     [kLineChartView setNeedsDisplay];
+}
+
+-(void) startEditLine {
+    [lineButton1 setHidden:NO];
+    [lineButton2 setHidden:NO];
+}
+
+-(void) endEditLine {
+    [lineButton1 setHidden:YES];
+    [lineButton2 setHidden:YES];
 }
 
 @end

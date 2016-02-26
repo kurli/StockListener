@@ -33,21 +33,25 @@
 
     //b.创建子控制器
     StockListViewController *c1=[[StockListViewController alloc] init];
-    c1.tabBarItem.title=@"Stock";
+    c1.tabBarItem.title=@"列表";
+    c1.tabBarItem.image=[UIImage imageNamed:@"stock_list"];
     //    c3.tabBarItem.image=[UIImage imageNamed:@"Play"];
 
     StockKDJViewController *c2=[[StockKDJViewController alloc] init];
-    c2.tabBarItem.title=@"KDJ";
+    c2.tabBarItem.title=@"分时";
+    c2.tabBarItem.image=[UIImage imageNamed:@"stock"];
     
     UIViewController *c3=[[UIViewController alloc]init];
     c3.view.backgroundColor=[UIColor yellowColor];
     c3.view.tag = 444;
 
     BuySellHistoryViewController *c4=[[BuySellHistoryViewController alloc] initWithNibName:@"BuySellHistoryViewController" bundle:nil];
-    c4.tabBarItem.title=@"Caculator";
+    c4.tabBarItem.title=@"计算器";
+    c4.tabBarItem.image=[UIImage imageNamed:@"calculator"];
 
     SettingsViewController* c5=[[SettingsViewController alloc] init];
-    c5.tabBarItem.title=@"Setting";
+    c5.tabBarItem.title=@"设置";
+    c5.tabBarItem.image=[UIImage imageNamed:@"setting"];
     
     self.tb.viewControllers =@[c3,c1,c2,c4,c5];
     self.tb.selectedViewController = c1;

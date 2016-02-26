@@ -272,8 +272,8 @@
         return;
     }
     if ([self.todayPriceByMinutes count] == 0) {
-        [self.todayPriceByMinutes addObject:[NSNumber numberWithFloat:self.price]];
-        [self.todayVOLByMinutes addObject:[NSNumber numberWithInteger:self.dealCount]];
+//        [self.todayPriceByMinutes addObject:[NSNumber numberWithFloat:self.price]];
+//        [self.todayVOLByMinutes addObject:[NSNumber numberWithInteger:self.dealCount]];
         return;
     }
     if (index >=240) {

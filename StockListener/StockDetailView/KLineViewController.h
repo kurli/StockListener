@@ -32,6 +32,10 @@
 
 -(float) getPointerInterval;
 
+-(void) startEditLine;
+
+-(void) endEditLine;
+
 @property (nonatomic, assign) NSInteger todayStartIndex;
 @property (nonatomic, assign) NSInteger startIndex;
 @property (nonatomic, strong) NSMutableArray* priceKValues;

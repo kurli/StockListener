@@ -501,6 +501,11 @@
                 if ([curValue isKindOfClass:[NSNumber class]] == YES) {
                     break;
                 }
+                if ([[pointArray objectAtIndex:i] isKindOfClass:[NSArray class]] == YES) {
+                    NSArray* array = [pointArray objectAtIndex:i];
+                    curValue = [array objectAtIndex:2];
+                    break;
+                }
                 curValue = nil;
             }
         }

@@ -77,6 +77,23 @@ static KingdaWorker *static_worker;
     }
 }
 
+-(void) removeSameKindTask:(KingdaTask*)task {
+    BOOL stop = NO;
+    while (!stop) {
+        int i = 1;
+        for (; i<[self.mQueue count]; i++) {
+            KingdaTask* t = [self.mQueue objectAtIndex:i];
+            if (task.class == t.class) {
+                [self.mQueue removeObjectAtIndex:i];
+                break;
+            }
+        }
+        if (i >= [self.mQueue count]) {
+            break;
+        }
+    }
+}
+
 -(void) stop {
     [self.mQueue removeAllObjects];
 }

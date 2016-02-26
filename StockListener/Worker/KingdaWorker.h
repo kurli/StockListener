@@ -13,5 +13,6 @@
 
 -(void) queue:(KingdaTask*) task;
 +(KingdaWorker*) getInstance;
+-(void) removeSameKindTask:(KingdaTask*)task;
 
 @end

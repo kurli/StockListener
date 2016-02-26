@@ -71,11 +71,22 @@
         label4.layer.borderWidth = 0.5;
         label4.layer.borderColor = [[UIColor grayColor] CGColor];
         [parentView addSubview:label4];
+        
+        self.isShowSnapshot = YES;
     }
     return self;
 }
 
 -(void) setFrame:(CGRect)rect {
+    if (!self.isShowSnapshot) {
+        kdjChartView2 = nil;
+        kdjChartView3 = nil;
+        kdjChartView4 = nil;
+        [label2 setHidden:YES];
+        [label3 setHidden:YES];
+        [label4 setHidden:YES];
+    }
+    
     CGRect labelRect;
     //1
     [kdjChartView setFrame: rect];

@@ -111,7 +111,7 @@
 
     StockInfo* info = [[DatabaseHelper getInstance] getInfoById:_currentPlaySID];
     BOOL switched = NO;
-    if (self.isAudoChoose)
+    if ([[ConfigHelper getInstance] isAutoSwitchStock])
     {
         int tmpStep = 0;
         StockInfo* tmpInfo = nil;

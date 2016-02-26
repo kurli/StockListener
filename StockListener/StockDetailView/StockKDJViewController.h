@@ -22,6 +22,9 @@
 #define ONE_DAY 240
 #define ONE_WEEK 1200
 
+#define LEFT_VIEW_WIDTH self.view.frame.size.width/40*34
+#define RIGHT_VIEW_WIDTH self.view.frame.size.width/40*6
+
 @class StockInfo;
 @interface StockKDJViewController : UIViewController <UIScrollViewDelegate,ZSYPopoverListDatasource, ZSYPopoverListDelegate>
 

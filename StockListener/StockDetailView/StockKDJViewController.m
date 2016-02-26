@@ -33,9 +33,6 @@
 #import "BuySellHistoryViewController.h"
 #import "CalculateAVOL.h"
 
-#define LEFT_VIEW_WIDTH self.view.frame.size.width/40*34
-#define RIGHT_VIEW_WIDTH self.view.frame.size.width/40*6
-
 @interface StockKDJViewController (){
     BuySellChartViewController* buySellController;
     VOLChartViewController* volController;
@@ -93,7 +90,7 @@
     [klineViewController setTwentyAPrice:self.twentyAPrice];
     [klineViewController setViewController:self];
     
-    [klineViewController hideInfoButton];
+//    [klineViewController hideInfoButton];
     [fenshiViewController hideInfoButton];
     
     kdjViewController = [[KDJViewController alloc] initWithParentView:self.view];
@@ -214,8 +211,8 @@
     StockInfo* shInfo = [[DatabaseHelper getInstance] getDapanInfoById:SH_STOCK];
     StockInfo* szInfo = [[DatabaseHelper getInstance] getDapanInfoById:SZ_STOCK];
     StockInfo* cyInfo = [[DatabaseHelper getInstance] getDapanInfoById:CY_STOCK];
-    if ([shInfo.todayPriceByMinutes count] < 3 || [self.stockInfo.todayPriceByMinutes count] < 3
-        || [shInfo.todayPriceByMinutes count] - [self.stockInfo.todayPriceByMinutes count] > 2) {
+//    if ([shInfo.todayPriceByMinutes count] < 3 || [self.stockInfo.todayPriceByMinutes count] < 3
+//        || [shInfo.todayPriceByMinutes count] - [self.stockInfo.todayPriceByMinutes count] > 2) {
         GetTodayStockValue* task = [[GetTodayStockValue alloc] initWithStock:self.stockInfo];
         [[KingdaWorker getInstance] queue:task];
         GetTodayStockValue* task2 = [[GetTodayStockValue alloc] initWithStock:shInfo];
@@ -225,7 +222,7 @@
         [[KingdaWorker getInstance] queue:task3];
         [[KingdaWorker getInstance] queue:task4];
         needSync = YES;
-    }
+//    }
     
 //    NSDate* date = [NSDate date];
 //    NSDateFormatter  *dateformatter=[[NSDateFormatter alloc] init];
@@ -387,7 +384,7 @@
 -(void) refreshAVOL:(float)l andHighest:(float)h{
     // Average VOL
     float delta = 0.01;
-    if (l < 3) {
+    if (h < 3) {
         delta = 0.001;
     }
     if (l > 1000) {
