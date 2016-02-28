@@ -11,6 +11,7 @@
 #import "PNLineChartView.h"
 #import "PNPlot.h"
 #import "KLineSettingViewController.h"
+#import "StockInfo.h"
 
 @interface KLineViewController() {
     PNLineChartView *kLineChartView;
@@ -18,6 +19,8 @@
     UIButton* infoButton;
     UIButton* lineButton1;
     UIButton* lineButton2;
+    float editK;
+    float editB;
 }
 
 @end
@@ -36,13 +39,13 @@
 //        [infoButton setImage:[UIImage imageNamed:@"setting_small"] forState:UIControlStateNormal];
         [parentView addSubview:infoButton];
         
-        lineButton1 = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 25, 25)];
+        lineButton1 = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
         [lineButton1 setImage:[UIImage imageNamed:@"selection_normal.png"] forState:UIControlStateNormal];
         [lineButton1 addTarget:self action:@selector(dragMoving:withEvent: )
               forControlEvents: UIControlEventTouchDragInside];
         [parentView addSubview:lineButton1];
 
-        lineButton2 = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 25, 25)];
+        lineButton2 = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
         [lineButton2 addTarget:self action:@selector(dragMoving:withEvent: )
               forControlEvents: UIControlEventTouchDragInside];
         [lineButton2 setImage:[UIImage imageNamed:@"selection_normal.png"] forState:UIControlStateNormal];
@@ -50,6 +53,8 @@
         
         [lineButton1 setHidden:YES];
         [lineButton2 setHidden:YES];
+        [lineButton1 setAlpha:0.7];
+        [lineButton2 setAlpha:0.7];
         
         __weak KLineViewController* weakSelf = self;
         [kLineChartView setOnScroll:^(NSInteger delta, BOOL finished) {
@@ -72,9 +77,92 @@
     [self.viewController presentViewController:controller animated:YES completion:nil];
 }
 
+-(NSInteger) getSecondByX:(float)x {
+    NSInteger x1 = [kLineChartView getTimeDeltaByX:x];
+    if (self.timeDelta == ONE_DAY) {
+        NSInteger tmp = -1* ([self.stockInfo.hundredDaysPrice count] * ONE_DAY);
+        tmp += ([self.stockInfo.fiveDayPriceByMinutes count] + [self.stockInfo.todayPriceByMinutes count]);
+        x1 = (self.timeStartIndex + x1 + 1) * self.timeDelta + tmp;
+    } else if (self.timeDelta == ONE_WEEK) {
+        NSInteger tmp = -1* ([self.stockInfo.weeklyPrice count] * ONE_WEEK);
+        tmp += ([self.stockInfo.fiveDayPriceByMinutes count] + [self.stockInfo.todayPriceByMinutes count]);
+        x1 = (self.timeStartIndex + x1 + 1) * self.timeDelta + tmp;
+    } else {
+        x1 = (self.timeStartIndex + x1 + 1) * self.timeDelta;
+    }
+    return x1;
+}
+
+-(void) resetEditLine {
+    NSInteger x0 = 0;
+    if (self.timeDelta == ONE_DAY) {
+        NSInteger tmp = -1* ([self.stockInfo.hundredDaysPrice count] * ONE_DAY);
+        tmp += ([self.stockInfo.fiveDayPriceByMinutes count] + [self.stockInfo.todayPriceByMinutes count]);
+        x0 = (self.timeStartIndex + 1) * self.timeDelta + tmp;
+    } else if (self.timeDelta == ONE_WEEK) {
+        NSInteger tmp = -1* ([self.stockInfo.weeklyPrice count] * ONE_WEEK);
+        tmp += ([self.stockInfo.fiveDayPriceByMinutes count] + [self.stockInfo.todayPriceByMinutes count]);
+        x0 = (self.timeStartIndex + 1) * self.timeDelta + tmp;
+    } else {
+        x0 = (self.timeStartIndex + 1) * self.timeDelta;
+    }
+    
+    float y0 = editK*x0 + editB;
+    NSInteger xn = 0;
+    if (self.timeDelta == ONE_DAY) {
+        NSInteger tmp = -1* ([self.stockInfo.hundredDaysPrice count] * ONE_DAY);
+        tmp += ([self.stockInfo.fiveDayPriceByMinutes count] + [self.stockInfo.todayPriceByMinutes count]);
+        xn = (self.timeStartIndex + [self.priceKValues count] - self.startIndex + 1) * self.timeDelta + tmp;
+    } else if (self.timeDelta == ONE_WEEK) {
+        NSInteger tmp = -1* ([self.stockInfo.weeklyPrice count] * ONE_WEEK);
+        tmp += ([self.stockInfo.fiveDayPriceByMinutes count] + [self.stockInfo.todayPriceByMinutes count]);
+        xn = (self.timeStartIndex + [self.priceKValues count] - self.startIndex + 1) * self.timeDelta+ tmp;
+    } else {
+        xn = (self.timeStartIndex + [self.priceKValues count] - self.startIndex + 1) * self.timeDelta;
+    }
+    float yn = editK*xn + editB;
+    
+    [kLineChartView setEditLine:CGPointMake(0, y0) andP2:CGPointMake([self.priceKValues count] - self.startIndex, yn)];
+}
+
 - (void) dragMoving: (UIControl *) c withEvent:ev
 {
+    CGPoint p1 = lineButton1.center;
+    CGPoint p2 = lineButton2.center;
+    
+    if (p1.x == p2.x) {
+        return;
+    }
+    
+    CGRect rect = kLineChartView.frame;
+    p1.x -= (rect.origin.x + LEFT_PADDING);
+    p1.y -= rect.origin.y;
+    p2.x -= (rect.origin.x + LEFT_PADDING);
+    p2.y -= rect.origin.y;
+
+    CGPoint p = [[[ev allTouches] anyObject] locationInView:kLineChartView];
+    
+    if (c != nil) {
+        if (p.x <= LEFT_PADDING+15 || p.x >= rect.size.width-15) {
+            return;
+        }
+        if (p.y <= 15 || p.y >= rect.size.height-15) {
+            return;
+        }
+    }
+
+    float y1 = [kLineChartView getPriceByY:p1.y];
+    NSInteger x1 =  [self getSecondByX:p1.x];
+    float y2 = [kLineChartView getPriceByY:p2.y];
+    NSInteger x2 =  [self getSecondByX:p2.x];
+    
+    editK = (y2-y1)/(x2-x1);
+    editB = y1 - (y2*x1 - y1*x1)/(x2-x1);
+
     c.center = [[[ev allTouches] anyObject] locationInView:parentView];
+    
+    [self resetEditLine];
+    [kLineChartView setNeedsDisplay];
 }
 
 -(void) setPriceMark:(float)priceMark {
@@ -269,17 +357,24 @@
         }
     }
 
+    [self resetEditLine];
     [kLineChartView setNeedsDisplay];
 }
 
 -(void) startEditLine {
     [lineButton1 setHidden:NO];
     [lineButton2 setHidden:NO];
+    [self dragMoving:nil withEvent:nil];
 }
 
 -(void) endEditLine {
     [lineButton1 setHidden:YES];
     [lineButton2 setHidden:YES];
+    [kLineChartView setEditLine:CGPointMake(0, 0) andP2:CGPointMake(0, 0)];
+}
+
+-(BOOL) isEditLine {
+    return ![lineButton1 isHidden];
 }
 
 @end

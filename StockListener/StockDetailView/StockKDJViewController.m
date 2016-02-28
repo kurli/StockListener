@@ -256,7 +256,7 @@
     }
 
     historyDateValue = [self.stockInfo.weeklyLastUpdateDay integerValue];
-//    historyDateValue = 0;
+    historyDateValue = 0;
     if (historyDateValue == 0 || latest - historyDateValue >= 2) {
         GetWeeksStockValue* task6 = [[GetWeeksStockValue alloc] initWithStock:self.stockInfo];
         [[KingdaWorker getInstance] queue:task6];

@@ -36,6 +36,8 @@
 
 -(void) endEditLine;
 
+-(BOOL) isEditLine;
+
 @property (nonatomic, assign) NSInteger todayStartIndex;
 @property (nonatomic, assign) NSInteger startIndex;
 @property (nonatomic, strong) NSMutableArray* priceKValues;
@@ -46,4 +48,7 @@
 @property (nonatomic, strong) StockInfo* stockInfo;
 @property (copy) void (^onScroll)(NSInteger delta, BOOL finished);
 @property (copy) void (^onScale)(float delta, BOOL finished);
+
+@property (nonatomic, unsafe_unretained) NSInteger timeDelta;
+@property (nonatomic, unsafe_unretained) NSInteger timeStartIndex;
 @end

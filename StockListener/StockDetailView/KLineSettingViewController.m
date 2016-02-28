@@ -47,6 +47,7 @@
     [super viewDidLoad];
     klineViewController = [[KLineViewController alloc] initWithParentView:self.view];
     [klineViewController hideInfoButton];
+    klineViewController.stockInfo = self.stockInfo;
     kdjViewController = [[KDJViewController alloc] initWithParentView:self.view];
 
     __weak KLineViewController *_weak_self = klineViewController;
@@ -84,17 +85,13 @@
                     d = -1;
                 }
             }
-            NSLog(@"%ld %f", d, zoom);
             if (startIndex + d < 0) {
                 d = -startIndex;
-                NSLog(@"1: %ld", d);
             }
             if (startIndex + d >= endIndex - 10) {
                 d = endIndex - startIndex - 10;
-                NSLog(@"2: %ld", d);
             }
             startIndex += d;
-            //            NSLog(@"%ld %ld %ld\n----", startIndex, endIndex, d);
             [_self refreshKDJ];
             [_self redraw];
 //            if (!finished) {
@@ -152,7 +149,19 @@
     rect.origin.y = y;
     [self.finishButton setFrame:rect];
     
+    [self refreshEditLineButtons];
+    
     [self typeSegmentChanged:nil];
+}
+
+-(void) refreshEditLineButtons {
+    if (![klineViewController isEditLine]) {
+        [self.finishButton setHidden:YES];
+        [self.addButton setHidden:NO];
+    } else {
+        [self.finishButton setHidden:NO];
+        [self.addButton setHidden:YES];
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -171,6 +180,7 @@
     if (endIndex > [self.priceArray count]) {
         endIndex = [self.priceArray count];
     }
+    klineViewController.timeStartIndex = startIndex;
 
     // VOL
     volController.volValues = [[NSMutableArray alloc] init];
@@ -319,6 +329,7 @@
         default:
             break;
     }
+    klineViewController.timeDelta = delta;
     CalculateKDJ* task = [[CalculateKDJ alloc] initWithStockInfo:self.stockInfo andDelta:delta andCount:MAX_COUNT];
     task.onCompleteBlock = ^(CalculateKDJ* _self) {
         self.kdj_d = _self.kdj_d;
@@ -334,13 +345,19 @@
     };
     
     [[KingdaWorker getInstance] queue:task];
+    
+    if ([klineViewController isEditLine]) {
+        [self finishButtonClicked:nil];
+    }
 }
 
 - (IBAction)addButtonClicked:(id)sender {
     [klineViewController startEditLine];
+    [self refreshEditLineButtons];
 }
 
 - (IBAction)finishButtonClicked:(id)sender {
     [klineViewController endEditLine];
+    [self refreshEditLineButtons];
 }
 @end

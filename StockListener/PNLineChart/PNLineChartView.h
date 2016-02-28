@@ -77,4 +77,8 @@
  */
 - (void)addPlot:(PNPlot *)newPlot;
 -(void)clearPlot;
+
+-(float) getPriceByY:(float)y;
+-(int) getTimeDeltaByX:(float)x;
+-(void) setEditLine:(CGPoint)p1 andP2:(CGPoint)p2;
 @end

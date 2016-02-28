@@ -60,6 +60,8 @@
 
 @property (nonatomic, strong) NSString* fontName;
 @property (nonatomic, strong) NSTimer* hideLongPressTimer;
+@property (nonatomic, unsafe_unretained) CGPoint editP1;
+@property (nonatomic, unsafe_unretained) CGPoint editP2;
 @end
 
 
@@ -112,7 +114,8 @@
     showLongPress = NO;
     self.yAxisPercentage = NO;
     self.handleLongClick = YES;
-    
+    self.editP1 = CGPointMake(0, 0);
+    self.editP2 = CGPointMake(0, 0);
 }
 
 -(void) onHideLongPressFired {
@@ -232,6 +235,11 @@
 }
 
 #define UIColorFromHex(hex) [UIColor colorWithRed:((float)((hex & 0xFF0000) >> 16))/255.0 green:((float)((hex & 0xFF00) >> 8))/255.0 blue:((float)(hex & 0xFF))/255.0 alpha:1.0]
+
+-(void) setEditLine:(CGPoint)p1 andP2:(CGPoint)p2 {
+    self.editP1 = p1;
+    self.editP2 = p2;
+}
 
 -(void) drawKLine:(CGContextRef)context andPlot:(PNPlot*)plot {
     [plot.lineColor set];
@@ -553,6 +561,19 @@
         CGContextSelectFont(context, [self.fontName UTF8String], self.xAxisFontSize*1.5, kCGEncodingMacRoman);
         CGContextShowTextAtPoint(context, startWidth, height + 5, [self.infoStr UTF8String], count);
     }
+    
+    // Draw edit line
+    if (self.interval*self.horizontalLineInterval != 0){
+        float height = (self.editP1.y-self.min)/self.interval*self.horizontalLineInterval+startHeight;
+        float width =startWidth + self.pointerInterval*(self.editP1.x);
+        [[UIColor blackColor] set];
+        CGContextSetLineWidth(context, 2);
+        CGContextMoveToPoint(context,  width, height);
+        height = (self.editP2.y-self.min)/self.interval*self.horizontalLineInterval+startHeight;
+        width =startWidth + self.pointerInterval*(self.editP2.x) + self.pointerInterval/2;
+        CGContextAddLineToPoint(context, width, height);
+        CGContextStrokePath(context);
+    }
 }
 
 #pragma mark -
@@ -600,6 +621,15 @@
 {
 }
 
+-(float) getPriceByY:(float)y {
+    return ((self.frame.size.height - y)-self.axisBottomLinetHeight)/self.horizontalLineInterval*self.interval +self.min;
+}
 
+-(int) getTimeDeltaByX:(float)x {
+    if (self.xAxisInterval == 0) {
+        return 0;
+    }
+    return (x) / self.xAxisInterval;
+}
 @end
 
