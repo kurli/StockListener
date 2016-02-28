@@ -93,7 +93,30 @@
     return x1;
 }
 
--(void) resetEditLine {
+-(void) addEditLine {
+    if (editB == 0 && editK == 0) {
+        return;
+    }
+    [self addLine:@"" andK:editK andB:editB];
+}
+
+-(void) addOtherLines {
+    for (int i=0; i<[self.stockInfo.lines count]; i++) {
+        NSString* str = [self.stockInfo.lines objectAtIndex:i];
+        NSArray* array = [str componentsSeparatedByString:@" "];
+        if ([array count] == 3) {
+            NSString* color = [array objectAtIndex:0];
+            float k = [[array objectAtIndex:1] floatValue];
+            float b = [[array objectAtIndex:2] floatValue];
+            [self addLine:color andK:k andB:b];
+        }
+    }
+}
+
+-(void) addLine:(NSString*)color andK:(float)k andB:(float)b {
+    if (k == 0 && b == 0) {
+        return;
+    }
     NSInteger x0 = 0;
     if (self.timeDelta == ONE_DAY) {
         NSInteger tmp = -1* ([self.stockInfo.hundredDaysPrice count] * ONE_DAY);
@@ -107,7 +130,7 @@
         x0 = (self.timeStartIndex + 1) * self.timeDelta;
     }
     
-    float y0 = editK*x0 + editB;
+    float y0 = k*x0 + b;
     NSInteger xn = 0;
     if (self.timeDelta == ONE_DAY) {
         NSInteger tmp = -1* ([self.stockInfo.hundredDaysPrice count] * ONE_DAY);
@@ -120,9 +143,10 @@
     } else {
         xn = (self.timeStartIndex + [self.priceKValues count] - self.startIndex + 1) * self.timeDelta;
     }
-    float yn = editK*xn + editB;
+    float yn = k*xn + b;
     
-    [kLineChartView setEditLine:CGPointMake(0, y0) andP2:CGPointMake([self.priceKValues count] - self.startIndex, yn)];
+    NSString* str = [NSString stringWithFormat:@"%@ %d %f %ld %f", color, 0, y0, [self.priceKValues count] - self.startIndex, yn];
+    [kLineChartView.lines addObject:str];
 }
 
 - (void) dragMoving: (UIControl *) c withEvent:ev
@@ -161,7 +185,9 @@
 
     c.center = [[[ev allTouches] anyObject] locationInView:parentView];
     
-    [self resetEditLine];
+    [kLineChartView.lines removeAllObjects];
+    [self addEditLine];
+    [self addOtherLines];
     [kLineChartView setNeedsDisplay];
 }
 
@@ -357,7 +383,9 @@
         }
     }
 
-    [self resetEditLine];
+    [kLineChartView.lines removeAllObjects];
+    [self addEditLine];
+    [self addOtherLines];
     [kLineChartView setNeedsDisplay];
 }
 
@@ -370,11 +398,18 @@
 -(void) endEditLine {
     [lineButton1 setHidden:YES];
     [lineButton2 setHidden:YES];
-    [kLineChartView setEditLine:CGPointMake(0, 0) andP2:CGPointMake(0, 0)];
 }
 
 -(BOOL) isEditLine {
     return ![lineButton1 isHidden];
+}
+
+-(float) getEditLineK {
+    return editK;
+}
+
+-(float) getEditLineB {
+    return editB;
 }
 
 @end

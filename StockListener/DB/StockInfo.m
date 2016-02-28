@@ -33,6 +33,7 @@
 #define WEEKLY_VOL_HISTORY @"weekly_vol_history"
 #define WEEKLY_UPDATE_DAY @"weekly_update_day"
 #define BUY_SELL_HISTORY @"buy_sell_history"
+#define LINES @"lines"
 
 ////
 //Tax
@@ -91,6 +92,7 @@
         self.weeklyVOL = [[NSMutableArray alloc] init];
         self.weeklyLastUpdateDay = @"";
         self.buySellHistory = [[NSMutableArray alloc] init];
+        self.lines = [[NSMutableArray alloc] init];
     }
     return self;
 }
@@ -119,6 +121,7 @@
     info.weeklyVOL = [self.weeklyVOL copy];
     info.weeklyPrice = [self.weeklyPrice copy];
     info.buySellHistory = [self.buySellHistory copy];
+    info.lines = [self.lines copy];
     return info;
 }
 
@@ -162,6 +165,9 @@
     if (self.buySellHistory != nil) {
         [aCoder encodeObject:self.buySellHistory forKey:BUY_SELL_HISTORY];
     }
+    if (self.lines != nil) {
+        [aCoder encodeObject:self.lines forKey:LINES];
+    }
 }
 
 -(id)initWithCoder:(NSCoder *)aDecoder {
@@ -182,6 +188,7 @@
         self.weeklyVOL = [aDecoder decodeObjectForKey:WEEKLY_VOL_HISTORY];
         self.weeklyPrice = [aDecoder decodeObjectForKey:WEEKLY_PRICE_HISTORY];
         self.buySellHistory = [aDecoder decodeObjectForKey:BUY_SELL_HISTORY];
+        self.lines = [aDecoder decodeObjectForKey:LINES];
 
         if (self.buySellDic == nil) {
             self.buySellDic = [[NSMutableDictionary alloc] init];
@@ -218,6 +225,9 @@
         }
         if (self.buySellHistory == nil) {
             self.buySellHistory = [[NSMutableArray alloc] init];
+        }
+        if (self.lines == nil) {
+            self.lines = [[NSMutableArray alloc] init];
         }
     }
     return self;

@@ -37,6 +37,8 @@
 @property (atomic, strong) NSMutableArray* weeklyPrice;
 @property (atomic, strong) NSMutableArray* weeklyVOL;
 @property (atomic, strong) NSString* weeklyLastUpdateDay;
+// Lines
+@property (atomic, strong) NSMutableArray* lines;
 
 // Used for play sound
 @property (atomic, unsafe_unretained) int step;                 // Used for play sound

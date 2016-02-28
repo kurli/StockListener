@@ -60,8 +60,6 @@
 
 @property (nonatomic, strong) NSString* fontName;
 @property (nonatomic, strong) NSTimer* hideLongPressTimer;
-@property (nonatomic, unsafe_unretained) CGPoint editP1;
-@property (nonatomic, unsafe_unretained) CGPoint editP2;
 @end
 
 
@@ -114,8 +112,8 @@
     showLongPress = NO;
     self.yAxisPercentage = NO;
     self.handleLongClick = YES;
-    self.editP1 = CGPointMake(0, 0);
-    self.editP2 = CGPointMake(0, 0);
+    
+    self.lines = [[NSMutableArray alloc] init];
 }
 
 -(void) onHideLongPressFired {
@@ -236,9 +234,25 @@
 
 #define UIColorFromHex(hex) [UIColor colorWithRed:((float)((hex & 0xFF0000) >> 16))/255.0 green:((float)((hex & 0xFF00) >> 8))/255.0 blue:((float)(hex & 0xFF))/255.0 alpha:1.0]
 
--(void) setEditLine:(CGPoint)p1 andP2:(CGPoint)p2 {
-    self.editP1 = p1;
-    self.editP2 = p2;
+-(void) drawLine:(NSString*)color andP1:(CGPoint)p1 andP2:(CGPoint)p2 {
+    // Draw edit line
+    if (self.interval*self.horizontalLineInterval != 0){
+        CGContextRef context = UIGraphicsGetCurrentContext();
+
+        CGFloat startHeight = self.axisBottomLinetHeight;
+        CGFloat startWidth = self.axisLeftLineWidth;
+        float height = (p1.y-self.min)/self.interval*self.horizontalLineInterval+startHeight;
+        float width =startWidth + self.pointerInterval*(p1.x);
+        [[UIColor blackColor] set]; //TODO
+        CGContextSetLineWidth(context, 1.5);
+        CGFloat lengths[] = {};
+        CGContextSetLineDash(context, 0, lengths,0);
+        CGContextMoveToPoint(context,  width, height);
+        height = (p2.y-self.min)/self.interval*self.horizontalLineInterval+startHeight;
+        width =startWidth + self.pointerInterval*(p2.x) + self.pointerInterval/2;
+        CGContextAddLineToPoint(context, width, height);
+        CGContextStrokePath(context);
+    }
 }
 
 -(void) drawKLine:(CGContextRef)context andPlot:(PNPlot*)plot {
@@ -438,6 +452,23 @@
             CGContextStrokePath(context);
         }
     }
+    
+    // Draw lines
+    if ([self.lines count] != 0) {
+        for (int i=0; i < [self.lines count]; i++) {
+            NSString* str = [self.lines objectAtIndex:i];
+            NSArray* array = [str componentsSeparatedByString:@" "];
+            if ([array count] == 5) {
+                NSString* color = [array objectAtIndex:0];
+                float x0 = [[array objectAtIndex:1] floatValue];
+                float y0 = [[array objectAtIndex:2] floatValue];
+                float xn = [[array objectAtIndex:3] floatValue];
+                float yn = [[array objectAtIndex:4] floatValue];
+                [self drawLine:color andP1:CGPointMake(x0, y0) andP2:CGPointMake(xn, yn)];
+            }
+        }
+    }
+    
     // draw lines
     for (int i=0; i<self.plots.count; i++)
     {
@@ -560,19 +591,6 @@
         NSInteger count = [self.infoStr lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
         CGContextSelectFont(context, [self.fontName UTF8String], self.xAxisFontSize*1.5, kCGEncodingMacRoman);
         CGContextShowTextAtPoint(context, startWidth, height + 5, [self.infoStr UTF8String], count);
-    }
-    
-    // Draw edit line
-    if (self.interval*self.horizontalLineInterval != 0){
-        float height = (self.editP1.y-self.min)/self.interval*self.horizontalLineInterval+startHeight;
-        float width =startWidth + self.pointerInterval*(self.editP1.x);
-        [[UIColor blackColor] set];
-        CGContextSetLineWidth(context, 2);
-        CGContextMoveToPoint(context,  width, height);
-        height = (self.editP2.y-self.min)/self.interval*self.horizontalLineInterval+startHeight;
-        width =startWidth + self.pointerInterval*(self.editP2.x) + self.pointerInterval/2;
-        CGContextAddLineToPoint(context, width, height);
-        CGContextStrokePath(context);
     }
 }
 

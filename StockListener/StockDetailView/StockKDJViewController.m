@@ -534,6 +534,20 @@
         [klineViewController setSplitX:_self.todayStartIndex];
         klineViewController.priceKValues = _self.priceKValues;
         [klineViewController setStockInfo:self.stockInfo];
+        
+        klineViewController.timeDelta = delta;
+        if (delta == ONE_DAY) {
+            klineViewController.timeStartIndex = [self.stockInfo.hundredDaysPrice count] - [_self.kdj_d count];
+        } else if (delta == ONE_WEEK) {
+            klineViewController.timeStartIndex = [self.stockInfo.weeklyPrice count] - [_self.kdj_d count];
+        } else {
+            NSInteger minuteCount = [self.stockInfo.fiveDayPriceByMinutes count] + [self.stockInfo.todayPriceByMinutes count];
+            NSInteger count = minuteCount / delta;
+            if (minuteCount % delta != 0) {
+                count ++;
+            }
+            klineViewController.timeStartIndex = count - [_self.kdj_d count];
+        }
 
         NSInteger startIndex = [_self.priceKValues count] - [_self.kdj_d count];
         if (startIndex < 0) {

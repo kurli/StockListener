@@ -54,6 +54,7 @@
 @property (nonatomic, assign) float xAxisInterval;
 @property (nonatomic, strong) UIColor* markYColor;
 @property (nonatomic, strong) NSString* infoStr;
+@property (nonatomic, strong) NSMutableArray* lines;
 
 @property (nonatomic, strong) NSString*  floatNumberFormatterString; // the yAxis label text should be formatted with
 
@@ -65,11 +66,6 @@
  */
 @property (nonatomic, readonly, strong) NSMutableArray *plots;
 
-
-
-
-
-
 /**
  *  this method will add a Plot to the graph.
  *
@@ -80,5 +76,4 @@
 
 -(float) getPriceByY:(float)y;
 -(int) getTimeDeltaByX:(float)x;
--(void) setEditLine:(CGPoint)p1 andP2:(CGPoint)p2;
 @end

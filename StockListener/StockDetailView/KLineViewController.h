@@ -38,6 +38,10 @@
 
 -(BOOL) isEditLine;
 
+-(float) getEditLineK;
+
+-(float) getEditLineB;
+
 @property (nonatomic, assign) NSInteger todayStartIndex;
 @property (nonatomic, assign) NSInteger startIndex;
 @property (nonatomic, strong) NSMutableArray* priceKValues;

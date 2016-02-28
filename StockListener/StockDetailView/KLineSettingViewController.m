@@ -144,8 +144,9 @@
     rect.origin.y = y;
     [self.addLabel setFrame:rect];
     
+    y = y + rect.size.height + 5;
     rect = self.finishButton.frame;
-    rect.origin.x = self.addLabel.frame.origin.x + self.addLabel.frame.size.width + 5;
+    rect.origin.x = self.addLabel.frame.origin.x;
     rect.origin.y = y;
     [self.finishButton setFrame:rect];
     
@@ -359,5 +360,9 @@
 - (IBAction)finishButtonClicked:(id)sender {
     [klineViewController endEditLine];
     [self refreshEditLineButtons];
+    float k = [klineViewController getEditLineK];
+    float b = [klineViewController getEditLineB];
+    NSString* str = [NSString stringWithFormat:@"%@ %f %f", @"",  k, b];
+    [self.stockInfo.lines addObject:str];
 }
 @end
