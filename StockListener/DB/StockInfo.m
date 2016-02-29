@@ -153,15 +153,15 @@
     if (self.averageVolDic != nil) {
         [aCoder encodeObject:self.averageVolDic forKey:AVERAGE_VOL_DIC];
     }
-    if (self.weeklyPrice != nil) {
-        [aCoder encodeObject:self.weeklyPrice forKey:WEEKLY_PRICE_HISTORY];
-    }
-    if (self.weeklyVOL != nil) {
-        [aCoder encodeObject:self.weeklyVOL forKey:WEEKLY_VOL_HISTORY];
-    }
-    if (self.weeklyLastUpdateDay != nil) {
-        [aCoder encodeObject:self.weeklyLastUpdateDay forKey:WEEKLY_UPDATE_DAY];
-    }
+//    if (self.weeklyPrice != nil) {
+//        [aCoder encodeObject:self.weeklyPrice forKey:WEEKLY_PRICE_HISTORY];
+//    }
+//    if (self.weeklyVOL != nil) {
+//        [aCoder encodeObject:self.weeklyVOL forKey:WEEKLY_VOL_HISTORY];
+//    }
+//    if (self.weeklyLastUpdateDay != nil) {
+//        [aCoder encodeObject:self.weeklyLastUpdateDay forKey:WEEKLY_UPDATE_DAY];
+//    }
     if (self.buySellHistory != nil) {
         [aCoder encodeObject:self.buySellHistory forKey:BUY_SELL_HISTORY];
     }
@@ -184,9 +184,9 @@
         self.hundredDaysVOL = [aDecoder decodeObjectForKey:HUNDRED_DAY_VOL_HISTORY];
         self.hundredDaysPrice = [aDecoder decodeObjectForKey:HUNDRED_DAY_PRICE_HISTORY];
         self.averageVolDic = [aDecoder decodeObjectForKey:AVERAGE_VOL_DIC];
-        self.weeklyLastUpdateDay = [aDecoder decodeObjectForKey:WEEKLY_UPDATE_DAY];
-        self.weeklyVOL = [aDecoder decodeObjectForKey:WEEKLY_VOL_HISTORY];
-        self.weeklyPrice = [aDecoder decodeObjectForKey:WEEKLY_PRICE_HISTORY];
+//        self.weeklyLastUpdateDay = [aDecoder decodeObjectForKey:WEEKLY_UPDATE_DAY];
+//        self.weeklyVOL = [aDecoder decodeObjectForKey:WEEKLY_VOL_HISTORY];
+//        self.weeklyPrice = [aDecoder decodeObjectForKey:WEEKLY_PRICE_HISTORY];
         self.buySellHistory = [aDecoder decodeObjectForKey:BUY_SELL_HISTORY];
         self.lines = [aDecoder decodeObjectForKey:LINES];
 

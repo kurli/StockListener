@@ -256,13 +256,10 @@
     }
 
     historyDateValue = [self.stockInfo.weeklyLastUpdateDay integerValue];
-    historyDateValue = 0;
-    if (historyDateValue == 0 || latest - historyDateValue >= 2) {
+//    historyDateValue = 0;
+    if (historyDateValue == 0) {
         GetWeeksStockValue* task6 = [[GetWeeksStockValue alloc] initWithStock:self.stockInfo];
         [[KingdaWorker getInstance] queue:task6];
-    } else if (latest-historyDateValue == 1 && [self.stockInfo.hundredDaysPrice count] < 100) {
-        GetWeeksStockValue* task5 = [[GetWeeksStockValue alloc] initWithStock:self.stockInfo];
-        [[KingdaWorker getInstance] queue:task5];
     }
 
     if (needSync) {

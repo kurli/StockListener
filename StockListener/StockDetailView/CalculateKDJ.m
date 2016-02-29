@@ -195,7 +195,15 @@
         return;
     }
     NSInteger startIndex = 20;
-    NSInteger needMinuteCount = (20 + self.calculateCount) * delta;
+    NSInteger needMinuteCount = 0;
+    // The last item not finished, just get partial of items for last one
+    NSInteger tmp = [stockInfo.todayPriceByMinutes count] % delta;
+    if (tmp == 0) {
+        needMinuteCount = (20 + self.calculateCount) * delta;
+    } else {
+        needMinuteCount = (20 + self.calculateCount - 1) * delta + tmp;
+    }
+    
     NSInteger needLastFiveDayCount = 0;
     if (self.calculateCount == MAX_COUNT) {
         needMinuteCount = [stockInfo.fiveDayPriceByMinutes count] + [stockInfo.todayPriceByMinutes count];
@@ -206,6 +214,8 @@
     }
     NSMutableArray* priceMinute = [[NSMutableArray alloc] init];
     NSMutableArray* volMinute = [[NSMutableArray alloc] init];
+    
+    // Get last five days prices and vol
     NSInteger start = [stockInfo.fiveDayPriceByMinutes count] - needLastFiveDayCount;
     if (start < 0) {
         start = 0;
@@ -228,6 +238,8 @@
             prePrice = [number floatValue];
         }
     }
+    
+    // Get today price and vol
     start = [stockInfo.todayPriceByMinutes count] - needMinuteCount;
     if (start < 0) {
         start = 0;
