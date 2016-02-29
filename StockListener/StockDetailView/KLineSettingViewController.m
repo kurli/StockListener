@@ -16,8 +16,9 @@
 #import "AVOLChartViewController.h"
 #import "CalculateAVOL.h"
 #import "KDJViewController.h"
+#import "TestColorViewController.h"
 
-@interface KLineSettingViewController () {
+@interface KLineSettingViewController () <UITableViewDelegate,UITableViewDataSource> {
     KLineViewController* klineViewController;
     VOLChartViewController* volController;
     AVOLChartViewController* aVolController;
@@ -39,6 +40,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *addButton;
 @property (weak, nonatomic) IBOutlet UILabel *addLabel;
 @property (weak, nonatomic) IBOutlet UIButton *finishButton;
+@property (weak, nonatomic) IBOutlet UITableView *lineTableView;
 @end
 
 @implementation KLineSettingViewController
@@ -129,7 +131,7 @@
     [kdjViewController setIsShowSnapshot:NO];
     [kdjViewController setFrame:CGRectMake(0, y, leftWidth, 75)];
     
-    y = y + 75 + 15;
+    y = y + 75 + 5;
     // Set yline view frame
 //    rect = self.ylineTypeView.frame;
 //    rect.origin.y = y;
@@ -144,7 +146,14 @@
     rect.origin.y = y;
     [self.addLabel setFrame:rect];
     
-    y = y + rect.size.height + 5;
+    rect = self.lineTableView.frame;
+    rect.origin.x = self.addLabel.frame.origin.x + self.addLabel.frame.size.width;
+    rect.origin.y = y;
+    [self.lineTableView setFrame:rect];
+    self.lineTableView.layer.borderWidth = 0.5;
+    self.lineTableView.layer.borderColor = [[UIColor grayColor] CGColor];
+
+    y = self.addButton.frame.origin.y + self.addButton.frame.size.height + 5;
     rect = self.finishButton.frame;
     rect.origin.x = self.addLabel.frame.origin.x;
     rect.origin.y = y;
@@ -353,16 +362,156 @@
 }
 
 - (IBAction)addButtonClicked:(id)sender {
+    klineViewController.editLineColor = RSRandomColorOpaque(YES);
     [klineViewController startEditLine];
     [self refreshEditLineButtons];
 }
 
 - (IBAction)finishButtonClicked:(id)sender {
-    [klineViewController endEditLine];
-    [self refreshEditLineButtons];
     float k = [klineViewController getEditLineK];
     float b = [klineViewController getEditLineB];
-    NSString* str = [NSString stringWithFormat:@"%@ %f %f", @"",  k, b];
+    UIColor* color = klineViewController.editLineColor;
+    CGFloat cr, cg, cb, ca;
+    [color getRed:&cr green:&cg blue:&cb alpha:&ca];
+    NSString* colorStr = [NSString stringWithFormat:@"(%f,%f,%f)", cr, cg, cb];
+    NSString* str = [NSString stringWithFormat:@"%@ %f %f", colorStr,  k, b];
     [self.stockInfo.lines addObject:str];
+    [klineViewController endEditLine];
+    [self refreshEditLineButtons];
+
+    [self.lineTableView reloadData];
 }
+
+// Delegates
+#define NAME_LABEL 101
+#define EDIT_BUTTON 102
+#define DELETE_BUTTON 103
+#define IOS_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
+
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    return [self.stockInfo.lines count];
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 44;
+}
+
+-(void) editClicked:(id)headsetImg {
+    float k, b;
+    TestColorViewController *rootController = [[TestColorViewController alloc] initWithNibName:nil bundle:nil];
+
+    UIButton *button = (UIButton *)headsetImg;
+    UIView *contentView;
+    if (IOS_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
+        contentView = [button superview];
+    } else if (IOS_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+        contentView = [[button superview] superview];
+    } else {
+        contentView = [button superview];
+    }
+    UITableViewCell *cell = (UITableViewCell*)[contentView superview];
+    if ([cell isKindOfClass:[UITableViewCell class]] == false) {
+        return;
+    }
+    NSIndexPath *indexPath = [self.lineTableView indexPathForCell:cell];
+    if (indexPath.row < [self.stockInfo.lines count]) {
+        // First delete
+        NSString* str = [self.stockInfo.lines objectAtIndex:indexPath.row];
+        NSArray* array = [str componentsSeparatedByString:@" "];
+        if ([array count] == 3) {
+            NSString* colorStr = [array objectAtIndex:0];
+            k = [[array objectAtIndex:1] floatValue];
+            b = [[array objectAtIndex:2] floatValue];
+            colorStr = [colorStr stringByReplacingOccurrencesOfString:@"(" withString:@""];
+            colorStr = [colorStr stringByReplacingOccurrencesOfString:@")" withString:@""];
+            NSArray* array = [colorStr componentsSeparatedByString:@","];
+            CGFloat cr, cg, cb;
+            if ([array count] == 3) {
+                cr = [[array objectAtIndex:0] floatValue];
+                cg = [[array objectAtIndex:1] floatValue];
+                cb = [[array objectAtIndex:2] floatValue];
+                UIColor* color = [UIColor colorWithRed:cr green:cg blue:cb alpha:1];
+                rootController.color = color;
+                rootController.onFinish = ^(UIColor* color) {
+                    CGFloat cr, cg, cb, ca;
+                    [color getRed:&cr green:&cg blue:&cb alpha:&ca];
+                    NSString* colorStr = [NSString stringWithFormat:@"(%f,%f,%f)", cr, cg, cb];
+                    NSString* str = [NSString stringWithFormat:@"%@ %f %f", colorStr,  k, b];
+                    [self.stockInfo.lines replaceObjectAtIndex:indexPath.row withObject:str];
+                    [self redraw];
+                    [self.lineTableView reloadData];
+                };
+                [self presentViewController:rootController animated:YES completion:nil];
+            }
+//            float k = [[array objectAtIndex:1] floatValue];
+//            float b = [[array objectAtIndex:2] floatValue];
+//            [klineViewController setEditLineK:k];
+//            [klineViewController setEditLineB:b];
+//            [klineViewController resetEditButton];
+        }
+    }
+}
+
+-(void) deleteClicked:(id)headsetImg {
+    UIButton *button = (UIButton *)headsetImg;
+    UIView *contentView;
+    if (IOS_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
+        contentView = [button superview];
+    } else if (IOS_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+        contentView = [[button superview] superview];
+    } else {
+        contentView = [button superview];
+    }
+    UITableViewCell *cell = (UITableViewCell*)[contentView superview];
+    if ([cell isKindOfClass:[UITableViewCell class]] == false) {
+        return;
+    }
+    NSIndexPath *indexPath = [self.lineTableView indexPathForCell:cell];
+    if (indexPath.row < [self.stockInfo.lines count]) {
+        [self.stockInfo.lines removeObjectAtIndex:indexPath.row];
+    }
+    [self.lineTableView reloadData];
+    [self redraw];
+}
+
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    static NSString *flag=@"LineTableItem";
+    UITableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:flag];
+    if (cell == nil) {
+        cell = [[[NSBundle mainBundle] loadNibNamed:@"LineTableItem" owner:self options:nil] lastObject];
+        [cell setValue:flag forKey:@"reuseIdentifier"];
+        UIButton* editButton = [cell viewWithTag:EDIT_BUTTON];
+        [editButton addTarget:self action:@selector(editClicked:) forControlEvents:UIControlEventTouchUpInside];
+        UIButton* deleteButton = [cell viewWithTag:DELETE_BUTTON];
+        [deleteButton addTarget:self action:@selector(deleteClicked:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    UILabel* label = [cell viewWithTag:NAME_LABEL];
+    [label setText:[NSString stringWithFormat:@"辅助线 %ld", indexPath.row]];
+    NSString* str = [self.stockInfo.lines objectAtIndex:indexPath.row];
+    NSArray* array = [str componentsSeparatedByString:@" "];
+    if ([array count] == 3) {
+        NSString* colorStr = [array objectAtIndex:0];
+        colorStr = [colorStr stringByReplacingOccurrencesOfString:@"(" withString:@""];
+        colorStr = [colorStr stringByReplacingOccurrencesOfString:@")" withString:@""];
+        NSArray* array = [colorStr componentsSeparatedByString:@","];
+        CGFloat r, g, b;
+        if ([array count] == 3) {
+            r = [[array objectAtIndex:0] floatValue];
+            g = [[array objectAtIndex:1] floatValue];
+            b = [[array objectAtIndex:2] floatValue];
+            UIColor* color = [UIColor colorWithRed:r green:g blue:b alpha:1];
+            [label setTextColor:color];
+        }
+    }
+
+    return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    return NO;
+}
+
 @end

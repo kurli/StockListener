@@ -42,6 +42,12 @@
 
 -(float) getEditLineB;
 
+-(void) setEditLineK:(float)k;
+
+-(void) setEditLineB:(float)b;
+
+-(void) resetEditButton;
+
 @property (nonatomic, assign) NSInteger todayStartIndex;
 @property (nonatomic, assign) NSInteger startIndex;
 @property (nonatomic, strong) NSMutableArray* priceKValues;
@@ -55,4 +61,5 @@
 
 @property (nonatomic, unsafe_unretained) NSInteger timeDelta;
 @property (nonatomic, unsafe_unretained) NSInteger timeStartIndex;
+@property (nonatomic, strong) UIColor* editLineColor;
 @end

@@ -97,7 +97,7 @@
     if (editB == 0 && editK == 0) {
         return;
     }
-    [self addLine:@"" andK:editK andB:editB];
+    [self addLine:self.editLineColor andK:editK andB:editB];
 }
 
 -(void) addOtherLines {
@@ -105,15 +105,27 @@
         NSString* str = [self.stockInfo.lines objectAtIndex:i];
         NSArray* array = [str componentsSeparatedByString:@" "];
         if ([array count] == 3) {
-            NSString* color = [array objectAtIndex:0];
+            UIColor* color = nil;
+            NSString* colorStr = [array objectAtIndex:0];
             float k = [[array objectAtIndex:1] floatValue];
             float b = [[array objectAtIndex:2] floatValue];
+            colorStr = [colorStr stringByReplacingOccurrencesOfString:@"(" withString:@""];
+            colorStr = [colorStr stringByReplacingOccurrencesOfString:@")" withString:@""];
+            NSArray* array2 = [colorStr componentsSeparatedByString:@","];
+            CGFloat cr, cg, cb;
+            if ([array2 count] == 3) {
+                cr = [[array2 objectAtIndex:0] floatValue];
+                cg = [[array2 objectAtIndex:1] floatValue];
+                cb = [[array2 objectAtIndex:2] floatValue];
+                color = [UIColor colorWithRed:cr green:cg blue:cb alpha:1];
+            }
+
             [self addLine:color andK:k andB:b];
         }
     }
 }
 
--(void) addLine:(NSString*)color andK:(float)k andB:(float)b {
+-(void) addLine:(UIColor*)color andK:(float)k andB:(float)b {
     if (k == 0 && b == 0) {
         return;
     }
@@ -145,8 +157,13 @@
     }
     float yn = k*xn + b;
     
-    NSString* str = [NSString stringWithFormat:@"%@ %d %f %ld %f", color, 0, y0, [self.priceKValues count] - self.startIndex, yn];
-    [kLineChartView.lines addObject:str];
+    NSMutableArray* array = [[NSMutableArray alloc] init];
+    [array addObject:color];
+    [array addObject:[NSNumber numberWithFloat:0]];
+    [array addObject:[NSNumber numberWithFloat:y0]];
+    [array addObject:[NSNumber numberWithFloat:[self.priceKValues count] - self.startIndex]];
+    [array addObject:[NSNumber numberWithFloat:yn]];
+    [kLineChartView.lines addObject:array];
 }
 
 - (void) dragMoving: (UIControl *) c withEvent:ev
@@ -398,6 +415,8 @@
 -(void) endEditLine {
     [lineButton1 setHidden:YES];
     [lineButton2 setHidden:YES];
+    editK = 0;
+    editB = 0;
 }
 
 -(BOOL) isEditLine {
@@ -410,6 +429,18 @@
 
 -(float) getEditLineB {
     return editB;
+}
+
+
+-(void) setEditLineK:(float)k {
+    editK = k;
+}
+
+-(void) setEditLineB:(float)b {
+    editB = b;
+}
+
+-(void) resetEditButton {
 }
 
 @end

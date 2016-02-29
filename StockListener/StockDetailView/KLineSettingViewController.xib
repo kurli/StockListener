@@ -10,6 +10,7 @@
                 <outlet property="addButton" destination="R7y-Ev-aav" id="vVg-wV-FdG"/>
                 <outlet property="addLabel" destination="2TN-oI-ZhM" id="YJ1-Dp-nNk"/>
                 <outlet property="finishButton" destination="KSu-gn-DwU" id="r8p-Dz-ZW3"/>
+                <outlet property="lineTableView" destination="5Je-Q3-pN4" id="zKU-cH-lw4"/>
                 <outlet property="typeSegmentController" destination="08c-l3-21c" id="4qt-fB-baY"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -68,21 +69,30 @@
                         <action selector="addButtonClicked:" destination="-1" eventType="touchUpInside" id="eBa-LI-nEC"/>
                     </connections>
                 </button>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="画线" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="2TN-oI-ZhM">
-                    <rect key="frame" x="38" y="350" width="42" height="22"/>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="辅助线:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="2TN-oI-ZhM">
+                    <rect key="frame" x="24" y="350" width="56" height="22"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="KSu-gn-DwU">
-                    <rect key="frame" x="109" y="346" width="30" height="22"/>
+                    <rect key="frame" x="38" y="374" width="30" height="22"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <state key="normal" title="完成"/>
                     <connections>
                         <action selector="finishButtonClicked:" destination="-1" eventType="touchUpInside" id="Pd0-ez-kRp"/>
                     </connections>
                 </button>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="5Je-Q3-pN4">
+                    <rect key="frame" x="76" y="350" width="230" height="100"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="uHs-DY-7yX"/>
+                        <outlet property="delegate" destination="-1" id="SqB-BA-F1d"/>
+                    </connections>
+                </tableView>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>

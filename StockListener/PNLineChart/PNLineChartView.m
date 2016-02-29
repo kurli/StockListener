@@ -234,7 +234,7 @@
 
 #define UIColorFromHex(hex) [UIColor colorWithRed:((float)((hex & 0xFF0000) >> 16))/255.0 green:((float)((hex & 0xFF00) >> 8))/255.0 blue:((float)(hex & 0xFF))/255.0 alpha:1.0]
 
--(void) drawLine:(NSString*)color andP1:(CGPoint)p1 andP2:(CGPoint)p2 {
+-(void) drawLine:(UIColor*)color andP1:(CGPoint)p1 andP2:(CGPoint)p2 {
     // Draw edit line
     if (self.interval*self.horizontalLineInterval != 0){
         CGContextRef context = UIGraphicsGetCurrentContext();
@@ -243,8 +243,11 @@
         CGFloat startWidth = self.axisLeftLineWidth;
         float height = (p1.y-self.min)/self.interval*self.horizontalLineInterval+startHeight;
         float width =startWidth + self.pointerInterval*(p1.x);
-        [[UIColor blackColor] set]; //TODO
-        CGContextSetLineWidth(context, 1.5);
+        if (color == nil) {
+            color = [UIColor blackColor];
+        }
+        [color set];
+        CGContextSetLineWidth(context, 2);
         CGFloat lengths[] = {};
         CGContextSetLineDash(context, 0, lengths,0);
         CGContextMoveToPoint(context,  width, height);
@@ -456,10 +459,9 @@
     // Draw lines
     if ([self.lines count] != 0) {
         for (int i=0; i < [self.lines count]; i++) {
-            NSString* str = [self.lines objectAtIndex:i];
-            NSArray* array = [str componentsSeparatedByString:@" "];
+            NSArray* array = [self.lines objectAtIndex:i];
             if ([array count] == 5) {
-                NSString* color = [array objectAtIndex:0];
+                UIColor* color = [array objectAtIndex:0];
                 float x0 = [[array objectAtIndex:1] floatValue];
                 float y0 = [[array objectAtIndex:2] floatValue];
                 float xn = [[array objectAtIndex:3] floatValue];
