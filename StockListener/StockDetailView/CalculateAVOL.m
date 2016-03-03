@@ -21,14 +21,14 @@
 }
 
 -(void) calculateAP {
-    if ([neededNewInfo.hundredDaysVOL count] != [neededNewInfo.hundredDaysPrice count]) {
+    if ([neededNewInfo.weeklyVOL count] != [neededNewInfo.weeklyPrice count] || [neededNewInfo.weeklyPrice count] == 0) {
         return;
     }
     
     float lowest = 100000;
     float delta = 0.01;
-    for (int i=0; i<[neededNewInfo.hundredDaysPrice count]; i++) {
-        NSArray* array = [neededNewInfo.hundredDaysPrice objectAtIndex:i];
+    for (int i=0; i<[neededNewInfo.weeklyPrice count]; i++) {
+        NSArray* array = [neededNewInfo.weeklyPrice objectAtIndex:i];
         if ([array count] != 4) {
             continue;
         }
@@ -44,15 +44,15 @@
         delta = 1;
     }
     [neededNewInfo.averageVolDic removeAllObjects];
-    for (int i=0; i<[neededNewInfo.hundredDaysPrice count]; i++) {
-        NSArray* array = [neededNewInfo.hundredDaysPrice objectAtIndex:i];
+    for (int i=0; i<[neededNewInfo.weeklyPrice count]; i++) {
+        NSArray* array = [neededNewInfo.weeklyPrice objectAtIndex:i];
         //        NSArray* preArr = [neededNewInfo.hundredDaysPrice objectAtIndex:i-1];
         if ([array count] != 4) {
             continue;
         }
         NSInteger h = [[array objectAtIndex:1] floatValue] / delta;
         NSInteger l = [[array objectAtIndex:3] floatValue] / delta;
-        NSInteger vol = [[neededNewInfo.hundredDaysVOL objectAtIndex:i] integerValue];
+        NSInteger vol = [[neededNewInfo.weeklyVOL objectAtIndex:i] integerValue];
         
         //        NSInteger c = [[array objectAtIndex:1] floatValue] / delta;
         //        NSInteger pc = [[preArr objectAtIndex:1] floatValue] / delta;
