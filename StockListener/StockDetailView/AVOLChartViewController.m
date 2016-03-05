@@ -146,7 +146,7 @@
             float floatKey = self.min + index*mergeCount + i;
             NSInteger key = floatKey;
             NSString* keyStr = [NSString stringWithFormat:@"%ld", key];
-            NSInteger vol = [[self.stockInfo.averageVolDic objectForKey:keyStr] integerValue];
+            NSInteger vol = [[self.averageVolDic objectForKey:keyStr] integerValue];
 //            NSLog(@"Calculate: key:%ld vol:%ld", key, vol);
             if (vol < 0) {
                 continue;
@@ -160,7 +160,7 @@
         NSInteger key = self.min + index;
         NSString* keyStr = [NSString stringWithFormat:@"%ld", key];
         
-        NSInteger vol = [[self.stockInfo.averageVolDic objectForKey:keyStr] integerValue];
+        NSInteger vol = [[self.averageVolDic objectForKey:keyStr] integerValue];
         if (vol < 0) {
             NSLog(@"Fu de: %ld", vol);
             return 0;

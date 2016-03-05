@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import "CalculateAVOL.h"
 
 @class StockInfo;
 
@@ -21,4 +22,8 @@
 -(id) initWithParentView:(UIView*)view;
 - (void) reload;
 -(void)loadView:(CGRect) rect;
+
+@property (assign, nonatomic) CalculateAVOLType sourceType;
+@property (atomic, strong) NSDictionary* averageVolDic;
+
 @end

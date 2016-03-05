@@ -126,6 +126,9 @@
         tmp = 10-0.05;
     }
     
+    self.highestRate = tmp + 0.05;
+    self.lowestRate = -1*tmp - 0.05;
+    
     priceChartView.max = tmp + 0.05;
     priceChartView.min = -1*tmp - 0.05;
     priceChartView.interval = (priceChartView.max - priceChartView.min)/4;

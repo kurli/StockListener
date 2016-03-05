@@ -242,14 +242,15 @@
 
 -(void) refreshAVOLAsync:(float)l andHighest:(float)h{
     CalculateAVOL* task = [[CalculateAVOL alloc] initWithStockInfo:self.stockInfo];
-    task.onCompleteBlock = ^() {
-        [self refreshAVOL:l andHighest:h];
+    task.onCompleteBlock = ^(NSDictionary* dic) {
+        [self refreshAVOL:l andHighest:h andDic:dic];
     };
     [[KingdaWorker getInstance] removeSameKindTask:task];
+    [task setSourceType:CalculateAVOLTypeWeeks];
     [[KingdaWorker getInstance] queue:task];
 }
 
--(void) refreshAVOL:(float)l andHighest:(float)h{
+-(void) refreshAVOL:(float)l andHighest:(float)h andDic:(NSDictionary*)dic{
     // Average VOL
     float delta = 0.01;
     if (h < 3) {
@@ -273,6 +274,7 @@
     float extend = valuePerPixel * (AVOL_EXPAND / 2);
     [aVolController setMin:ll-extend];
     [aVolController setMax:hh+extend];
+    [aVolController setAverageVolDic:dic];
     [aVolController reload];
 }
 

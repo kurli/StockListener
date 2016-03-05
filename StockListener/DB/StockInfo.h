@@ -31,8 +31,6 @@
 @property (atomic, strong) NSMutableArray* hundredDaysPrice;
 @property (atomic, strong) NSMutableArray* hundredDaysVOL;
 @property (atomic, strong) NSString* hundredDayLastUpdateDay;
-// VOL average
-@property (atomic, strong) NSMutableDictionary* averageVolDic;
 // Weekly price
 @property (atomic, strong) NSMutableArray* weeklyPrice;
 @property (atomic, strong) NSMutableArray* weeklyVOL;

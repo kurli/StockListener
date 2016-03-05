@@ -37,6 +37,7 @@
     BuySellChartViewController* buySellController;
     VOLChartViewController* volController;
     AVOLChartViewController* aVolController;
+    AVOLChartViewController* aVolTodayController;
     ZSYPopoverListView* stockListView;
     NSInteger preSegment;
 
@@ -141,8 +142,14 @@
     float leftWidth = ((int)(LEFT_VIEW_WIDTH)/(DEFAULT_DISPLAY_COUNT-1))*(DEFAULT_DISPLAY_COUNT-1);
 
     int offsetY = self.rateLabel.frame.size.height + self.rateLabel.frame.origin.y + 20;
-    CGRect fenshiRect = CGRectMake(0, offsetY, leftWidth, 150);
+    CGRect fenshiRect = CGRectMake(0, offsetY, leftWidth - RIGHT_VIEW_WIDTH, 150);
     [fenshiViewController setFrame:fenshiRect];
+
+    if (aVolTodayController == nil) {
+        aVolTodayController = [[AVOLChartViewController alloc] initWithParentView:self.view];
+        CGRect rect = CGRectMake(leftWidth - RIGHT_VIEW_WIDTH, offsetY, RIGHT_VIEW_WIDTH, 150);
+        [aVolTodayController loadViewVertical:rect];
+    }
 
     if (buySellController == nil) {
         buySellController = [[BuySellChartViewController alloc] initWithParentView:self.view];
@@ -372,13 +379,14 @@
 
 -(void) refreshAVOLAsync:(float)l andHighest:(float)h{
     CalculateAVOL* task = [[CalculateAVOL alloc] initWithStockInfo:self.stockInfo];
-    task.onCompleteBlock = ^() {
-        [self refreshAVOL:l andHighest:h];
+    task.onCompleteBlock = ^(NSDictionary* dic) {
+        [self refreshAVOL:l andHighest:h andDic:dic];
     };
+    [task setSourceType:CalculateAVOLTypeWeeks];
     [[KingdaWorker getInstance] queue:task];
 }
 
--(void) refreshAVOL:(float)l andHighest:(float)h{
+-(void) refreshAVOL:(float)l andHighest:(float)h andDic:(NSDictionary*)dic{
     // Average VOL
     float delta = 0.01;
     if (h < 3) {
@@ -402,7 +410,43 @@
     float extend = valuePerPixel * (AVOL_EXPAND / 2);
     [aVolController setMin:ll-extend];
     [aVolController setMax:hh+extend];
+    [aVolController setAverageVolDic:dic];
     [aVolController reload];
+}
+
+-(void) refreshTodayAVOLAsync:(float)l andHighest:(float)h{
+    CalculateAVOL* task = [[CalculateAVOL alloc] initWithStockInfo:self.stockInfo];
+    task.onCompleteBlock = ^(NSDictionary* dic) {
+        [self refreshTodayAVOL:l andHighest:h andDic:dic];
+    };
+    [task setSourceType:CalculateAVOLTypeToday];
+    [[KingdaWorker getInstance] queue:task];
+}
+
+-(void) refreshTodayAVOL:(float)l andHighest:(float)h andDic:(NSDictionary*)dic{
+    // Average VOL
+    float delta = 0.01;
+    if (h < 3) {
+        delta = 0.001;
+    }
+    if (l > 1000) {
+        delta = 1;
+    }
+    [aVolTodayController setStockInfo:self.stockInfo];
+    int ll = l/delta;
+    int hh = h/delta;
+    
+    if (ll == hh) {
+        [aVolTodayController setMin:0];
+        [aVolTodayController setMax:0];
+        [aVolTodayController reload];
+        return;
+    }
+    
+    [aVolTodayController setMin:ll];
+    [aVolTodayController setMax:hh];
+    [aVolTodayController setAverageVolDic:dic];
+    [aVolTodayController reload];
 }
 
 -(void) refreshVOL:(NSInteger) startIndex andVolValues:(NSArray*)volValues andMaxCount:(NSInteger)maxCount {
@@ -505,7 +549,7 @@
         case 5:
             str = @"日";
             delta = ONE_DAY;
-            maxCount = 20;
+            maxCount = 10;
             break;
         case 6:
             str = @"周";
@@ -564,6 +608,9 @@
             [fenshiViewController setSplitX:0];
         }
         [fenshiViewController refresh:self.stockInfo];
+        float h = self.stockInfo.lastDayPrice * (1+fenshiViewController.highestRate / 100);
+        float l = self.stockInfo.lastDayPrice * (1+fenshiViewController.lowestRate / 100);
+        [self refreshTodayAVOLAsync:l andHighest:h];
         
         [self drawMarks];
     };

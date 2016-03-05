@@ -8,10 +8,17 @@
 
 #import "KingdaTask.h"
 
+typedef NS_ENUM(NSInteger, CalculateAVOLType) {
+    CalculateAVOLTypeToday,
+    CalculateAVOLTypeWeeks
+};
+
 @class StockInfo;
 @interface CalculateAVOL : KingdaTask
 
 -(id) initWithStockInfo:(StockInfo*)info;
-@property (copy) void (^onCompleteBlock)();
+@property (copy) void (^onCompleteBlock)(NSMutableDictionary* dic);
 
+@property (assign, nonatomic) CalculateAVOLType sourceType;
+@property (atomic, strong) NSMutableDictionary* averageVolDic;
 @end

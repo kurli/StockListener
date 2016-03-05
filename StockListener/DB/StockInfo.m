@@ -87,7 +87,7 @@
         self.hundredDaysPrice = [[NSMutableArray alloc] init];
         self.hundredDaysVOL = [[NSMutableArray alloc] init];
         self.hundredDayLastUpdateDay = @"";
-        self.averageVolDic = [[NSMutableDictionary alloc] init];
+//        self.averageVolDic = [[NSMutableDictionary alloc] init];
         self.weeklyPrice = [[NSMutableArray alloc] init];
         self.weeklyVOL = [[NSMutableArray alloc] init];
         self.weeklyLastUpdateDay = @"";
@@ -116,7 +116,7 @@
     info.hundredDayLastUpdateDay = [self.hundredDayLastUpdateDay copy];
     info.hundredDaysVOL = [self.hundredDaysVOL copy];
     info.hundredDaysPrice = [self.hundredDaysPrice copy];
-    info.averageVolDic = [self.averageVolDic copy];
+//    info.averageVolDic = [self.averageVolDic copy];
     info.weeklyLastUpdateDay = [self.weeklyLastUpdateDay copy];
     info.weeklyVOL = [self.weeklyVOL copy];
     info.weeklyPrice = [self.weeklyPrice copy];
@@ -150,9 +150,9 @@
     if (self.hundredDayLastUpdateDay != nil) {
         [aCoder encodeObject:self.hundredDayLastUpdateDay forKey:HUNDRED_DAY_UPDATE_DAY];
     }
-    if (self.averageVolDic != nil) {
-        [aCoder encodeObject:self.averageVolDic forKey:AVERAGE_VOL_DIC];
-    }
+//    if (self.averageVolDic != nil) {
+//        [aCoder encodeObject:self.averageVolDic forKey:AVERAGE_VOL_DIC];
+//    }
 //    if (self.weeklyPrice != nil) {
 //        [aCoder encodeObject:self.weeklyPrice forKey:WEEKLY_PRICE_HISTORY];
 //    }
@@ -183,7 +183,7 @@
         self.hundredDayLastUpdateDay = [aDecoder decodeObjectForKey:HUNDRED_DAY_UPDATE_DAY];
         self.hundredDaysVOL = [aDecoder decodeObjectForKey:HUNDRED_DAY_VOL_HISTORY];
         self.hundredDaysPrice = [aDecoder decodeObjectForKey:HUNDRED_DAY_PRICE_HISTORY];
-        self.averageVolDic = [aDecoder decodeObjectForKey:AVERAGE_VOL_DIC];
+//        self.averageVolDic = [aDecoder decodeObjectForKey:AVERAGE_VOL_DIC];
 //        self.weeklyLastUpdateDay = [aDecoder decodeObjectForKey:WEEKLY_UPDATE_DAY];
 //        self.weeklyVOL = [aDecoder decodeObjectForKey:WEEKLY_VOL_HISTORY];
 //        self.weeklyPrice = [aDecoder decodeObjectForKey:WEEKLY_PRICE_HISTORY];
@@ -211,9 +211,9 @@
         if (self.hundredDaysPrice == nil) {
             self.hundredDaysPrice = [[NSMutableArray alloc] init];
         }
-        if (self.averageVolDic == nil) {
-            self.averageVolDic = [[NSMutableDictionary alloc] init];
-        }
+//        if (self.averageVolDic == nil) {
+//            self.averageVolDic = [[NSMutableDictionary alloc] init];
+//        }
         if (self.weeklyLastUpdateDay == nil) {
             self.weeklyLastUpdateDay = @"";
         }

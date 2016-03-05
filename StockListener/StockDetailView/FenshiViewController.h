@@ -29,4 +29,7 @@
 
 -(void) hideInfoButton;
 
+@property (nonatomic, assign) float highestRate;
+@property (nonatomic, assign) float lowestRate;
+
 @end
