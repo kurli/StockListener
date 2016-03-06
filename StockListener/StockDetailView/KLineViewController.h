@@ -59,6 +59,9 @@
 @property (copy) void (^onScroll)(NSInteger delta, BOOL finished);
 @property (copy) void (^onScale)(float delta, BOOL finished);
 
+@property (nonatomic, strong) NSMutableArray* boll_ma;
+@property (nonatomic, strong) NSMutableArray* bool_md;
+
 @property (nonatomic, unsafe_unretained) NSInteger timeDelta;
 @property (nonatomic, unsafe_unretained) NSInteger timeStartIndex;
 @property (nonatomic, strong) UIColor* editLineColor;

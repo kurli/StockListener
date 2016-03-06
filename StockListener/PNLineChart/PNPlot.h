@@ -30,5 +30,6 @@
 @property (nonatomic, strong) UIColor* lineColor;
 @property (nonatomic, assign) float lineWidth;
 @property (nonatomic, assign) BOOL isKLine;
+@property (nonatomic, assign) BOOL isDashLine;
 
 @end

@@ -500,6 +500,14 @@
             float height = (floatValue-self.min)/self.interval*self.horizontalLineInterval+startHeight;
             float width =startWidth + self.pointerInterval*(i-self.startIndex) + self.pointerInterval/2;
             
+            if (plot.isDashLine) {
+                CGFloat lengths[] = {2,2};
+                CGContextSetLineDash(context, 0, lengths,2);
+            } else {
+                CGFloat lengths[] = {};
+                CGContextSetLineDash(context, 0, lengths,0);
+            }
+            
             if (i==self.startIndex || newLine) {
                 CGContextMoveToPoint(context,  width, height);
                 newLine = NO;
@@ -511,6 +519,8 @@
         
         CGContextStrokePath(context);
     }
+    CGFloat lengths[] = {};
+    CGContextSetLineDash(context, 0, lengths,0);
     
     if (self.splitX > 0) {
         int x = startWidth + self.pointerInterval*(self.splitX) + startHeight;

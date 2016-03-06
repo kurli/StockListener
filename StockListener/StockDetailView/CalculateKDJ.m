@@ -26,10 +26,65 @@
         self.kdj_k = [[NSMutableArray alloc] init];
         self.kdj_d = [[NSMutableArray alloc] init];
         self.kdj_j = [[NSMutableArray alloc] init];
+        self.boll_ma = [[NSMutableArray alloc] init];
+        self.boll_md = [[NSMutableArray alloc] init];
         self.lowest = 10000;
         self.highest = -1000;
     }
     return self;
+}
+
+- (void) caclulateBOLL:(NSArray*)data andStartIndex:(NSInteger)index {
+    if ([data count] == 0) {
+        return;
+    }
+    
+//    float c = [[[data objectAtIndex:0] objectAtIndex:PRICE_CURRENT] floatValue];
+//    [self.boll_ma addObject:[NSNumber numberWithFloat:c]];
+//    
+//    float preMD2 = 0;
+//    [self.boll_md addObject:[NSNumber numberWithFloat:0]];
+//    
+//    for (NSInteger i = index; i<[data count]; i++) {
+//        float curPrice = [[[data objectAtIndex:i] objectAtIndex:PRICE_CURRENT] floatValue];
+//        float preMA = [[self.boll_ma objectAtIndex:i-1] floatValue] * i;
+//        float ma = (preMA+curPrice)/(i+1);
+//        [self.boll_ma addObject:[NSNumber numberWithFloat:ma]];
+//        
+//        float md2 = preMD2 + (curPrice - ma)*(curPrice - ma);
+//        preMD2 = md2;
+//        
+//        float md = sqrtf(md2);
+//        [self.boll_md addObject:[NSNumber numberWithFloat:md]];
+//    }
+
+    float firstPrice = [[[data objectAtIndex:0] objectAtIndex:PRICE_CURRENT] floatValue];
+    float preCount = 0;    for (NSInteger i = 0; i<[data count]; i++) {
+        float curPrice = [[[data objectAtIndex:i] objectAtIndex:PRICE_CURRENT] floatValue];
+        if (i < 20) {
+            preCount += curPrice;
+            float ma = preCount / (i+1);
+            [self.boll_ma addObject:[NSNumber numberWithFloat:ma]];
+            [self.boll_md addObject:[NSNumber numberWithFloat:0]];
+        } else {
+            preCount -= firstPrice;
+            preCount += curPrice;
+            firstPrice = [[[data objectAtIndex:i-20+1] objectAtIndex:PRICE_CURRENT] floatValue];
+
+            float ma = preCount / 20;
+            [self.boll_ma addObject:[NSNumber numberWithFloat:ma]];
+            
+            float md2 = 0;
+            for (NSInteger j=i-20; j<i; j++) {
+                float price = [[[data objectAtIndex:j] objectAtIndex:PRICE_CURRENT] floatValue];
+                md2 += ((price - ma) * (price - ma));
+            }
+            float md = sqrtf(md2/20);
+
+            [self.boll_md addObject:[NSNumber numberWithFloat:md]];
+        }
+    }
+    
 }
 
 - (void) calculateKDJ:(NSArray *)data andStartIndex:(NSInteger)index {
@@ -78,6 +133,8 @@
         [self.kdj_d addObject:[NSNumber numberWithFloat:d]];
         [self.kdj_j addObject:[NSNumber numberWithFloat:j]];
     }
+    
+    [self caclulateBOLL:data andStartIndex:index];
 }
 
 -(void) calculateForWeek {

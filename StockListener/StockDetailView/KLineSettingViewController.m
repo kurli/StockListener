@@ -37,6 +37,8 @@
 @property (strong, nonatomic) NSMutableArray* kdj_k;
 @property (strong, nonatomic) NSMutableArray* kdj_d;
 @property (strong, nonatomic) NSMutableArray* kdj_j;
+@property (strong, nonatomic) NSMutableArray* boll_ma;
+@property (strong, nonatomic) NSMutableArray* boll_md;
 @property (weak, nonatomic) IBOutlet UIButton *addButton;
 @property (weak, nonatomic) IBOutlet UILabel *addLabel;
 @property (weak, nonatomic) IBOutlet UIButton *finishButton;
@@ -214,6 +216,8 @@
     klineViewController.startIndex = startIndex - calStartIndex;
 
     NSMutableArray* priceValues = [[NSMutableArray alloc] init];
+    NSMutableArray* boll_ma = [[NSMutableArray alloc] init];
+    NSMutableArray* boll_md = [[NSMutableArray alloc] init];
     float l = 100000;
     float h = -100000;
     for (NSInteger i=calStartIndex; i<endIndex; i++) {
@@ -227,6 +231,8 @@
             l = tmpL;
         }
         [priceValues addObject:array];
+        [boll_ma addObject:[self.boll_ma objectAtIndex:i]];
+        [boll_md addObject:[self.boll_md objectAtIndex:i]];
     }
     float delta = (h-l)/10;
     if (delta == 0) {
@@ -235,6 +241,8 @@
     h += delta;
     l -= delta;
     klineViewController.priceKValues = priceValues;
+    klineViewController.boll_ma = boll_ma;
+    klineViewController.bool_md = boll_md;
 
     [klineViewController refresh:l andHighest:h andDrawKLine:isKLine];
     [self refreshAVOLAsync:l andHighest:h];
@@ -347,6 +355,8 @@
         self.kdj_d = _self.kdj_d;
         self.kdj_j = _self.kdj_j;
         self.kdj_k = _self.kdj_k;
+        self.boll_md = _self.boll_md;
+        self.boll_ma = _self.boll_ma;
         
         self.volArray = _self.volValues;
         self.priceArray = _self.priceKValues;

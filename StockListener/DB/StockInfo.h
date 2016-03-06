@@ -11,6 +11,11 @@
 
 #define PRE_EARN_FLAG -12321
 
+#define PRICE_OPEN 0
+#define PRICE_HIGH 1
+#define PRICE_CURRENT 2
+#define PRICE_LOW 3
+
 @interface StockInfo : NSObject <NSCopying, NSCoding>
 
 @property (nonatomic, strong) NSString* name;

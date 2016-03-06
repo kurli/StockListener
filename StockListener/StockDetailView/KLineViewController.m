@@ -263,6 +263,11 @@
     NSMutableArray* ma10Array = [[NSMutableArray alloc] init];
     NSMutableArray* ma20Array = [[NSMutableArray alloc] init];
     NSMutableArray* cArray = [[NSMutableArray alloc] init];
+
+    NSMutableArray* bollUp = [[NSMutableArray alloc] init];
+    NSMutableArray* bollMiddle = [[NSMutableArray alloc] init];
+    NSMutableArray* bollDown = [[NSMutableArray alloc] init];
+    
     for (NSInteger i = self.startIndex; i<[self.priceKValues count]; i++) {
         NSArray* array = [self.priceKValues objectAtIndex:i];
         if ([array count] != 4) {
@@ -318,6 +323,18 @@
             [ma20Array addObject:[NSNumber numberWithFloat:average/20]];
         } else {
             [ma20Array addObject:@"No"];
+        }
+
+        if (i >= 20) {
+            NSNumber* ma = [self.boll_ma objectAtIndex:i-1];
+            [bollMiddle addObject:ma];
+            NSNumber* md = [self.bool_md objectAtIndex:i];
+            [bollUp addObject:[NSNumber numberWithFloat:[ma floatValue] + 2*[md floatValue]]];
+            [bollDown addObject:[NSNumber numberWithFloat:[ma floatValue] - 2*[md floatValue]]];
+        } else {
+            [bollMiddle addObject:@"No"];
+            [bollDown addObject:@"No"];
+            [bollUp addObject:@"No"];
         }
     }
 
@@ -399,7 +416,28 @@
             self.twentyAPrice.text = [NSString stringWithFormat:@"%.3f", price];
         }
     }
+    
+    PNPlot *plot5 = [[PNPlot alloc] init];
+    plot5.plottingValues = bollMiddle;
+    plot5.lineColor = [UIColor purpleColor];
+    plot5.lineWidth = 2;
+    plot5.isDashLine = YES;
+    [kLineChartView addPlot:plot5];
 
+    PNPlot *plot6 = [[PNPlot alloc] init];
+    plot6.plottingValues = bollUp;
+    plot6.lineColor = [UIColor redColor];
+    plot6.lineWidth = 2;
+    plot6.isDashLine = YES;
+    [kLineChartView addPlot:plot6];
+    
+    PNPlot *plot7 = [[PNPlot alloc] init];
+    plot7.plottingValues = bollDown;
+    plot7.lineColor = [UIColor brownColor];
+    plot7.lineWidth = 2;
+    plot7.isDashLine = YES;
+    [kLineChartView addPlot:plot7];
+    
     [kLineChartView.lines removeAllObjects];
     [self addEditLine];
     [self addOtherLines];

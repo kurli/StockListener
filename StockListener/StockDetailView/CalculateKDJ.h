@@ -19,6 +19,8 @@
 @property (nonatomic, strong) NSMutableArray* kdj_j;
 @property (nonatomic, strong) NSMutableArray* priceKValues;
 @property (nonatomic, strong) NSMutableArray* volValues;
+@property (nonatomic, strong) NSMutableArray* boll_ma;
+@property (nonatomic, strong) NSMutableArray* boll_md;
 @property (nonatomic, unsafe_unretained) NSInteger todayStartIndex;
 @property (nonatomic, unsafe_unretained) NSInteger calculateCount;
 @property (copy) void (^onCompleteBlock)(CalculateKDJ* _self);

@@ -27,6 +27,7 @@
 - (instancetype)init {
   if((self = [super init])) {
       self.isKLine = NO;
+      self.isDashLine = NO;
   }
   return self;
 }

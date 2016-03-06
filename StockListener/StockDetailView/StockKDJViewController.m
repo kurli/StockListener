@@ -575,7 +575,9 @@
         [klineViewController setSplitX:_self.todayStartIndex];
         klineViewController.priceKValues = _self.priceKValues;
         [klineViewController setStockInfo:self.stockInfo];
-        
+        klineViewController.boll_ma = _self.boll_ma;
+        klineViewController.bool_md = _self.boll_md;
+
         klineViewController.timeDelta = delta;
         if (delta == ONE_DAY) {
             klineViewController.timeStartIndex = [self.stockInfo.hundredDaysPrice count] - [_self.kdj_d count];
