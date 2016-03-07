@@ -8,6 +8,7 @@
 
 #import "CalculateAVOL.h"
 #import "StockInfo.h"
+#import "ConfigHelper.h"
 
 @implementation CalculateAVOL{
     StockInfo* neededNewInfo;
@@ -17,6 +18,7 @@
     if ((self = [super init]) != nil) {
         neededNewInfo = info;
         _averageVolDic = [[NSMutableDictionary alloc] init];
+        self.endIndex = 1000000;
     }
     return self;
 }
@@ -24,10 +26,24 @@
 -(void) calculateAP {
     NSMutableArray* volArray = nil;
     NSMutableArray* priceArray = nil;
-    if (self.sourceType == CalculateAVOLTypeWeeks) {
-        volArray = neededNewInfo.weeklyVOL;
-        priceArray = neededNewInfo.weeklyPrice;
-        [self calculateAPForWeek:priceArray andVol:volArray];
+    if (self.sourceType == CalculateAVOLTypeHistory) {
+        if ([ConfigHelper getInstance].avolCalType == AVOL_CAL_WEEKS) {
+            volArray = neededNewInfo.weeklyVOL;
+            priceArray = neededNewInfo.weeklyPrice;
+        } else {
+            volArray = neededNewInfo.hundredDaysVOL;
+            priceArray = neededNewInfo.hundredDaysPrice;
+        }
+        if (self.endIndex != 1000000) {
+            if (self.calType == AVOL_CAL_WEEKS) {
+                volArray = neededNewInfo.weeklyVOL;
+                priceArray = neededNewInfo.weeklyPrice;
+            } else {
+                volArray = neededNewInfo.hundredDaysVOL;
+                priceArray = neededNewInfo.hundredDaysPrice;
+            }
+        }
+        [self calculateAPForHistory:priceArray andVol:volArray];
     } else if (self.sourceType == CalculateAVOLTypeToday) {
         volArray = neededNewInfo.todayVOLByMinutes;
         priceArray = neededNewInfo.todayPriceByMinutes;
@@ -35,14 +51,21 @@
     }
 }
 
--(void) calculateAPForWeek:(NSArray*)priceArray andVol:(NSArray*)volArray {
+-(void) calculateAPForHistory:(NSArray*)priceArray andVol:(NSArray*)volArray {
     if ([volArray count] != [priceArray count] || [priceArray count] == 0) {
         return;
     }
     
+    NSInteger endIndex = 0;
+    if (self.endIndex > [priceArray count]) {
+        endIndex = [priceArray count];
+    } else {
+        endIndex = _endIndex;
+    }
+    
     float lowest = 100000;
     float delta = 0.01;
-    for (int i=0; i<[priceArray count]; i++) {
+    for (int i=0; i<endIndex; i++) {
         NSArray* array = [priceArray objectAtIndex:i];
         if ([array count] != 4) {
             continue;
@@ -59,7 +82,7 @@
         delta = 1;
     }
     [self.averageVolDic removeAllObjects];
-    for (int i=0; i<[priceArray count]; i++) {
+    for (int i=0; i<endIndex; i++) {
         NSArray* array = [priceArray objectAtIndex:i];
         //        NSArray* preArr = [neededNewInfo.hundredDaysPrice objectAtIndex:i-1];
         if ([array count] != 4) {

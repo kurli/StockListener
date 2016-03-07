@@ -7,9 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ZSYPopoverListView.h"
 
 @class StockInfo;
-@interface KLineSettingViewController : UIViewController
+@interface KLineSettingViewController : UIViewController <ZSYPopoverListDatasource, ZSYPopoverListDelegate>
 
 @property (nonatomic, strong) StockInfo* stockInfo;
 

@@ -9,6 +9,8 @@
             <connections>
                 <outlet property="addButton" destination="R7y-Ev-aav" id="vVg-wV-FdG"/>
                 <outlet property="addLabel" destination="2TN-oI-ZhM" id="YJ1-Dp-nNk"/>
+                <outlet property="dynamicAVOLButton" destination="k8h-rc-d20" id="Uum-rn-eEi"/>
+                <outlet property="dynamicAVOLLabel" destination="Ge4-Rs-pXE" id="Kzy-fv-cKd"/>
                 <outlet property="finishButton" destination="KSu-gn-DwU" id="r8p-Dz-ZW3"/>
                 <outlet property="lineTableView" destination="5Je-Q3-pN4" id="zKU-cH-lw4"/>
                 <outlet property="typeSegmentController" destination="08c-l3-21c" id="4qt-fB-baY"/>
@@ -46,7 +48,7 @@
                     <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                 </view>
                 <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" id="08c-l3-21c">
-                    <rect key="frame" x="14" y="60" width="292" height="29"/>
+                    <rect key="frame" x="8" y="60" width="292" height="29"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <segments>
@@ -93,6 +95,21 @@
                         <outlet property="delegate" destination="-1" id="SqB-BA-F1d"/>
                     </connections>
                 </tableView>
+                <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Ge4-Rs-pXE">
+                    <rect key="frame" x="8" y="64" width="207" height="21"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="k8h-rc-d20">
+                    <rect key="frame" x="223" y="59" width="30" height="30"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <state key="normal" title="取消"/>
+                    <connections>
+                        <action selector="dynamicAVOLCancelClicked:" destination="-1" eventType="touchUpInside" id="b2O-eD-yQ6"/>
+                    </connections>
+                </button>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>

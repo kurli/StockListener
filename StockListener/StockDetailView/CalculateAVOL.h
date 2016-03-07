@@ -10,7 +10,7 @@
 
 typedef NS_ENUM(NSInteger, CalculateAVOLType) {
     CalculateAVOLTypeToday,
-    CalculateAVOLTypeWeeks
+    CalculateAVOLTypeHistory
 };
 
 @class StockInfo;
@@ -21,4 +21,6 @@ typedef NS_ENUM(NSInteger, CalculateAVOLType) {
 
 @property (assign, nonatomic) CalculateAVOLType sourceType;
 @property (atomic, strong) NSMutableDictionary* averageVolDic;
+@property (assign, nonatomic) NSInteger endIndex;
+@property (assign, nonatomic) NSInteger calType;
 @end

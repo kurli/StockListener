@@ -18,6 +18,7 @@
 #define SPEAK_INTERVAL @"speak_interval"
 #define IS_AUTO_SWITCH_STOCK @"is_auto_switch_stock"
 #define IS_PLAY_BACKGROUND @"is_play_background"
+#define AVOL_CAL_TYPE @"avol_cal_type"
 
 @implementation ConfigHelper
 
@@ -73,6 +74,12 @@
     } else {
         _isPlayBackground = [isPlayBackground boolValue];
     }
+    NSNumber* avolCalType = [[NSUserDefaults standardUserDefaults] objectForKey:AVOL_CAL_TYPE];
+    if (avolCalType == nil) {
+        _avolCalType = AVOL_CAL_WEEKS;
+    } else {
+        _avolCalType = [avolCalType integerValue];
+    }
     [[StockPlayerManager getInstance] setIsAudoChoose:isAutoSwitchStock];
 }
 
@@ -123,6 +130,12 @@
     [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInteger:isPlayBackground] forKey:IS_PLAY_BACKGROUND];
     [[NSUserDefaults standardUserDefaults] synchronize];
     [[StockPlayerManager getInstance] setAllowMixing:isPlayBackground];
+}
+
+-(void) setAvolCalType:(NSInteger)avolCalType {
+    _avolCalType = avolCalType;
+    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInteger:avolCalType] forKey:AVOL_CAL_TYPE];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 @end

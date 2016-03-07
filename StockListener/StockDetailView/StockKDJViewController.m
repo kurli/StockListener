@@ -382,7 +382,7 @@
     task.onCompleteBlock = ^(NSDictionary* dic) {
         [self refreshAVOL:l andHighest:h andDic:dic];
     };
-    [task setSourceType:CalculateAVOLTypeWeeks];
+    [task setSourceType:CalculateAVOLTypeHistory];
     [[KingdaWorker getInstance] queue:task];
 }
 

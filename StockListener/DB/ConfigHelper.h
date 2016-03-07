@@ -12,6 +12,9 @@
 //#define DEFAULT_SOUND_INTERVAL 1
 #define DEFAULT_SPEAK_INTERVAL 60
 
+#define AVOL_CAL_WEEKS 0
+#define AVOL_CAL_DAYS 1
+
 @interface ConfigHelper : NSObject
 
 @property (nonatomic, assign) NSInteger stockRefreshInterval;
@@ -25,6 +28,8 @@
 @property (nonatomic, assign) BOOL isAutoSwitchStock;
 
 @property (nonatomic, assign) BOOL isPlayBackground;
+
+@property (nonatomic, assign) NSInteger avolCalType;
 
 +(ConfigHelper*) getInstance;
 

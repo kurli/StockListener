@@ -177,7 +177,11 @@
     float newPrice = [[array objectAtIndex:3] floatValue];
     info.todayHighestPrice = [[array objectAtIndex:4] floatValue];
     info.todayLoestPrice = [[array objectAtIndex:5] floatValue];
-    info.dealCount = [[array objectAtIndex:8] integerValue]/100;
+    if ([info.sid containsString:@"sh000001"]) {
+        info.dealCount = [[array objectAtIndex:8] integerValue];
+    } else {
+        info.dealCount = [[array objectAtIndex:8] integerValue]/100;
+    }
     info.dealTotalMoney = [[array objectAtIndex:9] floatValue];
     
     NSString* updateDay = [array objectAtIndex:30];

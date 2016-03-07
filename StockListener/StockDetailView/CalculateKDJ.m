@@ -59,7 +59,8 @@
 //    }
 
     float firstPrice = [[[data objectAtIndex:0] objectAtIndex:PRICE_CURRENT] floatValue];
-    float preCount = 0;    for (NSInteger i = 0; i<[data count]; i++) {
+    float preCount = 0;
+    for (NSInteger i = 0; i<[data count]; i++) {
         float curPrice = [[[data objectAtIndex:i] objectAtIndex:PRICE_CURRENT] floatValue];
         if (i < 20) {
             preCount += curPrice;

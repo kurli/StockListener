@@ -17,6 +17,7 @@
 #import "CalculateAVOL.h"
 #import "KDJViewController.h"
 #import "TestColorViewController.h"
+#import "ConfigHelper.h"
 
 @interface KLineSettingViewController () <UITableViewDelegate,UITableViewDataSource> {
     KLineViewController* klineViewController;
@@ -27,6 +28,12 @@
     NSInteger endIndex;
     float kViewWidth;
     BOOL isKLine;
+    
+    UIButton* aVolSettingButton;
+    ZSYPopoverListView* aVolSettingView;
+
+    BOOL isAVOLDynamic;
+    NSInteger avolDynamicType;
 }
 
 @property (weak, nonatomic) IBOutlet UISegmentedControl *typeSegmentController;
@@ -43,6 +50,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *addLabel;
 @property (weak, nonatomic) IBOutlet UIButton *finishButton;
 @property (weak, nonatomic) IBOutlet UITableView *lineTableView;
+@property (weak, nonatomic) IBOutlet UILabel *dynamicAVOLLabel;
+@property (weak, nonatomic) IBOutlet UIButton *dynamicAVOLButton;
 @end
 
 @implementation KLineSettingViewController
@@ -53,6 +62,13 @@
     [klineViewController hideInfoButton];
     klineViewController.stockInfo = self.stockInfo;
     kdjViewController = [[KDJViewController alloc] initWithParentView:self.view];
+    
+    aVolSettingButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
+    [aVolSettingButton addTarget:self action:@selector(aVolSettingClicked:) forControlEvents:UIControlEventTouchUpInside];
+    [aVolSettingButton setImage:[UIImage imageNamed:@"setting"] forState:UIControlStateNormal];
+    aVolSettingButton.layer.borderWidth = 0.5;
+    aVolSettingButton.layer.borderColor = [[UIColor grayColor] CGColor];
+    [self.view addSubview:aVolSettingButton];
 
     __weak KLineViewController *_weak_self = klineViewController;
     __weak KLineSettingViewController *_self = self;
@@ -103,6 +119,7 @@
 //            }
         }
     }];
+    isAVOLDynamic = NO;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -118,6 +135,11 @@
     aVolController = [[AVOLChartViewController alloc] initWithParentView:self.view];
     rect = CGRectMake(leftWidth, y - AVOL_EXPAND/2, RIGHT_VIEW_WIDTH, KLINE_VIEW_HEIGHT*1.5 + AVOL_EXPAND);
     [aVolController loadViewVertical:rect];
+    
+    CGRect rectAvolSetting = aVolSettingButton.frame;
+    rectAvolSetting.origin.x = rect.origin.x + (rect.size.width -  rectAvolSetting.size.width)/2;
+    rectAvolSetting.origin.y = rect.origin.y + rect.size.height;
+    [aVolSettingButton setFrame:rectAvolSetting];
 
     kViewWidth = self.view.frame.size.width-10;
     
@@ -250,11 +272,19 @@
 
 -(void) refreshAVOLAsync:(float)l andHighest:(float)h{
     CalculateAVOL* task = [[CalculateAVOL alloc] initWithStockInfo:self.stockInfo];
+    if (isAVOLDynamic == YES) {
+        task.endIndex = endIndex;
+        if (self.typeSegmentController.selectedSegmentIndex == 5) {
+            task.calType = AVOL_CAL_DAYS;
+        } else {
+            task.calType = AVOL_CAL_WEEKS;
+        }
+    }
     task.onCompleteBlock = ^(NSDictionary* dic) {
         [self refreshAVOL:l andHighest:h andDic:dic];
     };
     [[KingdaWorker getInstance] removeSameKindTask:task];
-    [task setSourceType:CalculateAVOLTypeWeeks];
+    [task setSourceType:CalculateAVOLTypeHistory];
     [[KingdaWorker getInstance] queue:task];
 }
 
@@ -524,6 +554,124 @@
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     return NO;
+}
+
+#pragma AVOL setting
+
+-(void) aVolSettingClicked:(id)btn {
+    aVolSettingView = [[ZSYPopoverListView alloc] initWithFrame:CGRectMake(0, 0, 250, 350)];
+    aVolSettingView.datasource = self;
+    aVolSettingView.titleName.text = @"成本分布设置";
+    aVolSettingView.delegate = self;
+    [aVolSettingView show];
+}
+
+- (NSInteger)popoverListView:(ZSYPopoverListView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return 6;
+}
+
+- (UITableViewCell *)popoverListView:(ZSYPopoverListView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *identifier = @"identifier";
+    UITableViewCell *cell = [tableView dequeueReusablePopoverCellWithIdentifier:identifier];
+    if (nil == cell)
+    {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
+    }
+    NSInteger avolCalType = [ConfigHelper getInstance].avolCalType;
+    switch (indexPath.row) {
+        case 0:
+            cell.imageView.image = nil;
+            cell.textLabel.text = @"设置计算周期：";
+            break;
+        case 1:
+            if (avolCalType == AVOL_CAL_WEEKS) {
+                cell.imageView.image = [UIImage imageNamed:@"selection_normal.png"];
+            } else {
+                cell.imageView.image = [UIImage imageNamed:@"selection_selected.png"];
+            }
+            cell.textLabel.text = @"    100天内的成本分布";
+            break;
+        case 2:
+            if (avolCalType == AVOL_CAL_DAYS) {
+                cell.imageView.image = [UIImage imageNamed:@"selection_normal.png"];
+            } else {
+                cell.imageView.image = [UIImage imageNamed:@"selection_selected.png"];
+            }
+            cell.textLabel.text = @"    100周内的成本分布";
+            break;
+        case 3:
+            cell.imageView.image = nil;
+            cell.textLabel.text = @"成本动态变动模式查看：";
+            break;
+        case 4:
+            cell.imageView.image = nil;
+            cell.textLabel.text = @"    日线成本变动模式";
+            break;
+        case 5:
+            cell.imageView.image = nil;
+            cell.textLabel.text = @"    周线成本变动模式";
+            break;
+        default:
+            break;
+    }
+    return cell;
+}
+
+- (void)popoverListView:(ZSYPopoverListView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+}
+
+- (void)popoverListView:(ZSYPopoverListView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    switch (indexPath.row) {
+        case 1:
+            // Days
+            [[ConfigHelper getInstance] setAvolCalType:AVOL_CAL_DAYS];
+            [self typeSegmentChanged:nil];
+            [aVolSettingView dismiss];
+            break;
+        case 2:
+            // Weeks
+            [[ConfigHelper getInstance] setAvolCalType:AVOL_CAL_WEEKS];
+            [self typeSegmentChanged:nil];
+            [aVolSettingView dismiss];
+            break;
+        case 4:
+            [self showDynamicAVOL:AVOL_CAL_DAYS];
+            [aVolSettingView dismiss];
+            break;
+        case 5:
+            [self showDynamicAVOL:AVOL_CAL_WEEKS];
+            [aVolSettingView dismiss];
+            break;
+        default:
+            break;
+    }
+}
+
+-(void) showDynamicAVOL:(NSInteger)type {
+    isAVOLDynamic = YES;
+    avolDynamicType = type;
+    if (type == AVOL_CAL_WEEKS) {
+        [self.typeSegmentController setSelectedSegmentIndex:6];
+        [self.dynamicAVOLLabel setText:@"滑动查看 周线 成本变动情况"];
+    } else {
+        [self.typeSegmentController setSelectedSegmentIndex:5];
+        [self.dynamicAVOLLabel setText:@"滑动查看 日线 成本变动情况"];
+    }
+    [self typeSegmentChanged:nil];
+    [self.typeSegmentController setHidden:YES];
+    [self.dynamicAVOLButton setHidden:NO];
+    [self.dynamicAVOLLabel setHidden:NO];
+}
+
+- (IBAction)dynamicAVOLCancelClicked:(id)sender {
+    [self.typeSegmentController setHidden:NO];
+    [self.dynamicAVOLButton setHidden:YES];
+    [self.dynamicAVOLLabel setHidden:YES];
+    isAVOLDynamic = NO;
 }
 
 @end
