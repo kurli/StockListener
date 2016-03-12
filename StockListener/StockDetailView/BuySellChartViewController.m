@@ -32,6 +32,7 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
 
 @interface BuySellChartViewController() <JBBarChartViewDelegate, JBBarChartViewDataSource> {
     UIView* view;
+    NSInteger maxCount;
 }
 @property (nonatomic, strong) JBBarChartView *barChartView;
 
@@ -42,6 +43,7 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
 -(id) initWithParentView:(UIView*)parentView {
     if (self = [super init]) {
         view = parentView;
+        maxCount = 0;
     }
     return self;
 }
@@ -118,6 +120,38 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
 }
 
 - (void) reload {
+    maxCount = 0;
+    if (_stockInfo.buyFiveCount > maxCount) {
+        maxCount = _stockInfo.buyFiveCount;
+    }
+    if (_stockInfo.buyFourCount > maxCount) {
+        maxCount = _stockInfo.buyFourCount;
+    }
+    if (_stockInfo.buyThreeCount > maxCount) {
+        maxCount = _stockInfo.buyThreeCount;
+    }
+    if (_stockInfo.buyTwoCount > maxCount) {
+        maxCount = _stockInfo.buyTwoCount;
+    }
+    if (_stockInfo.buyOneCount > maxCount) {
+        maxCount = _stockInfo.buyOneCount;
+    }
+    if (_stockInfo.sellFiveCount > maxCount) {
+        maxCount = _stockInfo.sellFiveCount;
+    }
+    if (_stockInfo.sellFourCount > maxCount) {
+        maxCount = _stockInfo.sellFourCount;
+    }
+    if (_stockInfo.sellThreeCount > maxCount) {
+        maxCount = _stockInfo.sellThreeCount;
+    }
+    if (_stockInfo.sellTwoCount > maxCount) {
+        maxCount = _stockInfo.sellTwoCount;
+    }
+    if (_stockInfo.sellOneCount > maxCount) {
+        maxCount = _stockInfo.sellOneCount;
+    }
+
     [self.barChartView reloadData];
     
     [self.barChartView setState:JBChartViewStateExpanded];
@@ -213,6 +247,9 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
         price /= 100;
     }
     NSNumber* number = [_stockInfo.buySellDic objectForKey:[NSNumber numberWithFloat:price]];
+    if ([number integerValue] > maxCount) {
+        return maxCount;
+    }
     return [number integerValue];
 }
 
