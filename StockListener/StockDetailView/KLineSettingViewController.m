@@ -276,9 +276,17 @@
         task.endIndex = endIndex;
         if (self.typeSegmentController.selectedSegmentIndex == 5) {
             task.calType = AVOL_CAL_DAYS;
+        } else if (self.typeSegmentController.selectedSegmentIndex == 1) {
+            task.fiveDayPrice = self.priceArray;
+            task.fiveDayVOL = self.volArray;
+            task.calType = AVOL_CAL_5_DAYS;
         } else {
             task.calType = AVOL_CAL_WEEKS;
         }
+    }
+    if ([ConfigHelper getInstance].avolCalType == AVOL_CAL_5_DAYS) {
+        task.fiveDayPrice = self.priceArray;
+        task.fiveDayVOL = self.volArray;
     }
     task.onCompleteBlock = ^(NSDictionary* dic) {
         [self refreshAVOL:l andHighest:h andDic:dic];
@@ -568,7 +576,7 @@
 
 - (NSInteger)popoverListView:(ZSYPopoverListView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 6;
+    return 8;
 }
 
 - (UITableViewCell *)popoverListView:(ZSYPopoverListView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -586,32 +594,44 @@
             cell.textLabel.text = @"设置计算周期：";
             break;
         case 1:
-            if (avolCalType == AVOL_CAL_WEEKS) {
-                cell.imageView.image = [UIImage imageNamed:@"selection_normal.png"];
-            } else {
+            if (avolCalType == AVOL_CAL_DAYS) {
                 cell.imageView.image = [UIImage imageNamed:@"selection_selected.png"];
+            } else {
+                cell.imageView.image = [UIImage imageNamed:@"selection_normal.png"];
             }
             cell.textLabel.text = @"    100天内的成本分布";
             break;
         case 2:
-            if (avolCalType == AVOL_CAL_DAYS) {
-                cell.imageView.image = [UIImage imageNamed:@"selection_normal.png"];
-            } else {
+            if (avolCalType == AVOL_CAL_WEEKS) {
                 cell.imageView.image = [UIImage imageNamed:@"selection_selected.png"];
+            } else {
+                cell.imageView.image = [UIImage imageNamed:@"selection_normal.png"];
             }
             cell.textLabel.text = @"    100周内的成本分布";
             break;
         case 3:
-            cell.imageView.image = nil;
-            cell.textLabel.text = @"成本动态变动模式查看：";
+            if (avolCalType == AVOL_CAL_5_DAYS) {
+                cell.imageView.image = [UIImage imageNamed:@"selection_selected.png"];
+            } else {
+                cell.imageView.image = [UIImage imageNamed:@"selection_normal.png"];
+            }
+            cell.textLabel.text = @"    5天内的成本分布";
             break;
         case 4:
             cell.imageView.image = nil;
-            cell.textLabel.text = @"    日线成本变动模式";
+            cell.textLabel.text = @"成本动态变动模式查看：";
             break;
         case 5:
             cell.imageView.image = nil;
+            cell.textLabel.text = @"    日线成本变动模式";
+            break;
+        case 6:
+            cell.imageView.image = nil;
             cell.textLabel.text = @"    周线成本变动模式";
+            break;
+        case 7:
+            cell.imageView.image = nil;
+            cell.textLabel.text = @"    5天成本变动模式（5分钟级别）";
             break;
         default:
             break;
@@ -638,12 +658,22 @@
             [self typeSegmentChanged:nil];
             [aVolSettingView dismiss];
             break;
-        case 4:
-            [self showDynamicAVOL:AVOL_CAL_DAYS];
+        case 3:
+            // 5 Days
+            [[ConfigHelper getInstance] setAvolCalType:AVOL_CAL_5_DAYS];
+            [self typeSegmentChanged:nil];
             [aVolSettingView dismiss];
             break;
         case 5:
+            [self showDynamicAVOL:AVOL_CAL_DAYS];
+            [aVolSettingView dismiss];
+            break;
+        case 6:
             [self showDynamicAVOL:AVOL_CAL_WEEKS];
+            [aVolSettingView dismiss];
+            break;
+        case 7:
+            [self showDynamicAVOL:AVOL_CAL_5_DAYS];
             [aVolSettingView dismiss];
             break;
         default:
@@ -657,6 +687,9 @@
     if (type == AVOL_CAL_WEEKS) {
         [self.typeSegmentController setSelectedSegmentIndex:6];
         [self.dynamicAVOLLabel setText:@"滑动查看 周线 成本变动情况"];
+    } else if (type == AVOL_CAL_5_DAYS) {
+        [self.typeSegmentController setSelectedSegmentIndex:1];
+        [self.dynamicAVOLLabel setText:@"滑动查看 5天 成本变动情况"];
     } else {
         [self.typeSegmentController setSelectedSegmentIndex:5];
         [self.dynamicAVOLLabel setText:@"滑动查看 日线 成本变动情况"];

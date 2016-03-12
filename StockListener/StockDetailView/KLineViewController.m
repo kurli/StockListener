@@ -19,6 +19,7 @@
     UIButton* infoButton;
     UIButton* lineButton1;
     UIButton* lineButton2;
+    UIButton* lineButtonMiddle;
     float editK;
     float editB;
 }
@@ -51,10 +52,18 @@
         [lineButton2 setImage:[UIImage imageNamed:@"selection_normal.png"] forState:UIControlStateNormal];
         [parentView addSubview:lineButton2];
         
+        lineButtonMiddle = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
+        [lineButtonMiddle addTarget:self action:@selector(dragMoving:withEvent: )
+              forControlEvents: UIControlEventTouchDragInside];
+        [lineButtonMiddle setImage:[UIImage imageNamed:@"selection_normal.png"] forState:UIControlStateNormal];
+        [parentView addSubview:lineButtonMiddle];
+        
         [lineButton1 setHidden:YES];
         [lineButton2 setHidden:YES];
+        [lineButtonMiddle setHidden:YES];
         [lineButton1 setAlpha:0.7];
         [lineButton2 setAlpha:0.7];
+        [lineButtonMiddle setAlpha:0.7];
         
         __weak KLineViewController* weakSelf = self;
         [kLineChartView setOnScroll:^(NSInteger delta, BOOL finished) {
@@ -170,9 +179,22 @@
 {
     CGPoint p1 = lineButton1.center;
     CGPoint p2 = lineButton2.center;
+    CGPoint pMiddle = lineButtonMiddle.center;
     
     if (p1.x == p2.x) {
         return;
+    }
+    
+    if (c == lineButtonMiddle) {
+        CGPoint p = [[[ev allTouches] anyObject] locationInView:parentView];
+        float deltaX = p.x - pMiddle.x;
+        float deltaY = p.y - pMiddle.y;
+        p1.x += deltaX;
+        p1.y += deltaY;
+        p2.x += deltaX;
+        p2.y += deltaY;
+        lineButton1.center = p1;
+        lineButton2.center = p2;
     }
     
     CGRect rect = kLineChartView.frame;
@@ -180,14 +202,16 @@
     p1.y -= rect.origin.y;
     p2.x -= (rect.origin.x + LEFT_PADDING);
     p2.y -= rect.origin.y;
+    pMiddle.x -= (rect.origin.x + LEFT_PADDING);
+    pMiddle.y -= rect.origin.y;
 
     CGPoint p = [[[ev allTouches] anyObject] locationInView:kLineChartView];
     
     if (c != nil) {
-        if (p.x <= LEFT_PADDING+15 || p.x >= rect.size.width-15) {
+        if (p.x <= LEFT_PADDING+5 || p.x >= rect.size.width-5) {
             return;
         }
-        if (p.y <= 15 || p.y >= rect.size.height-15) {
+        if (p.y <= 5 || p.y >= rect.size.height-5) {
             return;
         }
     }
@@ -201,6 +225,15 @@
     editB = y1 - (y2*x1 - y1*x1)/(x2-x1);
 
     c.center = [[[ev allTouches] anyObject] locationInView:parentView];
+    
+    if (c != lineButtonMiddle) {
+        CGPoint p1 = lineButton1.center;
+        CGPoint p2 = lineButton2.center;
+        CGPoint p;
+        p.x = (p1.x + p2.x)/2;
+        p.y = (p1.y + p2.y)/2;
+        lineButtonMiddle.center = p;
+    }
     
     [kLineChartView.lines removeAllObjects];
     [self addEditLine];
@@ -238,6 +271,11 @@
     rect2.origin.x = rect.size.width/3 * 2;
     rect2.origin.y = rect.size.height/2 + rect.origin.y;
     [lineButton2 setFrame:rect2];
+    
+    rect2 = lineButtonMiddle.frame;
+    rect2.origin.x = (rect.size.width/3*2 + rect.size.width/3)/2;
+    rect2.origin.y = rect.size.height/2 + rect.origin.y;
+    [lineButtonMiddle setFrame:rect2];
 }
 
 -(void) hideInfoButton {
@@ -447,12 +485,14 @@
 -(void) startEditLine {
     [lineButton1 setHidden:NO];
     [lineButton2 setHidden:NO];
+    [lineButtonMiddle setHidden:NO];
     [self dragMoving:nil withEvent:nil];
 }
 
 -(void) endEditLine {
     [lineButton1 setHidden:YES];
     [lineButton2 setHidden:YES];
+    [lineButtonMiddle setHidden:YES];
     editK = 0;
     editB = 0;
 }

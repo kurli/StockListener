@@ -24,12 +24,16 @@
 }
 
 -(void) calculateAP {
-    NSMutableArray* volArray = nil;
-    NSMutableArray* priceArray = nil;
+    NSArray* volArray = nil;
+    NSArray* priceArray = nil;
     if (self.sourceType == CalculateAVOLTypeHistory) {
         if ([ConfigHelper getInstance].avolCalType == AVOL_CAL_WEEKS) {
             volArray = neededNewInfo.weeklyVOL;
             priceArray = neededNewInfo.weeklyPrice;
+        }
+        else if ([ConfigHelper getInstance].avolCalType == AVOL_CAL_5_DAYS) {
+            volArray = self.fiveDayVOL;
+            priceArray = self.fiveDayPrice;
         } else {
             volArray = neededNewInfo.hundredDaysVOL;
             priceArray = neededNewInfo.hundredDaysPrice;
@@ -38,6 +42,9 @@
             if (self.calType == AVOL_CAL_WEEKS) {
                 volArray = neededNewInfo.weeklyVOL;
                 priceArray = neededNewInfo.weeklyPrice;
+            } else if (self.calType == AVOL_CAL_5_DAYS) {
+                volArray = self.fiveDayVOL;
+                priceArray = self.fiveDayPrice;
             } else {
                 volArray = neededNewInfo.hundredDaysVOL;
                 priceArray = neededNewInfo.hundredDaysPrice;
@@ -97,7 +104,9 @@
         //        if (c < pc) {
         //            vol = -1*vol;
         //        }
-        
+        if (vol < 0) {
+            vol *=-1;
+        }
         NSInteger count = h - l;
         if (count == 0) {
             NSString* key = [NSString stringWithFormat:@"%ld", h];

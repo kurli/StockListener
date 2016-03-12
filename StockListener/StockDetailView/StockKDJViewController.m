@@ -32,6 +32,7 @@
 #import "GetWeeksStockValue.h"
 #import "BuySellHistoryViewController.h"
 #import "CalculateAVOL.h"
+#import "ConfigHelper.h"
 
 @interface StockKDJViewController (){
     BuySellChartViewController* buySellController;
@@ -377,8 +378,12 @@
     // Dispose of any resources that can be recreated.
 }
 
--(void) refreshAVOLAsync:(float)l andHighest:(float)h{
+-(void) refreshAVOLAsync:(float)l andHighest:(float)h andPrice:(NSArray*) prices andVols:(NSArray*)vols{
     CalculateAVOL* task = [[CalculateAVOL alloc] initWithStockInfo:self.stockInfo];
+    if ([ConfigHelper getInstance].avolCalType == AVOL_CAL_5_DAYS) {
+        task.fiveDayPrice = prices;
+        task.fiveDayVOL = vols;
+    }
     task.onCompleteBlock = ^(NSDictionary* dic) {
         [self refreshAVOL:l andHighest:h andDic:dic];
     };
@@ -598,7 +603,7 @@
         }
         klineViewController.startIndex = startIndex;
 
-        [self refreshAVOLAsync:_self.lowest andHighest:_self.highest];
+        [self refreshAVOLAsync:_self.lowest andHighest:_self.highest andPrice:_self.priceKValues andVols:_self.volValues];
         [self refreshVOL:startIndex andVolValues:_self.volValues andMaxCount:maxCount];
 
         [kdjViewController refresh:delta andStock:self.stockInfo];

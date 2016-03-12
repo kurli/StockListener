@@ -23,4 +23,6 @@ typedef NS_ENUM(NSInteger, CalculateAVOLType) {
 @property (atomic, strong) NSMutableDictionary* averageVolDic;
 @property (assign, nonatomic) NSInteger endIndex;
 @property (assign, nonatomic) NSInteger calType;
+@property (strong, nonatomic) NSArray* fiveDayPrice;
+@property (strong, nonatomic) NSArray* fiveDayVOL;
 @end

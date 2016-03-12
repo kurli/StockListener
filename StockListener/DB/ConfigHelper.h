@@ -14,6 +14,7 @@
 
 #define AVOL_CAL_WEEKS 0
 #define AVOL_CAL_DAYS 1
+#define AVOL_CAL_5_DAYS 2
 
 @interface ConfigHelper : NSObject
 
