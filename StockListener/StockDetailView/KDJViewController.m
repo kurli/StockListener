@@ -231,8 +231,98 @@
         label3.text = @"";
         label4.text = @"";
     }
-    
-    [self refreshSnapshot:info];
+    if (self.isShowSnapshot) {
+        [self refreshSnapshot:info];
+    } else {
+        [kdjChartView2 setHidden:YES];
+        [kdjChartView3 setHidden:YES];
+        [kdjChartView4 setHidden:YES];
+    }
+    [self refreshLabel:info];
+
+}
+
+#define UIColorFromHex(hex) [UIColor colorWithRed:((float)((hex & 0xFF0000) >> 16))/255.0 green:((float)((hex & 0xFF00) >> 8))/255.0 blue:((float)(hex & 0xFF))/255.0 alpha:1.0]
+
+-(void) updateLabel:(UILabel*)label andJ:(NSArray*)j {
+    if ([j count] < 2) {
+        return;
+    }
+    float lastValue = [[j lastObject] floatValue];
+    float lastTwoValue = [[j objectAtIndex:[j count]-2] floatValue];
+    float delta = lastValue - lastTwoValue;
+    float absoluteDelta = delta>0? delta : -1*delta;
+    UIColor* color = [UIColor blackColor];
+    float alpha = 1.0;
+    if (absoluteDelta < 5) {
+        if (lastValue < 50) {
+            color = [UIColor redColor];
+            alpha = 1-0.01*lastValue;
+        } else {
+            color = UIColorFromHex(0x34b234);
+            alpha = 0.01*lastValue;
+        }
+    } else {
+        if (delta > 0) {
+            color = [UIColor redColor];
+            if (lastValue < 50) {
+                alpha = 0.01*lastValue;
+            } else {
+                alpha = 1-0.01*lastValue;
+            }
+        } else {
+            color = UIColorFromHex(0x34b234);
+            if (lastValue < 50) {
+                alpha = 0.01*lastValue;
+            } else {
+                alpha = 1-0.01*lastValue;
+            }
+        }
+
+    }
+    if (alpha <= 0.3) {
+        alpha = 0.3;
+    }
+    [label setTextColor:color];
+    [label setAlpha:alpha];
+}
+
+-(void) refreshLabel:(StockInfo*)info {
+    CalculateKDJ* task = [[CalculateKDJ alloc] initWithStockInfo:info andDelta:ONE_MINUTE andCount:10];
+    task.onCompleteBlock = ^(CalculateKDJ* _self) {
+        [self updateLabel:self.kdjInfo1 andJ:_self.kdj_j];
+    };
+    [[KingdaWorker getInstance] queue:task];
+    task = [[CalculateKDJ alloc] initWithStockInfo:info andDelta:FIVE_MINUTES andCount:10];
+    task.onCompleteBlock = ^(CalculateKDJ* _self) {
+        [self updateLabel:self.kdjInfo5 andJ:_self.kdj_j];
+    };
+    [[KingdaWorker getInstance] queue:task];
+    task = [[CalculateKDJ alloc] initWithStockInfo:info andDelta:FIFTEEN_MINUTES andCount:10];
+    task.onCompleteBlock = ^(CalculateKDJ* _self) {
+        [self updateLabel:self.kdjInfo15 andJ:_self.kdj_j];
+    };
+    [[KingdaWorker getInstance] queue:task];
+    task = [[CalculateKDJ alloc] initWithStockInfo:info andDelta:THIRTY_MINUTES andCount:10];
+    task.onCompleteBlock = ^(CalculateKDJ* _self) {
+        [self updateLabel:self.kdjInfo30 andJ:_self.kdj_j];
+    };
+    [[KingdaWorker getInstance] queue:task];
+    task = [[CalculateKDJ alloc] initWithStockInfo:info andDelta:ONE_HOUR andCount:10];
+    task.onCompleteBlock = ^(CalculateKDJ* _self) {
+        [self updateLabel:self.kdjInfo60 andJ:_self.kdj_j];
+    };
+    [[KingdaWorker getInstance] queue:task];
+    task = [[CalculateKDJ alloc] initWithStockInfo:info andDelta:ONE_DAY andCount:10];
+    task.onCompleteBlock = ^(CalculateKDJ* _self) {
+        [self updateLabel:self.kdjInfoDay andJ:_self.kdj_j];
+    };
+    [[KingdaWorker getInstance] queue:task];
+    task = [[CalculateKDJ alloc] initWithStockInfo:info andDelta:ONE_WEEK andCount:10];
+    task.onCompleteBlock = ^(CalculateKDJ* _self) {
+        [self updateLabel:self.kdjInfoWeek andJ:_self.kdj_j];
+    };
+    [[KingdaWorker getInstance] queue:task];
 }
 
 -(void) refreshSnapshot:(StockInfo*)info {

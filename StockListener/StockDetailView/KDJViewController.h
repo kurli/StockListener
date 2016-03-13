@@ -28,4 +28,12 @@
 @property (nonatomic, strong) NSMutableArray* kdj_d;
 @property (nonatomic, strong) NSMutableArray* kdj_j;
 @property (nonatomic, assign) BOOL isShowSnapshot;
+
+@property (weak, nonatomic) IBOutlet UILabel *kdjInfo1;
+@property (weak, nonatomic) IBOutlet UILabel *kdjInfo5;
+@property (weak, nonatomic) IBOutlet UILabel *kdjInfo15;
+@property (weak, nonatomic) IBOutlet UILabel *kdjInfo30;
+@property (weak, nonatomic) IBOutlet UILabel *kdjInfo60;
+@property (weak, nonatomic) IBOutlet UILabel *kdjInfoDay;
+@property (weak, nonatomic) IBOutlet UILabel *kdjInfoWeek;
 @end

@@ -62,6 +62,15 @@
 @property (weak, nonatomic) IBOutlet UIButton *preKDJButton;
 @property (weak, nonatomic) IBOutlet UIButton *nextKDJButton;
 
+// kdjInfo
+@property (weak, nonatomic) IBOutlet UILabel *kdjInfo1;
+@property (weak, nonatomic) IBOutlet UILabel *kdjInfo5;
+@property (weak, nonatomic) IBOutlet UILabel *kdjInfo15;
+@property (weak, nonatomic) IBOutlet UILabel *kdjInfo30;
+@property (weak, nonatomic) IBOutlet UILabel *kdjInfo60;
+@property (weak, nonatomic) IBOutlet UILabel *kdjInfoDay;
+@property (weak, nonatomic) IBOutlet UILabel *kdjInfoWeek;
+
 @property (nonatomic,strong) NSTimer *kdjTypeHideTimer;
 @end
 
@@ -96,7 +105,13 @@
     [fenshiViewController hideInfoButton];
     
     kdjViewController = [[KDJViewController alloc] initWithParentView:self.view];
-    
+    kdjViewController.kdjInfo1 = self.kdjInfo1;
+    kdjViewController.kdjInfo5 = self.kdjInfo5;
+    kdjViewController.kdjInfo15 = self.kdjInfo15;
+    kdjViewController.kdjInfo30 = self.kdjInfo30;
+    kdjViewController.kdjInfo60 = self.kdjInfo60;
+    kdjViewController.kdjInfoDay = self.kdjInfoDay;
+    kdjViewController.kdjInfoWeek = self.kdjInfoWeek;
 }
 
 -(void) viewWillAppear:(BOOL)animated {
