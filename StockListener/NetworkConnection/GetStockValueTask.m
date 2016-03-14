@@ -37,8 +37,9 @@
 -(id) initWithStocks:(NSArray*) infos {
     if ((self = [super init]) != nil) {
 #ifdef ENABLE_TEST
-        self.ids = [[NSMutableString alloc] init];
-        [self.ids appendString:@"sz000025"];
+        NSMutableString* ids = [[NSMutableString alloc] init];
+        [ids appendString:@"sz000025"];
+        self.mURL =  [NSString stringWithFormat:@"http://hq.sinajs.cn/list=sh000001,sz399001,sz399006,sz000025"];
         return self;
 #else
         NSMutableString* ids = [[NSMutableString alloc] init];
@@ -228,7 +229,7 @@
     
 #ifndef ENABLE_TEST
     if (info.updateTime != nil && [info.updateTime isEqualToString:[array objectAtIndex:31]]) {
-        return;
+//        return;
     }
 #endif
     info.updateTime = [array objectAtIndex:31];

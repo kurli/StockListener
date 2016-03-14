@@ -18,6 +18,15 @@
 #import "KDJViewController.h"
 #import "TestColorViewController.h"
 #import "ConfigHelper.h"
+#import "DatabaseHelper.h"
+#import "GetTodayStockValue.h"
+#import "GetWeeksStockValue.h"
+#import "GetFiveDayStockValue.h"
+#import "GetDaysStockValue.h"
+#import "SyncPoint.h"
+
+#define AVOL_SETTING 0
+#define STOCK_CHANGE 1
 
 @interface KLineSettingViewController () <UITableViewDelegate,UITableViewDataSource> {
     KLineViewController* klineViewController;
@@ -31,9 +40,11 @@
     
     UIButton* aVolSettingButton;
     ZSYPopoverListView* aVolSettingView;
+    ZSYPopoverListView* stockListView;
 
     BOOL isAVOLDynamic;
     NSInteger avolDynamicType;
+    NSInteger setting;
 }
 
 @property (weak, nonatomic) IBOutlet UISegmentedControl *typeSegmentController;
@@ -52,6 +63,7 @@
 @property (weak, nonatomic) IBOutlet UITableView *lineTableView;
 @property (weak, nonatomic) IBOutlet UILabel *dynamicAVOLLabel;
 @property (weak, nonatomic) IBOutlet UIButton *dynamicAVOLButton;
+@property (weak, nonatomic) IBOutlet UIButton *stockNameButton;
 @end
 
 @implementation KLineSettingViewController
@@ -186,6 +198,7 @@
     [self refreshEditLineButtons];
     
     [self typeSegmentChanged:nil];
+    [self.stockNameButton setTitle:self.stockInfo.name forState:UIControlStateNormal];
 }
 
 -(void) refreshEditLineButtons {
@@ -571,72 +584,98 @@
     aVolSettingView.datasource = self;
     aVolSettingView.titleName.text = @"成本分布设置";
     aVolSettingView.delegate = self;
+    setting = AVOL_SETTING;
     [aVolSettingView show];
 }
 
 - (NSInteger)popoverListView:(ZSYPopoverListView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 8;
+    if (setting == AVOL_SETTING) {
+        return 8;
+    } else {
+        return [[DatabaseHelper getInstance].stockList count];
+    }
 }
 
 - (UITableViewCell *)popoverListView:(ZSYPopoverListView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *identifier = @"identifier";
-    UITableViewCell *cell = [tableView dequeueReusablePopoverCellWithIdentifier:identifier];
-    if (nil == cell)
-    {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
+    if (setting == AVOL_SETTING) {
+        static NSString *identifier = @"identifier";
+        UITableViewCell *cell = [tableView dequeueReusablePopoverCellWithIdentifier:identifier];
+        if (nil == cell)
+        {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
+        }
+        NSInteger avolCalType = [ConfigHelper getInstance].avolCalType;
+        switch (indexPath.row) {
+            case 0:
+                cell.imageView.image = nil;
+                cell.textLabel.text = @"设置计算周期：";
+                break;
+            case 1:
+                if (avolCalType == AVOL_CAL_DAYS) {
+                    cell.imageView.image = [UIImage imageNamed:@"selection_selected.png"];
+                } else {
+                    cell.imageView.image = [UIImage imageNamed:@"selection_normal.png"];
+                }
+                cell.textLabel.text = @"    100天内的成本分布";
+                break;
+            case 2:
+                if (avolCalType == AVOL_CAL_WEEKS) {
+                    cell.imageView.image = [UIImage imageNamed:@"selection_selected.png"];
+                } else {
+                    cell.imageView.image = [UIImage imageNamed:@"selection_normal.png"];
+                }
+                cell.textLabel.text = @"    100周内的成本分布";
+                break;
+            case 3:
+                if (avolCalType == AVOL_CAL_5_DAYS) {
+                    cell.imageView.image = [UIImage imageNamed:@"selection_selected.png"];
+                } else {
+                    cell.imageView.image = [UIImage imageNamed:@"selection_normal.png"];
+                }
+                cell.textLabel.text = @"    5天内的成本分布";
+                break;
+            case 4:
+                cell.imageView.image = nil;
+                cell.textLabel.text = @"成本动态变动模式查看：";
+                break;
+            case 5:
+                cell.imageView.image = nil;
+                cell.textLabel.text = @"    日线成本变动模式";
+                break;
+            case 6:
+                cell.imageView.image = nil;
+                cell.textLabel.text = @"    周线成本变动模式";
+                break;
+            case 7:
+                cell.imageView.image = nil;
+                cell.textLabel.text = @"    5天成本变动模式（5分钟级别）";
+                break;
+            default:
+                break;
+        }
+        return cell;
+    } else {
+        static NSString *identifier = @"identifier";
+        UITableViewCell *cell = [tableView dequeueReusablePopoverCellWithIdentifier:identifier];
+        if (nil == cell)
+        {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
+        }
+        StockInfo* info = [[DatabaseHelper getInstance].stockList objectAtIndex:indexPath.row];
+        if ([info.sid isEqualToString:self.stockInfo.sid])
+        {
+            cell.imageView.image = [UIImage imageNamed:@"selection_selected.png"];
+        }
+        else
+        {
+            cell.imageView.image = [UIImage imageNamed:@"selection_normal.png"];
+        }
+        NSString* rateStr = [NSString stringWithFormat:@"%.2f%%", info.changeRate * 100];
+        cell.textLabel.text = [NSString stringWithFormat:@"%@  %@",info.name, rateStr];
+        return cell;
     }
-    NSInteger avolCalType = [ConfigHelper getInstance].avolCalType;
-    switch (indexPath.row) {
-        case 0:
-            cell.imageView.image = nil;
-            cell.textLabel.text = @"设置计算周期：";
-            break;
-        case 1:
-            if (avolCalType == AVOL_CAL_DAYS) {
-                cell.imageView.image = [UIImage imageNamed:@"selection_selected.png"];
-            } else {
-                cell.imageView.image = [UIImage imageNamed:@"selection_normal.png"];
-            }
-            cell.textLabel.text = @"    100天内的成本分布";
-            break;
-        case 2:
-            if (avolCalType == AVOL_CAL_WEEKS) {
-                cell.imageView.image = [UIImage imageNamed:@"selection_selected.png"];
-            } else {
-                cell.imageView.image = [UIImage imageNamed:@"selection_normal.png"];
-            }
-            cell.textLabel.text = @"    100周内的成本分布";
-            break;
-        case 3:
-            if (avolCalType == AVOL_CAL_5_DAYS) {
-                cell.imageView.image = [UIImage imageNamed:@"selection_selected.png"];
-            } else {
-                cell.imageView.image = [UIImage imageNamed:@"selection_normal.png"];
-            }
-            cell.textLabel.text = @"    5天内的成本分布";
-            break;
-        case 4:
-            cell.imageView.image = nil;
-            cell.textLabel.text = @"成本动态变动模式查看：";
-            break;
-        case 5:
-            cell.imageView.image = nil;
-            cell.textLabel.text = @"    日线成本变动模式";
-            break;
-        case 6:
-            cell.imageView.image = nil;
-            cell.textLabel.text = @"    周线成本变动模式";
-            break;
-        case 7:
-            cell.imageView.image = nil;
-            cell.textLabel.text = @"    5天成本变动模式（5分钟级别）";
-            break;
-        default:
-            break;
-    }
-    return cell;
 }
 
 - (void)popoverListView:(ZSYPopoverListView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -645,39 +684,71 @@
 
 - (void)popoverListView:(ZSYPopoverListView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    switch (indexPath.row) {
-        case 1:
-            // Days
-            [[ConfigHelper getInstance] setAvolCalType:AVOL_CAL_DAYS];
-            [self typeSegmentChanged:nil];
-            [aVolSettingView dismiss];
-            break;
-        case 2:
-            // Weeks
-            [[ConfigHelper getInstance] setAvolCalType:AVOL_CAL_WEEKS];
-            [self typeSegmentChanged:nil];
-            [aVolSettingView dismiss];
-            break;
-        case 3:
-            // 5 Days
-            [[ConfigHelper getInstance] setAvolCalType:AVOL_CAL_5_DAYS];
-            [self typeSegmentChanged:nil];
-            [aVolSettingView dismiss];
-            break;
-        case 5:
-            [self showDynamicAVOL:AVOL_CAL_DAYS];
-            [aVolSettingView dismiss];
-            break;
-        case 6:
-            [self showDynamicAVOL:AVOL_CAL_WEEKS];
-            [aVolSettingView dismiss];
-            break;
-        case 7:
-            [self showDynamicAVOL:AVOL_CAL_5_DAYS];
-            [aVolSettingView dismiss];
-            break;
-        default:
-            break;
+    if (setting == AVOL_SETTING) {
+        switch (indexPath.row) {
+            case 1:
+                // Days
+                [[ConfigHelper getInstance] setAvolCalType:AVOL_CAL_DAYS];
+                [self typeSegmentChanged:nil];
+                [aVolSettingView dismiss];
+                break;
+            case 2:
+                // Weeks
+                [[ConfigHelper getInstance] setAvolCalType:AVOL_CAL_WEEKS];
+                [self typeSegmentChanged:nil];
+                [aVolSettingView dismiss];
+                break;
+            case 3:
+                // 5 Days
+                [[ConfigHelper getInstance] setAvolCalType:AVOL_CAL_5_DAYS];
+                [self typeSegmentChanged:nil];
+                [aVolSettingView dismiss];
+                break;
+            case 5:
+                [self showDynamicAVOL:AVOL_CAL_DAYS];
+                [aVolSettingView dismiss];
+                break;
+            case 6:
+                [self showDynamicAVOL:AVOL_CAL_WEEKS];
+                [aVolSettingView dismiss];
+                break;
+            case 7:
+                [self showDynamicAVOL:AVOL_CAL_5_DAYS];
+                [aVolSettingView dismiss];
+                break;
+            default:
+                break;
+        }
+    } else {
+        UITableViewCell *cell = [tableView popoverCellForRowAtIndexPath:indexPath];
+        cell.imageView.image = [UIImage imageNamed:@"selection_selected.png"];
+        StockInfo* info = [[DatabaseHelper getInstance].stockList objectAtIndex:indexPath.row];
+        self.stockInfo = info;
+        [self.stockNameButton setTitle:info.name forState:UIControlStateNormal];
+        
+        klineViewController.stockInfo = self.stockInfo;
+        if ([self.stockInfo.todayPriceByMinutes count] == 0) {
+            GetTodayStockValue* task = [[GetTodayStockValue alloc] initWithStock:self.stockInfo];
+            [[KingdaWorker getInstance] queue:task];
+        }
+        if ([self.stockInfo.fiveDayPriceByMinutes count] == 0) {
+            GetFiveDayStockValue* task = [[GetFiveDayStockValue alloc] initWithStock:self.stockInfo];
+            [[KingdaWorker getInstance] queue:task];
+        }
+        if ([self.stockInfo.hundredDaysPrice count] == 0) {
+            GetDaysStockValue* task = [[GetDaysStockValue alloc] initWithStock:self.stockInfo];
+            [[KingdaWorker getInstance] queue:task];
+        }
+        if ([self.stockInfo.weeklyPrice count] == 0) {
+            GetWeeksStockValue* task6 = [[GetWeeksStockValue alloc] initWithStock:self.stockInfo];
+            [[KingdaWorker getInstance] queue:task6];
+        }
+        SyncPoint* sync = [[SyncPoint alloc] init];
+        sync.onCompleteBlock = ^(StockInfo* info) {
+            [self viewWillAppear:YES];
+        };
+        [[KingdaWorker getInstance] queue:sync];
+        [stockListView dismiss];
     }
 }
 
@@ -706,5 +777,15 @@
     [self.dynamicAVOLLabel setHidden:YES];
     isAVOLDynamic = NO;
 }
+
+- (IBAction)nameButtonClicked:(id)sender {
+    stockListView = [[ZSYPopoverListView alloc] initWithFrame:CGRectMake(0, 0, 250, 350)];
+    stockListView.datasource = self;
+    stockListView.titleName.text = @"请选择";
+    stockListView.delegate = self;
+    setting = STOCK_CHANGE;
+    [stockListView show];
+}
+
 
 @end

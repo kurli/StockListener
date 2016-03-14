@@ -13,6 +13,7 @@
                 <outlet property="dynamicAVOLLabel" destination="Ge4-Rs-pXE" id="Kzy-fv-cKd"/>
                 <outlet property="finishButton" destination="KSu-gn-DwU" id="r8p-Dz-ZW3"/>
                 <outlet property="lineTableView" destination="5Je-Q3-pN4" id="zKU-cH-lw4"/>
+                <outlet property="stockNameButton" destination="cn9-fv-9ac" id="MCa-ZO-Pic"/>
                 <outlet property="typeSegmentController" destination="08c-l3-21c" id="4qt-fB-baY"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -42,6 +43,17 @@
                             </state>
                             <connections>
                                 <action selector="doneButtonClicked:" destination="-1" eventType="touchUpInside" id="smg-45-d5w"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" verticalCompressionResistancePriority="743" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="cn9-fv-9ac">
+                            <rect key="frame" x="0.0" y="30" width="100" height="30"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <state key="normal">
+                                <color key="titleColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
+                            </state>
+                            <connections>
+                                <action selector="nameButtonClicked:" destination="-1" eventType="touchUpInside" id="Ay9-WY-MR2"/>
                             </connections>
                         </button>
                     </subviews>

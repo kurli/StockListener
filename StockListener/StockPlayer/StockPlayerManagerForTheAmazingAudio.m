@@ -16,6 +16,9 @@
 #import "DatabaseHelper.h"
 #import "TheAmazingAudioEngine.h"
 #import "ConfigHelper.h"
+#import "CalculateKDJ.h"
+#import "StockKDJViewController.h"
+#import "KingdaWorker.h"
 
 #define UP_SOUND @"up"
 #define DOWN_SOUND @"down"
@@ -152,11 +155,57 @@
             return;
         }
     }
+    
+    CalculateKDJ* task = [[CalculateKDJ alloc] initWithStockInfo:info andDelta:ONE_MINUTE andCount:10];
+    task.onCompleteBlock = ^(CalculateKDJ* _self) {
+        [self playKDJ:info andK:_self.kdj_k andJ:_self.kdj_j];
+    };
+    [[KingdaWorker getInstance] queue:task];
+//    if (info.speed > 0) {
+//        [self playStockValueUp:info.step];
+//    } else if (info.speed < 0) {
+//        [self playStockValueDown:info.step];
+//    }
+}
 
-    if (info.speed > 0) {
-        [self playStockValueUp:info.step];
-    } else if (info.speed < 0) {
-        [self playStockValueDown:info.step];
+-(void) playKDJ:(StockInfo*)info andK:(NSArray*)k andJ:(NSArray*)j {
+    if ([j count] < 2) {
+        return;
+    }
+    float lastValue = [[k lastObject] floatValue];
+    float lastTwoValue = [[k objectAtIndex:[k count]-2] floatValue];
+    float delta = lastValue - lastTwoValue;
+    float absoluteDelta = delta>0? delta : -1*delta;
+    if (absoluteDelta < 2) {
+        lastValue = [[j lastObject] floatValue];
+        lastTwoValue = [[j objectAtIndex:[j count]-2] floatValue];
+        delta = lastValue - lastTwoValue;
+        absoluteDelta = delta>0?delta:-1*delta;
+    }
+    if (absoluteDelta < 2) {
+        if (info.speed > 0) {
+            [self playStockValueUp:info.step];
+        } else if (info.speed < 0) {
+            [self playStockValueDown:info.step];
+        }
+    } else {
+        int step = absoluteDelta;
+        if (lastValue >= 80 && delta > 0) {
+            step /= 2;
+        } else if (lastValue <= 20 && delta < 0) {
+            step /= 2;
+        }
+        if (step == 0) {
+            step = 1;
+        }
+        if (step > 5) {
+            step = 5;
+        }
+        if (delta < 0) {
+            [self playStockValueDown:step];
+        } else {
+            [self playStockValueUp:step];
+        }
     }
 }
 

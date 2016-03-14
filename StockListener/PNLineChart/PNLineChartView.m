@@ -586,8 +586,14 @@
             }
         }
         NSInteger count = [str lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+        [[UIColor lightTextColor] set];
+        float x = self.frame.size.width - 100;
+        float y = self.frame.size.height - longPressPoint.y + 5;
+        CGContextFillRect(context, CGRectMake(x, y, count * 10, 15));
+        [[UIColor blackColor] set];
+
         CGContextSelectFont(context, [self.fontName UTF8String], self.xAxisFontSize*1.5, kCGEncodingMacRoman);
-        CGContextShowTextAtPoint(context, self.frame.size.width - 100, self.frame.size.height - longPressPoint.y + 5, [str UTF8String], count);
+        CGContextShowTextAtPoint(context, x, y, [str UTF8String], count);
     }
 
     if (self.markY > -10) {
@@ -599,10 +605,14 @@
         CGContextMoveToPoint(context,  startWidth, height);
         CGContextAddLineToPoint(context, self.frame.size.width, height);
         CGContextStrokePath(context);
-        [[UIColor blackColor] set];
+        float x = startWidth;
+        float y = height + 5;
         NSInteger count = [self.infoStr lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+        [[UIColor lightTextColor] set];
+        CGContextFillRect(context, CGRectMake(x, y, count * 8, 15));
+        [[UIColor blackColor] set];
         CGContextSelectFont(context, [self.fontName UTF8String], self.xAxisFontSize*1.5, kCGEncodingMacRoman);
-        CGContextShowTextAtPoint(context, startWidth, height + 5, [self.infoStr UTF8String], count);
+        CGContextShowTextAtPoint(context, x, y, [self.infoStr UTF8String], count);
     }
 }
 

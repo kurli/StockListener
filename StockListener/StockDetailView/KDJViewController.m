@@ -244,17 +244,23 @@
 
 #define UIColorFromHex(hex) [UIColor colorWithRed:((float)((hex & 0xFF0000) >> 16))/255.0 green:((float)((hex & 0xFF00) >> 8))/255.0 blue:((float)(hex & 0xFF))/255.0 alpha:1.0]
 
--(void) updateLabel:(UILabel*)label andJ:(NSArray*)j {
-    if ([j count] < 2) {
+-(void) updateLabel:(UILabel*)label andK:(NSArray*)k andJ:(NSArray*)j {
+    if ([k count] < 2) {
         return;
     }
-    float lastValue = [[j lastObject] floatValue];
-    float lastTwoValue = [[j objectAtIndex:[j count]-2] floatValue];
+    float lastValue = [[k lastObject] floatValue];
+    float lastTwoValue = [[k objectAtIndex:[k count]-2] floatValue];
     float delta = lastValue - lastTwoValue;
     float absoluteDelta = delta>0? delta : -1*delta;
     UIColor* color = [UIColor blackColor];
     float alpha = 1.0;
-    if (absoluteDelta < 5) {
+    if (absoluteDelta < 2) {
+        lastValue = [[j lastObject] floatValue];
+        lastTwoValue = [[j objectAtIndex:[j count]-2] floatValue];
+        delta = lastValue - lastTwoValue;
+        absoluteDelta = delta>0?delta:-1*delta;
+    }
+    if (absoluteDelta < 2) {
         if (lastValue < 50) {
             color = [UIColor redColor];
             alpha = 1-0.01*lastValue;
@@ -263,20 +269,24 @@
             alpha = 0.01*lastValue;
         }
     } else {
+        int step = absoluteDelta;
+        if (lastValue >= 80 && delta > 0) {
+            step /= 2;
+        } else if (lastValue <= 20 && delta < 0) {
+            step /= 2;
+        }
+        if (step == 0) {
+            step = 1;
+        }
+        if (step > 5) {
+            step = 5;
+        }
         if (delta > 0) {
             color = [UIColor redColor];
-            if (lastValue < 50) {
-                alpha = 0.01*lastValue;
-            } else {
-                alpha = 1-0.01*lastValue;
-            }
+            alpha = 0.2 * step;
         } else {
             color = UIColorFromHex(0x34b234);
-            if (lastValue < 50) {
-                alpha = 0.01*lastValue;
-            } else {
-                alpha = 1-0.01*lastValue;
-            }
+            alpha = 0.2 * step;
         }
 
     }
@@ -290,37 +300,37 @@
 -(void) refreshLabel:(StockInfo*)info {
     CalculateKDJ* task = [[CalculateKDJ alloc] initWithStockInfo:info andDelta:ONE_MINUTE andCount:10];
     task.onCompleteBlock = ^(CalculateKDJ* _self) {
-        [self updateLabel:self.kdjInfo1 andJ:_self.kdj_j];
+        [self updateLabel:self.kdjInfo1 andK:_self.kdj_k andJ:_self.kdj_j];
     };
     [[KingdaWorker getInstance] queue:task];
     task = [[CalculateKDJ alloc] initWithStockInfo:info andDelta:FIVE_MINUTES andCount:10];
     task.onCompleteBlock = ^(CalculateKDJ* _self) {
-        [self updateLabel:self.kdjInfo5 andJ:_self.kdj_j];
+        [self updateLabel:self.kdjInfo5 andK:_self.kdj_k andJ:_self.kdj_j];
     };
     [[KingdaWorker getInstance] queue:task];
     task = [[CalculateKDJ alloc] initWithStockInfo:info andDelta:FIFTEEN_MINUTES andCount:10];
     task.onCompleteBlock = ^(CalculateKDJ* _self) {
-        [self updateLabel:self.kdjInfo15 andJ:_self.kdj_j];
+        [self updateLabel:self.kdjInfo15 andK:_self.kdj_k andJ:_self.kdj_j];
     };
     [[KingdaWorker getInstance] queue:task];
     task = [[CalculateKDJ alloc] initWithStockInfo:info andDelta:THIRTY_MINUTES andCount:10];
     task.onCompleteBlock = ^(CalculateKDJ* _self) {
-        [self updateLabel:self.kdjInfo30 andJ:_self.kdj_j];
+        [self updateLabel:self.kdjInfo30 andK:_self.kdj_k andJ:_self.kdj_j];
     };
     [[KingdaWorker getInstance] queue:task];
     task = [[CalculateKDJ alloc] initWithStockInfo:info andDelta:ONE_HOUR andCount:10];
     task.onCompleteBlock = ^(CalculateKDJ* _self) {
-        [self updateLabel:self.kdjInfo60 andJ:_self.kdj_j];
+        [self updateLabel:self.kdjInfo60 andK:_self.kdj_k andJ:_self.kdj_j];
     };
     [[KingdaWorker getInstance] queue:task];
     task = [[CalculateKDJ alloc] initWithStockInfo:info andDelta:ONE_DAY andCount:10];
     task.onCompleteBlock = ^(CalculateKDJ* _self) {
-        [self updateLabel:self.kdjInfoDay andJ:_self.kdj_j];
+        [self updateLabel:self.kdjInfoDay andK:_self.kdj_k andJ:_self.kdj_j];
     };
     [[KingdaWorker getInstance] queue:task];
     task = [[CalculateKDJ alloc] initWithStockInfo:info andDelta:ONE_WEEK andCount:10];
     task.onCompleteBlock = ^(CalculateKDJ* _self) {
-        [self updateLabel:self.kdjInfoWeek andJ:_self.kdj_j];
+        [self updateLabel:self.kdjInfoWeek andK:_self.kdj_k andJ:_self.kdj_j];
     };
     [[KingdaWorker getInstance] queue:task];
 }
