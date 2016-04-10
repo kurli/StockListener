@@ -757,6 +757,7 @@
         };
         [[KingdaWorker getInstance] queue:sync];
         [stockListView dismiss];
+        [self.lineTableView reloadData];
     }
 }
 
