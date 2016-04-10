@@ -46,6 +46,8 @@
     KDJViewController* kdjViewController;
     KLineViewController* klineViewController;
     BOOL isRegisteredReceiver;
+    
+    float klineViewHeight;
 }
 @property (nonatomic, strong) ADTickerLabel *priceLabel;
 @property (weak, nonatomic) IBOutlet UILabel *rateLabel;
@@ -203,20 +205,22 @@
     aRect.origin.x = 5;
     aRect.origin.y = fenshiRect.origin.y + fenshiRect.size.height+1;
     [self.averagePriceView setFrame:aRect];
+    
+    klineViewHeight = self.view.frame.size.height - (fenshiRect.origin.y)*2-150-75-29-45;
 
-    [klineViewController setFrame:CGRectMake(0, rect.origin.y + rect.size.height+1, leftWidth, KLINE_VIEW_HEIGHT)];
+    [klineViewController setFrame:CGRectMake(0, rect.origin.y + rect.size.height+1, leftWidth, klineViewHeight)];
     if (volController == nil) {
         volController = [[VOLChartViewController alloc] initWithParentView:self.view];
-        CGRect rect2 = CGRectMake(LEFT_PADDING, rect.origin.y + rect.size.height+1+KLINE_VIEW_HEIGHT, leftWidth-LEFT_PADDING, 45);
+        CGRect rect2 = CGRectMake(LEFT_PADDING, rect.origin.y + rect.size.height+1+klineViewHeight, leftWidth-LEFT_PADDING, 45);
         [volController loadView:rect2];
     }
 
-    [kdjViewController setFrame:CGRectMake(0, rect.origin.y + rect.size.height + KLINE_VIEW_HEIGHT + 45 + 1, leftWidth, 75)];
+    [kdjViewController setFrame:CGRectMake(0, rect.origin.y + rect.size.height + klineViewHeight + 45 + 1, leftWidth, 75)];
 
     offsetY = rect.origin.y + 1;
     if (aVolController == nil) {
         aVolController = [[AVOLChartViewController alloc] initWithParentView:self.view];
-        CGRect rect = CGRectMake(leftWidth, offsetY, RIGHT_VIEW_WIDTH, KLINE_VIEW_HEIGHT + AVOL_EXPAND);
+        CGRect rect = CGRectMake(leftWidth, offsetY, RIGHT_VIEW_WIDTH, klineViewHeight + AVOL_EXPAND);
         [aVolController loadViewVertical:rect];
     }
     
@@ -426,7 +430,7 @@
         return;
     }
     
-    float valuePerPixel = (float)(hh - ll)/(float)KLINE_VIEW_HEIGHT ;
+    float valuePerPixel = (float)(hh - ll)/(float)klineViewHeight ;
     float extend = valuePerPixel * (AVOL_EXPAND / 2);
     [aVolController setMin:ll-extend];
     [aVolController setMax:hh+extend];

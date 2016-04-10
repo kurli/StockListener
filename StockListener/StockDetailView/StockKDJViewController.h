@@ -11,7 +11,7 @@
 
 #define LEFT_PADDING 20
 #define DEFAULT_DISPLAY_COUNT 35
-#define KLINE_VIEW_HEIGHT 130
+//#define KLINE_VIEW_HEIGHT 130
 #define AVOL_EXPAND 60
 
 #define ONE_MINUTE 1
@@ -22,8 +22,8 @@
 #define ONE_DAY 240
 #define ONE_WEEK 1200
 
-#define LEFT_VIEW_WIDTH self.view.frame.size.width/40*34
-#define RIGHT_VIEW_WIDTH self.view.frame.size.width/40*6
+#define LEFT_VIEW_WIDTH self.view.frame.size.width/40*33
+#define RIGHT_VIEW_WIDTH self.view.frame.size.width/40*7
 
 @class StockInfo;
 @interface StockKDJViewController : UIViewController <UIScrollViewDelegate,ZSYPopoverListDatasource, ZSYPopoverListDelegate>

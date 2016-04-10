@@ -45,6 +45,8 @@
     BOOL isAVOLDynamic;
     NSInteger avolDynamicType;
     NSInteger setting;
+    
+    float klineViewHeight;
 }
 
 @property (weak, nonatomic) IBOutlet UISegmentedControl *typeSegmentController;
@@ -141,12 +143,17 @@
     rect.origin.x = 0;
     [self.typeSegmentController setFrame:rect];
     
+    klineViewHeight = self.addLabel.frame.origin.y - (rect.origin.y)-45-75;
+    klineViewHeight /= 2;
+    
     float y = self.typeSegmentController.frame.origin.y + self.typeSegmentController.frame.size.height + 1;
-    [klineViewController setFrame:CGRectMake(0, y, leftWidth, KLINE_VIEW_HEIGHT*1.5)];
+    [klineViewController setFrame:CGRectMake(0, y, leftWidth, klineViewHeight*1.5)];
 
-    aVolController = [[AVOLChartViewController alloc] initWithParentView:self.view];
-    rect = CGRectMake(leftWidth, y - AVOL_EXPAND/2, RIGHT_VIEW_WIDTH, KLINE_VIEW_HEIGHT*1.5 + AVOL_EXPAND);
-    [aVolController loadViewVertical:rect];
+    if (aVolController == nil) {
+        aVolController = [[AVOLChartViewController alloc] initWithParentView:self.view];
+        rect = CGRectMake(leftWidth, y - AVOL_EXPAND/2, RIGHT_VIEW_WIDTH, klineViewHeight*1.5 + AVOL_EXPAND);
+        [aVolController loadViewVertical:rect];
+    }
     
     CGRect rectAvolSetting = aVolSettingButton.frame;
     rectAvolSetting.origin.x = rect.origin.x + (rect.size.width -  rectAvolSetting.size.width)/2;
@@ -156,7 +163,7 @@
     kViewWidth = self.view.frame.size.width-10;
     
     // Set VOL frame
-    y = y + KLINE_VIEW_HEIGHT*1.5 + 1;
+    y = y + klineViewHeight*1.5 + 1;
     if (volController == nil) {
         volController = [[VOLChartViewController alloc] initWithParentView:self.view];
         CGRect rect2 = CGRectMake(LEFT_PADDING, y, leftWidth - LEFT_PADDING, 45);
@@ -172,28 +179,28 @@
 //    rect = self.ylineTypeView.frame;
 //    rect.origin.y = y;
 //    [self.ylineTypeView setFrame:rect];
-    rect = self.addButton.frame;
-    rect.origin.x = 5;
-    rect.origin.y = y;
-    [self.addButton setFrame:rect];
+//    rect = self.addButton.frame;
+//    rect.origin.x = 5;
+//    rect.origin.y = y;
+//    [self.addButton setFrame:rect];
     
-    rect = self.addLabel.frame;
-    rect.origin.x = self.addButton.frame.origin.x + self.addButton.frame.size.width + 5;
-    rect.origin.y = y;
-    [self.addLabel setFrame:rect];
+//    rect = self.addLabel.frame;
+//    rect.origin.x = self.addButton.frame.origin.x + self.addButton.frame.size.width + 5;
+//    rect.origin.y = y;
+//    [self.addLabel setFrame:rect];
     
-    rect = self.lineTableView.frame;
-    rect.origin.x = self.addLabel.frame.origin.x + self.addLabel.frame.size.width;
-    rect.origin.y = y;
-    [self.lineTableView setFrame:rect];
+//    rect = self.lineTableView.frame;
+//    rect.origin.x = self.addLabel.frame.origin.x + self.addLabel.frame.size.width;
+//    rect.origin.y = y;
+//    [self.lineTableView setFrame:rect];
     self.lineTableView.layer.borderWidth = 0.5;
     self.lineTableView.layer.borderColor = [[UIColor grayColor] CGColor];
 
-    y = self.addButton.frame.origin.y + self.addButton.frame.size.height + 5;
-    rect = self.finishButton.frame;
-    rect.origin.x = self.addLabel.frame.origin.x;
-    rect.origin.y = y;
-    [self.finishButton setFrame:rect];
+//    y = self.addButton.frame.origin.y + self.addButton.frame.size.height + 5;
+//    rect = self.finishButton.frame;
+//    rect.origin.x = self.addLabel.frame.origin.x;
+//    rect.origin.y = y;
+//    [self.finishButton setFrame:rect];
     
     [self refreshEditLineButtons];
     
@@ -329,7 +336,7 @@
         return;
     }
     
-    float valuePerPixel = (float)(hh - ll)/(float)KLINE_VIEW_HEIGHT ;
+    float valuePerPixel = (float)(hh - ll)/(float)klineViewHeight ;
     float extend = valuePerPixel * (AVOL_EXPAND / 2);
     [aVolController setMin:ll-extend];
     [aVolController setMax:hh+extend];
@@ -745,7 +752,8 @@
         }
         SyncPoint* sync = [[SyncPoint alloc] init];
         sync.onCompleteBlock = ^(StockInfo* info) {
-            [self viewWillAppear:YES];
+            [self refreshEditLineButtons];
+            [self typeSegmentChanged:nil];
         };
         [[KingdaWorker getInstance] queue:sync];
         [stockListView dismiss];

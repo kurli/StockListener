@@ -189,22 +189,27 @@
             [self playStockValueDown:info.step];
         }
     } else {
-        int step = absoluteDelta;
-        if (lastValue >= 80 && delta > 0) {
-            step /= 2;
-        } else if (lastValue <= 20 && delta < 0) {
-            step /= 2;
-        }
-        if (step == 0) {
-            step = 1;
-        }
-        if (step > 5) {
-            step = 5;
-        }
+        int step = info.step;
         if (delta < 0) {
-            [self playStockValueDown:step];
+            if (info.speed > 0) {
+                step = info.step - 1;
+            }
+            if (step <= 0) {
+                step = 0;
+            }
         } else {
+            if (info.speed < 0) {
+                step = info.step - 1;
+            }
+            if (step <= 0) {
+                step = 0;
+            }
+        }
+        
+        if (info.speed > 0) {
             [self playStockValueUp:step];
+        } else if (info.speed < 0) {
+            [self playStockValueDown:step];
         }
     }
 }
