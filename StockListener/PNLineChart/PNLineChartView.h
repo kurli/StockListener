@@ -60,6 +60,8 @@
 
 
 @property (nonatomic, strong) NSArray* yAxisValues; // array of number
+@property (nonatomic, strong) NSMutableArray* splitXArray;
+@property (nonatomic, assign) NSInteger maxXCount;
 
 /**
  *  readyonly dictionary that stores all the plots in the graph.

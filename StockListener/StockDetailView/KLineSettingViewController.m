@@ -35,10 +35,9 @@
     KDJViewController* kdjViewController;
     NSInteger startIndex;
     NSInteger endIndex;
-    float kViewWidth;
     BOOL isKLine;
     
-    UIButton* aVolSettingButton;
+//    UIButton* aVolSettingButton;
     ZSYPopoverListView* aVolSettingView;
     ZSYPopoverListView* stockListView;
 
@@ -66,6 +65,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *dynamicAVOLLabel;
 @property (weak, nonatomic) IBOutlet UIButton *dynamicAVOLButton;
 @property (weak, nonatomic) IBOutlet UIButton *stockNameButton;
+@property (weak, nonatomic) IBOutlet UIView *topView;
 @end
 
 @implementation KLineSettingViewController
@@ -77,12 +77,12 @@
     klineViewController.stockInfo = self.stockInfo;
     kdjViewController = [[KDJViewController alloc] initWithParentView:self.view];
     
-    aVolSettingButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
-    [aVolSettingButton addTarget:self action:@selector(aVolSettingClicked:) forControlEvents:UIControlEventTouchUpInside];
-    [aVolSettingButton setImage:[UIImage imageNamed:@"setting"] forState:UIControlStateNormal];
-    aVolSettingButton.layer.borderWidth = 0.5;
-    aVolSettingButton.layer.borderColor = [[UIColor grayColor] CGColor];
-    [self.view addSubview:aVolSettingButton];
+//    aVolSettingButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
+//    [aVolSettingButton addTarget:self action:@selector(aVolSettingClicked:) forControlEvents:UIControlEventTouchUpInside];
+//    [aVolSettingButton setImage:[UIImage imageNamed:@"setting"] forState:UIControlStateNormal];
+//    aVolSettingButton.layer.borderWidth = 0.5;
+//    aVolSettingButton.layer.borderColor = [[UIColor grayColor] CGColor];
+//    [self.view addSubview:aVolSettingButton];
 
     __weak KLineViewController *_weak_self = klineViewController;
     __weak KLineSettingViewController *_self = self;
@@ -136,72 +136,67 @@
     isAVOLDynamic = NO;
 }
 
-- (void)viewWillAppear:(BOOL)animated {
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
     float leftWidth = ((int)(LEFT_VIEW_WIDTH)/(DEFAULT_DISPLAY_COUNT-1))*(DEFAULT_DISPLAY_COUNT-1);
+
     CGRect rect = self.typeSegmentController.frame;
-    rect.size.width = LEFT_VIEW_WIDTH;
+    rect.size.width = leftWidth;
     rect.origin.x = 0;
     [self.typeSegmentController setFrame:rect];
-    
-    klineViewHeight = self.addLabel.frame.origin.y - (rect.origin.y)-45-75;
-    klineViewHeight /= 2;
-    
+
+    float rightViewWidth = self.view.frame.size.width - leftWidth;
+    klineViewHeight = self.view.frame.size.height / 8 * 3;
+
     float y = self.typeSegmentController.frame.origin.y + self.typeSegmentController.frame.size.height + 1;
-    [klineViewController setFrame:CGRectMake(0, y, leftWidth, klineViewHeight*1.5)];
+    [klineViewController setFrame:CGRectMake(0, y, leftWidth, klineViewHeight)];
 
     if (aVolController == nil) {
         aVolController = [[AVOLChartViewController alloc] initWithParentView:self.view];
-        rect = CGRectMake(leftWidth, y - AVOL_EXPAND/2, RIGHT_VIEW_WIDTH, klineViewHeight*1.5 + AVOL_EXPAND);
+        rect = CGRectMake(leftWidth, y - AVOL_EXPAND/2, rightViewWidth, klineViewHeight + AVOL_EXPAND);
         [aVolController loadViewVertical:rect];
+        CGRect rect2 = self.addLabel.frame;
+        rect2.origin.x = rect.origin.x;
+        rect2.origin.y = rect.origin.y + rect.size.height + 5;
+        [self.addLabel setFrame:rect2];
+        CGRect rect3 = self.addButton.frame;
+        rect3.origin.x = rect.origin.x;
+        rect3.origin.y = rect2.origin.y + rect2.size.height;
+        [self.addButton setFrame:rect3];
+        CGRect rect4 = self.finishButton.frame;
+        rect4.origin.x = rect3.origin.x;
+        rect4.origin.y = rect3.origin.y;
+        [self.finishButton setFrame:rect4];
     }
-    
-    CGRect rectAvolSetting = aVolSettingButton.frame;
-    rectAvolSetting.origin.x = rect.origin.x + (rect.size.width -  rectAvolSetting.size.width)/2;
-    rectAvolSetting.origin.y = rect.origin.y + rect.size.height;
-    [aVolSettingButton setFrame:rectAvolSetting];
 
-    kViewWidth = self.view.frame.size.width-10;
-    
     // Set VOL frame
-    y = y + klineViewHeight*1.5 + 1;
+    y = y + klineViewHeight + 1;
     if (volController == nil) {
         volController = [[VOLChartViewController alloc] initWithParentView:self.view];
-        CGRect rect2 = CGRectMake(LEFT_PADDING, y, leftWidth - LEFT_PADDING, 45);
+        CGRect rect2 = CGRectMake(LEFT_PADDING, y, leftWidth - LEFT_PADDING, self.typeSegmentController.frame.size.height);
         [volController loadView:rect2];
+        __weak KLineSettingViewController *_self = self;
+        aVolController.onItemCLicked = ^(NSInteger index) {
+            [_self aVolSettingClicked:nil];
+        };
     }
-    
-    y = y + 45 + 1;
+
+    y = y + self.typeSegmentController.frame.size.height + 1;
     [kdjViewController setIsShowSnapshot:NO];
-    [kdjViewController setFrame:CGRectMake(0, y, leftWidth, 75)];
+    [kdjViewController setFrame:CGRectMake(0, y, leftWidth, self.typeSegmentController.frame.size.height*2.5)];
     
-    y = y + 75 + 5;
-    // Set yline view frame
-//    rect = self.ylineTypeView.frame;
-//    rect.origin.y = y;
-//    [self.ylineTypeView setFrame:rect];
-//    rect = self.addButton.frame;
-//    rect.origin.x = 5;
-//    rect.origin.y = y;
-//    [self.addButton setFrame:rect];
-    
-//    rect = self.addLabel.frame;
-//    rect.origin.x = self.addButton.frame.origin.x + self.addButton.frame.size.width + 5;
-//    rect.origin.y = y;
-//    [self.addLabel setFrame:rect];
-    
-//    rect = self.lineTableView.frame;
-//    rect.origin.x = self.addLabel.frame.origin.x + self.addLabel.frame.size.width;
-//    rect.origin.y = y;
-//    [self.lineTableView setFrame:rect];
+    y = y + self.typeSegmentController.frame.size.height*2.5;
+
     self.lineTableView.layer.borderWidth = 0.5;
     self.lineTableView.layer.borderColor = [[UIColor grayColor] CGColor];
-
-//    y = self.addButton.frame.origin.y + self.addButton.frame.size.height + 5;
-//    rect = self.finishButton.frame;
-//    rect.origin.x = self.addLabel.frame.origin.x;
-//    rect.origin.y = y;
-//    [self.finishButton setFrame:rect];
     
+    rect = self.lineTableView.frame;
+    rect.origin.x = 0;
+    rect.origin.y = y;
+    rect.size.width = self.view.frame.size.width;
+    rect.size.height = self.view.frame.size.height - y;
+    [self.lineTableView setFrame:rect];
+
     [self refreshEditLineButtons];
     
     [self typeSegmentChanged:nil];

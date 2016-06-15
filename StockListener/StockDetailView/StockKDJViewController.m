@@ -160,18 +160,20 @@
     float leftWidth = ((int)(LEFT_VIEW_WIDTH)/(DEFAULT_DISPLAY_COUNT-1))*(DEFAULT_DISPLAY_COUNT-1);
 
     int offsetY = self.rateLabel.frame.size.height + self.rateLabel.frame.origin.y + 20;
-    CGRect fenshiRect = CGRectMake(0, offsetY, leftWidth - RIGHT_VIEW_WIDTH, 150);
+    float fsHeight = self.view.frame.size.height/4;
+    float rightViewWidth = self.view.frame.size.width - leftWidth;
+    CGRect fenshiRect = CGRectMake(0, offsetY, leftWidth - rightViewWidth, fsHeight);
     [fenshiViewController setFrame:fenshiRect];
 
     if (aVolTodayController == nil) {
         aVolTodayController = [[AVOLChartViewController alloc] initWithParentView:self.view];
-        CGRect rect = CGRectMake(leftWidth - RIGHT_VIEW_WIDTH, offsetY, RIGHT_VIEW_WIDTH, 150);
+        CGRect rect = CGRectMake(leftWidth - rightViewWidth, offsetY, rightViewWidth, fsHeight);
         [aVolTodayController loadViewVertical:rect];
     }
 
     if (buySellController == nil) {
         buySellController = [[BuySellChartViewController alloc] initWithParentView:self.view];
-        CGRect rect = CGRectMake(leftWidth, offsetY, RIGHT_VIEW_WIDTH, 150);
+        CGRect rect = CGRectMake(leftWidth, offsetY, rightViewWidth, fsHeight);
         [buySellController loadViewVertical:rect];
     }
 
@@ -205,22 +207,26 @@
     aRect.origin.x = 5;
     aRect.origin.y = fenshiRect.origin.y + fenshiRect.size.height+1;
     [self.averagePriceView setFrame:aRect];
+
+    klineViewHeight = (self.view.frame.size.height - CGRectGetHeight(self.tabBarController.tabBar.frame) - rect.origin.y - rect.size.height-1)/3*2;
     
-    klineViewHeight = self.view.frame.size.height - (fenshiRect.origin.y)*2-150-75-29-45;
+//    klineViewHeight = self.view.frame.size.height - (fenshiRect.origin.y)*2-fsHeight-75-29-45;
+    float volViewHeight = AVOL_EXPAND/2;
+    float kdjViewHeight = self.view.frame.size.height - CGRectGetHeight(self.tabBarController.tabBar.frame) - volViewHeight - (rect.origin.y + rect.size.height+1+klineViewHeight);
 
     [klineViewController setFrame:CGRectMake(0, rect.origin.y + rect.size.height+1, leftWidth, klineViewHeight)];
     if (volController == nil) {
         volController = [[VOLChartViewController alloc] initWithParentView:self.view];
-        CGRect rect2 = CGRectMake(LEFT_PADDING, rect.origin.y + rect.size.height+1+klineViewHeight, leftWidth-LEFT_PADDING, 45);
+        CGRect rect2 = CGRectMake(LEFT_PADDING, rect.origin.y + rect.size.height+1+klineViewHeight, leftWidth-LEFT_PADDING, volViewHeight);
         [volController loadView:rect2];
     }
 
-    [kdjViewController setFrame:CGRectMake(0, rect.origin.y + rect.size.height + klineViewHeight + 45 + 1, leftWidth, 75)];
+    [kdjViewController setFrame:CGRectMake(0, rect.origin.y + rect.size.height + klineViewHeight + volViewHeight + 1, leftWidth, kdjViewHeight)];
 
     offsetY = rect.origin.y + 1;
     if (aVolController == nil) {
         aVolController = [[AVOLChartViewController alloc] initWithParentView:self.view];
-        CGRect rect = CGRectMake(leftWidth, offsetY, RIGHT_VIEW_WIDTH, klineViewHeight + AVOL_EXPAND);
+        CGRect rect = CGRectMake(leftWidth, offsetY, rightViewWidth, klineViewHeight + AVOL_EXPAND);
         [aVolController loadViewVertical:rect];
     }
     

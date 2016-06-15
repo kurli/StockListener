@@ -114,6 +114,8 @@
     self.handleLongClick = YES;
     
     self.lines = [[NSMutableArray alloc] init];
+    self.splitXArray = [[NSMutableArray alloc] init];
+    self.maxXCount = 0;
 }
 
 -(void) onHideLongPressFired {
@@ -522,6 +524,32 @@
     CGFloat lengths[] = {};
     CGContextSetLineDash(context, 0, lengths,0);
     
+    for (int i=0; i<[self.splitXArray count]; i++) {
+        NSInteger sx = [[self.splitXArray objectAtIndex:i] integerValue];
+        int x = startWidth + self.pointerInterval*(sx-self.startIndex) + self.pointerInterval/2;
+        CGContextSetLineWidth(context, 1);
+        [[UIColor blackColor] set];
+        CGContextMoveToPoint(context,  x, 0);
+        CGContextAddLineToPoint(context, x, self.frame.size.height);
+        CGContextStrokePath(context);
+        
+        [[UIColor blackColor] set];
+        NSString* number;
+        if (i == 0) {
+            number = @"0";
+        } else {
+            NSInteger delta = sx - [[self.splitXArray objectAtIndex:i-1] integerValue] + 1;
+            number = [NSString stringWithFormat:@"%ld", delta];
+        }
+        CGContextShowTextAtPoint(context, x, 5, [number UTF8String], [number length]);
+    }
+    if ([self.splitXArray count] > 0) {
+        NSInteger sx = [[self.splitXArray lastObject] integerValue];
+        NSString* number = [NSString stringWithFormat:@"%ld", self.maxXCount - sx + 1];
+        int x = startWidth + self.pointerInterval*(self.maxXCount-self.startIndex-1) + self.pointerInterval/2;
+        CGContextShowTextAtPoint(context, x, 5, [number UTF8String], [number length]);
+    }
+
     if (self.splitX > 0) {
         int x = startWidth + self.pointerInterval*(self.splitX) + startHeight;
         CGContextSetLineWidth(context, 1);

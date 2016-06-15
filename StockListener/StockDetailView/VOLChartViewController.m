@@ -137,6 +137,6 @@
 
 - (CGFloat)barPaddingForBarChartView:(JBBarChartView *)barChartView
 {
-    return 0;
+    return 1;
 }
 @end

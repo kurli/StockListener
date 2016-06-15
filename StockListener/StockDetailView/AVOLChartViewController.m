@@ -128,6 +128,9 @@
 
 - (void)barChartView:(JBBarChartView *)barChartView didSelectBarAtIndex:(NSUInteger)index touchPoint:(CGPoint)touchPoint
 {
+    if (self.onItemCLicked) {
+        self.onItemCLicked(index);
+    }
 }
 
 - (void)didDeselectBarChartView:(JBBarChartView *)barChartView

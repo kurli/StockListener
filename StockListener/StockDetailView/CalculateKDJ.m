@@ -36,6 +36,8 @@
 
 - (void) caclulateBOLL:(NSArray*)data andStartIndex:(NSInteger)index {
     if ([data count] == 0) {
+        self.highest = 0;
+        self.lowest = 0;
         return;
     }
     
@@ -140,6 +142,8 @@
 
 -(void) calculateForWeek {
     if ([stockInfo.weeklyPrice count] == 0) {
+        self.highest = 0;
+        self.lowest = 0;
         return;
     }
     NSInteger startIndex = 20;
@@ -195,6 +199,8 @@
 
 -(void) calculateForDay {
     if ([stockInfo.hundredDaysPrice count] == 0) {
+        self.highest = 0;
+        self.lowest = 0;
         return;
     }
     NSInteger startIndex = 20;
@@ -250,6 +256,8 @@
 
 -(void) calculate {
     if ([stockInfo.fiveDayPriceByMinutes count] == 0) {
+        self.highest = 0;
+        self.lowest = 0;
         return;
     }
     NSInteger startIndex = 20;

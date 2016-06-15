@@ -25,5 +25,6 @@
 
 @property (assign, nonatomic) CalculateAVOLType sourceType;
 @property (atomic, strong) NSDictionary* averageVolDic;
+@property (copy) void (^onItemCLicked)(NSInteger index);
 
 @end

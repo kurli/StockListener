@@ -181,6 +181,63 @@
     NSInteger maxCount = [self.kdj_d count] + 1;
     kdjChartView.pointerInterval = (kdjChartView.frame.size.width - 20 - 1)/(maxCount-1);
     kdjChartView.xAxisInterval = (kdjChartView.frame.size.width - 20-1)/(maxCount-1);
+    kdjChartView.maxXCount = maxCount-1;
+    
+    [kdjChartView.splitXArray removeAllObjects];
+    
+    BOOL preDelta = NO;
+    if ([self.kdj_k count] > 0) {
+        float j = [[self.kdj_j objectAtIndex:0] floatValue];
+        float d = [[self.kdj_d objectAtIndex:0] floatValue];
+        if (j>d) {
+            preDelta = false;
+        } else {
+            preDelta = true;
+        }
+    }
+    int lastIndex = -1;
+    for (int i=1; i<[self.kdj_d count]; i++) {
+        float k = [[self.kdj_k objectAtIndex:i] floatValue];
+        float d = [[self.kdj_d objectAtIndex:i] floatValue];
+        BOOL delta = false;
+        if (k<=d) {
+            delta = true;
+        }
+        if (preDelta != delta) {
+//            if (i - lastIndex > 3) {
+                [kdjChartView.splitXArray addObject:[NSNumber numberWithInt:i]];
+                lastIndex = i;
+//            } else {
+//                delta = !delta;
+//            }
+        }
+        preDelta = delta;
+    }
+//    if ([self.kdj_d count] > 2) {
+//        float preK = [[self.kdj_j objectAtIndex:0] floatValue];
+//        float k = [[self.kdj_j objectAtIndex:1] floatValue];
+//        if (k > preK) {
+//            preDelta = YES;
+//        }
+//    }
+//    int lastIndex = -1;
+//    for (int i=2; i<[self.kdj_j count]; i++) {
+//        float preK = [[self.kdj_j objectAtIndex:i-1] floatValue];
+//        float k = [[self.kdj_j objectAtIndex:i] floatValue];
+//        BOOL delta = NO;
+//        if (k > preK) {
+//            delta = YES;
+//        }
+//        if (delta != preDelta) {
+//            if (i - lastIndex > 3) {
+//                [kdjChartView.splitXArray addObject:[NSNumber numberWithInt:i]];
+//                lastIndex = i;
+//            } else {
+//                delta = !delta;
+//            }
+//        }
+//        preDelta = delta;
+//    }
     
     if (type == ONE_MINUTE) {
         delta1 = FIVE_MINUTES;
