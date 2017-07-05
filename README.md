@@ -16,7 +16,7 @@ iOS开源股票软件 (声音提示，k线，筹码集中度，画线)
 
 ## 社区
 
-[StockListener](http://opengrok.club/category/23/stocklistener)
+[http://opengrok.club](http://opengrok.club/category/23/stocklistener)
 
 ## AppStore 地址
 https://itunes.apple.com/app/apple-store/id1078684280?mt=8
@@ -30,3 +30,5 @@ https://itunes.apple.com/app/apple-store/id1078684280?mt=8
 ## License
 
 MIT license
+
+## Patches are welcome
