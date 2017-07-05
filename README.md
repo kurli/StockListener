@@ -29,4 +29,4 @@ https://itunes.apple.com/app/apple-store/id1078684280?mt=8
 
 ## License
 
-使用 MIT license
+MIT license
