@@ -80,6 +80,18 @@
     return self;
 }
 
+-(void) removeFromSuperView {
+    [kLineChartView removeFromSuperview];
+    [infoButton removeFromSuperview];
+    [lineButton1 removeFromSuperview];
+    [lineButton2 removeFromSuperview];
+    [lineButtonMiddle removeFromSuperview];
+}
+
+-(void) enableGesture {
+    [kLineChartView enableGesture];
+}
+
 -(void) infoClicked:(id)btn {
     KLineSettingViewController* controller = [[KLineSettingViewController alloc] init];
     [controller setStockInfo:self.stockInfo];

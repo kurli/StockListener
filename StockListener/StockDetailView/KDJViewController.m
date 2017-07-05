@@ -77,6 +77,16 @@
     return self;
 }
 
+-(void) removeFromSuperView {
+    [kdjChartView removeFromSuperview];
+    [kdjChartView2 removeFromSuperview];
+    [kdjChartView3 removeFromSuperview];
+    [kdjChartView4 removeFromSuperview];
+    [label2 removeFromSuperview];
+    [label3 removeFromSuperview];
+    [label4 removeFromSuperview];
+}
+
 -(void) setFrame:(CGRect)rect {
     if (!self.isShowSnapshot) {
         kdjChartView2 = nil;

@@ -77,6 +77,10 @@
     self.barChartView.layer.borderColor = [[UIColor grayColor] CGColor];
 }
 
+-(void) removeFromSuperView {
+    [self.barChartView removeFromSuperview];
+}
+
 - (void) reload {
     [self.barChartView reloadData];
     

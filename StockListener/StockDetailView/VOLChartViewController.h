@@ -18,4 +18,6 @@
 -(id) initWithParentView:(UIView*)view;
 - (void) reload;
 -(void)loadView:(CGRect) rect;
+-(void) removeFromSuperView;
+
 @end

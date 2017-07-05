@@ -23,6 +23,8 @@
 
 -(void) clearPlot;
 
+-(void) removeFromSuperView;
+
 @property (nonatomic, assign) NSInteger todayStartIndex;
 @property (nonatomic, strong) NSMutableArray* kdj_k;
 @property (nonatomic, strong) NSMutableArray* kdj_d;

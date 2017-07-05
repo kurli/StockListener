@@ -12,8 +12,10 @@
 #import "KingdaWorker.h"
 #import "StockInfo.h"
 #import "StockRefresher.h"
+#import "OrgnizedItem.h"
 
 #define STOCK_LIST @"stock_list"
+#define ORGNIZED_LIST @"orgnized_list"
 
 @interface DatabaseHelper() {
     
@@ -34,6 +36,7 @@
 -(id) init {
     if (self = [super init]) {
         [self reloadStockList];
+        [self reloadOrgnizedList];
         self.stockRefresher = [[StockRefresher alloc] init];
         [self.stockRefresher startRefresh:self];
         
@@ -58,6 +61,18 @@
     for (NSData* data in stockDBList) {
         StockInfo* info = (StockInfo*)[NSKeyedUnarchiver unarchiveObjectWithData:data];
         [self.stockList addObject:info];
+    }
+}
+
+-(void) reloadOrgnizedList {
+    NSMutableArray* orgnizedDBList = [[NSUserDefaults standardUserDefaults] objectForKey:ORGNIZED_LIST];
+    self.orgnizedList = [[NSMutableArray alloc] init];
+    for (NSData* data in orgnizedDBList) {
+        OrgnizedItem* item = (OrgnizedItem*)[NSKeyedUnarchiver unarchiveObjectWithData:data];
+        StockInfo* sinfo = [self getInfoById:item.sid];
+        if (sinfo != nil) {
+            [self.orgnizedList addObject:item];
+        }
     }
 }
 
@@ -91,12 +106,17 @@
         }
         [self.stockList addObject:info];
         
-        [self saveToDB];
+        [self saveToStockDB];
         if (self.delegate) {
             [self.delegate onStockListChanged];
         }
     };
     [[KingdaWorker getInstance] queue: task];
+}
+
+-(void) addOrgnizedItem:(OrgnizedItem*)item {
+    [self.orgnizedList addObject:item];
+    [self saveToOrgnizedDB];
 }
 
 -(NSMutableArray*) stockListToDBList {
@@ -108,9 +128,24 @@
     return array;
 }
 
--(void) saveToDB {
+-(NSMutableArray*) orgnizedListToDBList {
+    NSMutableArray* array = [[NSMutableArray alloc] init];
+    for (OrgnizedItem* item in self.orgnizedList) {
+        NSData *data = [NSKeyedArchiver archivedDataWithRootObject:item];
+        [array addObject:data];
+    }
+    return array;
+}
+
+-(void) saveToStockDB {
     NSMutableArray* array = [self stockListToDBList];
     [[NSUserDefaults standardUserDefaults] setObject:array forKey:STOCK_LIST];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+-(void) saveToOrgnizedDB {
+    NSMutableArray* array = [self orgnizedListToDBList];
+    [[NSUserDefaults standardUserDefaults] setObject:array forKey:ORGNIZED_LIST];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
@@ -128,11 +163,20 @@
     if (i != [self.stockList count]) {
         [self.stockList removeObjectAtIndex:i];
     }
-    [self saveToDB];
+    [self saveToStockDB];
     
     if (self.delegate) {
         [self.delegate onStockListChanged];
     }
+}
+
+-(void) removeOrgnizedItemByIndex:(NSInteger)index {
+    if (index >= [self.orgnizedList count]) {
+        return;
+    }
+    [self.orgnizedList removeObjectAtIndex:index];
+    
+    [self saveToOrgnizedDB];
 }
 
 - (void) startRefreshStock {

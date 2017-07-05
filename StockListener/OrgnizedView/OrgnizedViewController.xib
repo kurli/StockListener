@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="OrgnizedViewController">
+            <connections>
+                <outlet property="addItemStockButton" destination="fVS-1U-TVl" id="QiX-SN-8If"/>
+                <outlet property="addItemTimeButton" destination="VNI-nI-Ybd" id="70p-ec-MxV"/>
+                <outlet property="addItemTypeButton" destination="8vn-Ul-DbM" id="B9i-Pv-Ok9"/>
+                <outlet property="addItemView" destination="ecF-qE-h8b" id="gSf-ET-vHb"/>
+                <outlet property="scrollView" destination="PYG-Qc-lSu" id="sx2-1a-fyu"/>
+                <outlet property="segmentController" destination="UvS-dZ-CIP" id="5tZ-F0-Vba"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" id="vW0-s9-r19">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="53"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="kAh-4b-iha">
+                            <rect key="frame" x="337" y="15" width="30" height="30"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                            <state key="normal" title="完成">
+                                <color key="titleColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
+                            </state>
+                            <connections>
+                                <action selector="finishButtonClicked:" destination="-1" eventType="touchUpInside" id="kjB-bN-vik"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                    <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                </view>
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="PYG-Qc-lSu">
+                    <rect key="frame" x="0.0" y="53" width="375" height="614"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                    <subviews>
+                        <view contentMode="scaleToFill" id="ecF-qE-h8b">
+                            <rect key="frame" x="8" y="8" width="231" height="30"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <subviews>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="fVS-1U-TVl">
+                                    <rect key="frame" x="0.0" y="0.0" width="62" height="30"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <state key="normal" title="股票"/>
+                                    <connections>
+                                        <action selector="addItemStockClicked:" destination="-1" eventType="touchUpInside" id="8cQ-ft-htc"/>
+                                    </connections>
+                                </button>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="8vn-Ul-DbM">
+                                    <rect key="frame" x="70" y="0.0" width="58" height="30"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <state key="normal" title="类型"/>
+                                    <connections>
+                                        <action selector="addItemTypeClicked:" destination="-1" eventType="touchUpInside" id="Lvj-SL-kJu"/>
+                                    </connections>
+                                </button>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="contactAdd" lineBreakMode="middleTruncation" id="60J-Gj-X3h">
+                                    <rect key="frame" x="201" y="4" width="22" height="22"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <connections>
+                                        <action selector="addItemAddClicked:" destination="-1" eventType="touchUpInside" id="7lf-Ko-fOC"/>
+                                    </connections>
+                                </button>
+                                <button opaque="NO" tag="1000" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="VNI-nI-Ybd">
+                                    <rect key="frame" x="136" y="0.0" width="52" height="30"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <state key="normal" title="5分"/>
+                                    <connections>
+                                        <action selector="addItemTimeClicked:" destination="-1" eventType="touchUpInside" id="V7g-Ml-Lpv"/>
+                                    </connections>
+                                </button>
+                            </subviews>
+                            <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        </view>
+                    </subviews>
+                </scrollView>
+                <segmentedControl hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="1" id="UvS-dZ-CIP">
+                    <rect key="frame" x="8" y="61" width="359" height="29"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                    <color key="backgroundColor" red="0.96862745100000003" green="0.96862745100000003" blue="0.96862745100000003" alpha="1" colorSpace="calibratedRGB"/>
+                    <segments>
+                        <segment title="1 分"/>
+                        <segment title="5分"/>
+                        <segment title="15分"/>
+                        <segment title="30分"/>
+                        <segment title="60分"/>
+                        <segment title="日"/>
+                        <segment title="周"/>
+                    </segments>
+                    <connections>
+                        <action selector="segmentChanged:" destination="-1" eventType="valueChanged" id="R2Q-0w-jRi"/>
+                        <action selector="segmentTouchOutside:" destination="-1" eventType="touchUpOutside" id="QDL-4T-JxS"/>
+                    </connections>
+                </segmentedControl>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
+            <point key="canvasLocation" x="332.5" y="317.5"/>
+        </view>
+    </objects>
+</document>

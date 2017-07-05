@@ -91,23 +91,17 @@
     self.layer.borderWidth = 0.5;
     self.layer.borderColor = [[UIColor grayColor] CGColor];
     
-    self.splitX = 0;
-    self.startIndex = 0;
-    self.markY = -10;
-    self.markYColor = [UIColor blackColor];
-    
     UILongPressGestureRecognizer *longPressGR =
     [[UILongPressGestureRecognizer alloc] initWithTarget:self
                                                   action:@selector(handleLongPress:)];
     longPressGR.allowableMovement=YES;
     longPressGR.minimumPressDuration = 0.2;
     [self addGestureRecognizer:longPressGR];
-    
-    UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
-    [self addGestureRecognizer:pan];
-    
-    UIPinchGestureRecognizer *zoom = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleZoom:)];
-    [self addGestureRecognizer:zoom];
+
+    self.splitX = 0;
+    self.startIndex = 0;
+    self.markY = -10;
+    self.markYColor = [UIColor blackColor];
 
     showLongPress = NO;
     self.yAxisPercentage = NO;
@@ -116,6 +110,14 @@
     self.lines = [[NSMutableArray alloc] init];
     self.splitXArray = [[NSMutableArray alloc] init];
     self.maxXCount = 0;
+}
+
+-(void) enableGesture {
+    UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
+    [self addGestureRecognizer:pan];
+    
+    UIPinchGestureRecognizer *zoom = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleZoom:)];
+    [self addGestureRecognizer:zoom];
 }
 
 -(void) onHideLongPressFired {

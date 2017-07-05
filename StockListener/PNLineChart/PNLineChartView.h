@@ -78,4 +78,5 @@
 
 -(float) getPriceByY:(float)y;
 -(int) getTimeDeltaByX:(float)x;
+-(void) enableGesture;
 @end

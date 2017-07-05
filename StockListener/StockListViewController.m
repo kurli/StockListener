@@ -16,6 +16,7 @@
 #import "StockTableItemViewController.h"
 #import "StockRefresher.h"
 #import "CERoundProgressView.h"
+#import "OrgnizedViewController.h"
 
 @interface StockListViewController ()<UITableViewDelegate,UITableViewDataSource,UISearchBarDelegate,UISearchResultsUpdating, OnStockListChangedDelegate> {
     NSInteger stockSelected;
@@ -232,6 +233,10 @@
         [self.stockTableItemViewController setNowPLayingSID:nil];
         [self.tableView reloadData];
     }
+}
+- (IBAction)orgnizedButtonClicked:(id)sender {
+    OrgnizedViewController* controller = [[OrgnizedViewController alloc] init];
+    [self presentViewController:controller animated:YES completion:nil];
 }
 
 @end

@@ -38,6 +38,12 @@
 		940CC21E1C09C12900F84ADB /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 940CC21D1C09C12900F84ADB /* Reachability.m */; };
 		940CC2221C0AE6FD00F84ADB /* StockPlayerManagerForFSAudio.m in Sources */ = {isa = PBXBuildFile; fileRef = 940CC2211C0AE6FD00F84ADB /* StockPlayerManagerForFSAudio.m */; };
 		940CC2271C0AEA2700F84ADB /* music_default_1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 940CC2241C0AEA2700F84ADB /* music_default_1.mp3 */; };
+		942A47DD1C46B4F2006A8FA0 /* BuySellHistoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 942A47DB1C46B4F2006A8FA0 /* BuySellHistoryViewController.m */; };
+		942A47DE1C46B4F2006A8FA0 /* BuySellHistoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 942A47DC1C46B4F2006A8FA0 /* BuySellHistoryViewController.xib */; };
+		942A47E01C482017006A8FA0 /* BuySellItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 942A47DF1C482017006A8FA0 /* BuySellItemView.xib */; };
+		942A47E31C4BF860006A8FA0 /* CalculateAVOL.m in Sources */ = {isa = PBXBuildFile; fileRef = 942A47E21C4BF860006A8FA0 /* CalculateAVOL.m */; };
+		942A47EB1C4D4C07006A8FA0 /* KLineSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 942A47E91C4D4C07006A8FA0 /* KLineSettingViewController.m */; };
+		942A47EC1C4D4C07006A8FA0 /* KLineSettingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 942A47EA1C4D4C07006A8FA0 /* KLineSettingViewController.xib */; };
 		944DCFF51C3AB36300476A3F /* GetTodayStockValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 944DCFF41C3AB36300476A3F /* GetTodayStockValue.m */; };
 		944DCFFA1C3AB38E00476A3F /* SyncPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 944DCFF91C3AB38E00476A3F /* SyncPoint.m */; };
 		944DCFFD1C3ACEBC00476A3F /* GetFiveDayStockValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 944DCFFC1C3ACEBC00476A3F /* GetFiveDayStockValue.m */; };
@@ -51,7 +57,7 @@
 		945DF5CC1C074A0C00C81F31 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 945DF5CB1C074A0C00C81F31 /* AppDelegate.m */; };
 		945DF5D41C074A0C00C81F31 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 945DF5D31C074A0C00C81F31 /* Images.xcassets */; };
 		945DF5D71C074A0C00C81F31 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 945DF5D51C074A0C00C81F31 /* LaunchScreen.xib */; };
-		945DF5E31C074A0C00C81F31 /* StockListenerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 945DF5E21C074A0C00C81F31 /* StockListenerTests.m */; };
+		945F55EA1D12F0E000BDB01C /* OrgnizedViewUpdator.m in Sources */ = {isa = PBXBuildFile; fileRef = 945F55E91D12F0E000BDB01C /* OrgnizedViewUpdator.m */; };
 		946E5DDD1C17238600CA896E /* SearchStockController.m in Sources */ = {isa = PBXBuildFile; fileRef = 946E5DDC1C17238600CA896E /* SearchStockController.m */; };
 		946E5DE11C17239B00CA896E /* DatabaseHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 946E5DE01C17239B00CA896E /* DatabaseHelper.m */; };
 		946E5DE41C172A1A00CA896E /* StockInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 946E5DE31C172A1A00CA896E /* StockInfo.m */; };
@@ -98,22 +104,50 @@
 		9482E2491C43C225004AB1EC /* KDJViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9482E2481C43C225004AB1EC /* KDJViewController.m */; };
 		9482E24C1C43C5E7004AB1EC /* KLineViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9482E24B1C43C5E7004AB1EC /* KLineViewController.m */; };
 		9482E24F1C441B3C004AB1EC /* GetWeeksStockValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 9482E24E1C441B3C004AB1EC /* GetWeeksStockValue.m */; };
+		948568361C46896800489784 /* SearchStockByKeyword.m in Sources */ = {isa = PBXBuildFile; fileRef = 948568351C46896800489784 /* SearchStockByKeyword.m */; };
+		9487139B1D118D4B00B179A2 /* OrgnizedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 948713991D118D4B00B179A2 /* OrgnizedViewController.m */; };
+		9487139C1D118D4B00B179A2 /* OrgnizedViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9487139A1D118D4B00B179A2 /* OrgnizedViewController.xib */; };
+		9487139F1D11B20300B179A2 /* OrgnizedItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 9487139E1D11B20300B179A2 /* OrgnizedItem.m */; };
+		948884471C83558200508B29 /* LineTableItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = 948884461C83558200508B29 /* LineTableItem.xib */; };
+		9488844B1C836FC900508B29 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9488844A1C836FC900508B29 /* QuartzCore.framework */; };
+		9488844D1C836FD300508B29 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9488844C1C836FD300508B29 /* CoreGraphics.framework */; };
+		9488847E1C83705900508B29 /* ANImageBitmapRep.m in Sources */ = {isa = PBXBuildFile; fileRef = 948884521C83705900508B29 /* ANImageBitmapRep.m */; };
+		9488847F1C83705900508B29 /* BitmapContextRep.m in Sources */ = {isa = PBXBuildFile; fileRef = 948884541C83705900508B29 /* BitmapContextRep.m */; };
+		948884801C83705900508B29 /* NSImage+ANImageBitmapRep.m in Sources */ = {isa = PBXBuildFile; fileRef = 948884571C83705900508B29 /* NSImage+ANImageBitmapRep.m */; };
+		948884811C83705900508B29 /* OSCommonImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 948884591C83705900508B29 /* OSCommonImage.m */; };
+		948884821C83705900508B29 /* UIImage+ANImageBitmapRep.m in Sources */ = {isa = PBXBuildFile; fileRef = 9488845B1C83705900508B29 /* UIImage+ANImageBitmapRep.m */; };
+		948884831C83705900508B29 /* CGContextCreator.m in Sources */ = {isa = PBXBuildFile; fileRef = 9488845E1C83705900508B29 /* CGContextCreator.m */; };
+		948884841C83705900508B29 /* CGImageContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = 948884601C83705900508B29 /* CGImageContainer.m */; };
+		948884851C83705900508B29 /* BitmapContextManipulator.m in Sources */ = {isa = PBXBuildFile; fileRef = 948884631C83705900508B29 /* BitmapContextManipulator.m */; };
+		948884861C83705900508B29 /* BitmapCropManipulator.m in Sources */ = {isa = PBXBuildFile; fileRef = 948884651C83705900508B29 /* BitmapCropManipulator.m */; };
+		948884871C83705900508B29 /* BitmapDrawManipulator.m in Sources */ = {isa = PBXBuildFile; fileRef = 948884671C83705900508B29 /* BitmapDrawManipulator.m */; };
+		948884881C83705900508B29 /* BitmapRotationManipulator.m in Sources */ = {isa = PBXBuildFile; fileRef = 948884691C83705900508B29 /* BitmapRotationManipulator.m */; };
+		948884891C83705900508B29 /* BitmapScaleManipulator.m in Sources */ = {isa = PBXBuildFile; fileRef = 9488846B1C83705900508B29 /* BitmapScaleManipulator.m */; };
+		9488848A1C83705900508B29 /* BGRSLoupeLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 9488846D1C83705900508B29 /* BGRSLoupeLayer.m */; };
+		9488848B1C83705900508B29 /* RSColorFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9488846F1C83705900508B29 /* RSColorFunctions.m */; };
+		9488848C1C83705900508B29 /* RSColorPickerState.m in Sources */ = {isa = PBXBuildFile; fileRef = 948884711C83705900508B29 /* RSColorPickerState.m */; };
+		9488848D1C83705900508B29 /* RSColorPickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 948884731C83705900508B29 /* RSColorPickerView.m */; };
+		9488848E1C83705900508B29 /* RSGenerateOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 948884751C83705900508B29 /* RSGenerateOperation.m */; };
+		9488848F1C83705900508B29 /* RSSelectionLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 948884771C83705900508B29 /* RSSelectionLayer.m */; };
+		948884901C83705900508B29 /* RSBrightnessSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 948884791C83705900508B29 /* RSBrightnessSlider.m */; };
+		948884911C83705900508B29 /* RSOpacitySlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 9488847B1C83705900508B29 /* RSOpacitySlider.m */; };
+		948884921C83705900508B29 /* TestColorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9488847D1C83705900508B29 /* TestColorViewController.m */; };
 		94A6E5EA1C32CB5800992580 /* TabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A6E5E91C32CB5800992580 /* TabBarController.m */; };
 		94C447E01C2B0DA10055E820 /* PNLineChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = 94C447DD1C2B0DA10055E820 /* PNLineChartView.m */; };
 		94C447E11C2B0DA10055E820 /* PNPlot.m in Sources */ = {isa = PBXBuildFile; fileRef = 94C447DF1C2B0DA10055E820 /* PNPlot.m */; };
 		94D143081C2E8E5500FD0317 /* ZSYPopoverListView.m in Sources */ = {isa = PBXBuildFile; fileRef = 94D143071C2E8E5500FD0317 /* ZSYPopoverListView.m */; };
 		94D1430D1C2EA2BB00FD0317 /* selection_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 94D1430B1C2EA2BB00FD0317 /* selection_normal.png */; };
 		94D1430E1C2EA2BB00FD0317 /* selection_selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 94D1430C1C2EA2BB00FD0317 /* selection_selected.png */; };
+		94DB54D11C55321B0038C332 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94DB54CF1C55321B0038C332 /* SettingsViewController.m */; };
+		94DB54D21C55321B0038C332 /* SettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 94DB54D01C55321B0038C332 /* SettingsViewController.xib */; };
+		94DB54D71C5650D60038C332 /* ConfigHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 94DB54D61C5650D60038C332 /* ConfigHelper.m */; };
+		94DB54D91C57BB990038C332 /* stock_list.png in Resources */ = {isa = PBXBuildFile; fileRef = 94DB54D81C57BB990038C332 /* stock_list.png */; };
+		94DB54DB1C57BDD10038C332 /* stock.png in Resources */ = {isa = PBXBuildFile; fileRef = 94DB54DA1C57BDD10038C332 /* stock.png */; };
+		94DB54DD1C57C1BF0038C332 /* calculator.png in Resources */ = {isa = PBXBuildFile; fileRef = 94DB54DC1C57C1BF0038C332 /* calculator.png */; };
+		94DB54DF1C57C79C0038C332 /* setting.png in Resources */ = {isa = PBXBuildFile; fileRef = 94DB54DE1C57C79C0038C332 /* setting.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		945DF5DD1C074A0C00C81F31 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 945DF5BB1C074A0B00C81F31 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 945DF5C21C074A0B00C81F31;
-			remoteInfo = StockListener;
-		};
 		946E5E231C1D53B800CA896E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 946E5E1D1C1D53B700CA896E /* TheAmazingAudioEngine.xcodeproj */;
@@ -200,6 +234,15 @@
 		940CC2201C0AE6FD00F84ADB /* StockPlayerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StockPlayerManager.h; path = StockListener/StockPlayer/StockPlayerManager.h; sourceTree = "<group>"; };
 		940CC2211C0AE6FD00F84ADB /* StockPlayerManagerForFSAudio.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StockPlayerManagerForFSAudio.m; path = StockListener/StockPlayer/StockPlayerManagerForFSAudio.m; sourceTree = "<group>"; };
 		940CC2241C0AEA2700F84ADB /* music_default_1.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = music_default_1.mp3; sourceTree = "<group>"; };
+		942A47DA1C46B4F2006A8FA0 /* BuySellHistoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BuySellHistoryViewController.h; path = StockListener/BuySellHistory/BuySellHistoryViewController.h; sourceTree = "<group>"; };
+		942A47DB1C46B4F2006A8FA0 /* BuySellHistoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BuySellHistoryViewController.m; path = StockListener/BuySellHistory/BuySellHistoryViewController.m; sourceTree = "<group>"; };
+		942A47DC1C46B4F2006A8FA0 /* BuySellHistoryViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = BuySellHistoryViewController.xib; path = StockListener/BuySellHistory/BuySellHistoryViewController.xib; sourceTree = "<group>"; };
+		942A47DF1C482017006A8FA0 /* BuySellItemView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = BuySellItemView.xib; path = StockListener/BuySellHistory/BuySellItemView.xib; sourceTree = "<group>"; };
+		942A47E11C4BF860006A8FA0 /* CalculateAVOL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalculateAVOL.h; sourceTree = "<group>"; };
+		942A47E21C4BF860006A8FA0 /* CalculateAVOL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalculateAVOL.m; sourceTree = "<group>"; };
+		942A47E81C4D4C07006A8FA0 /* KLineSettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KLineSettingViewController.h; sourceTree = "<group>"; };
+		942A47E91C4D4C07006A8FA0 /* KLineSettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KLineSettingViewController.m; sourceTree = "<group>"; };
+		942A47EA1C4D4C07006A8FA0 /* KLineSettingViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = KLineSettingViewController.xib; sourceTree = "<group>"; };
 		944DCFF31C3AB36300476A3F /* GetTodayStockValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetTodayStockValue.h; sourceTree = "<group>"; };
 		944DCFF41C3AB36300476A3F /* GetTodayStockValue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetTodayStockValue.m; sourceTree = "<group>"; };
 		944DCFF81C3AB38E00476A3F /* SyncPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SyncPoint.h; sourceTree = "<group>"; };
@@ -226,9 +269,10 @@
 		945DF5CB1C074A0C00C81F31 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		945DF5D31C074A0C00C81F31 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		945DF5D61C074A0C00C81F31 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		945DF5DC1C074A0C00C81F31 /* StockListenerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StockListenerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		945DF5E11C074A0C00C81F31 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		945DF5E21C074A0C00C81F31 /* StockListenerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StockListenerTests.m; sourceTree = "<group>"; };
+		945F55E81D12F0E000BDB01C /* OrgnizedViewUpdator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OrgnizedViewUpdator.h; path = OrgnizedView/OrgnizedViewUpdator.h; sourceTree = "<group>"; };
+		945F55E91D12F0E000BDB01C /* OrgnizedViewUpdator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OrgnizedViewUpdator.m; path = OrgnizedView/OrgnizedViewUpdator.m; sourceTree = "<group>"; };
 		946E5DDB1C17238600CA896E /* SearchStockController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SearchStockController.h; path = StockListener/StockMainView/SearchStockController.h; sourceTree = "<group>"; };
 		946E5DDC1C17238600CA896E /* SearchStockController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SearchStockController.m; path = StockListener/StockMainView/SearchStockController.m; sourceTree = "<group>"; };
 		946E5DDF1C17239B00CA896E /* DatabaseHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DatabaseHelper.h; sourceTree = "<group>"; };
@@ -309,6 +353,58 @@
 		9482E24B1C43C5E7004AB1EC /* KLineViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KLineViewController.m; sourceTree = "<group>"; };
 		9482E24D1C441B3C004AB1EC /* GetWeeksStockValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetWeeksStockValue.h; sourceTree = "<group>"; };
 		9482E24E1C441B3C004AB1EC /* GetWeeksStockValue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetWeeksStockValue.m; sourceTree = "<group>"; };
+		948568341C46896800489784 /* SearchStockByKeyword.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchStockByKeyword.h; sourceTree = "<group>"; };
+		948568351C46896800489784 /* SearchStockByKeyword.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchStockByKeyword.m; sourceTree = "<group>"; };
+		948713981D118D4B00B179A2 /* OrgnizedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OrgnizedViewController.h; path = OrgnizedView/OrgnizedViewController.h; sourceTree = "<group>"; };
+		948713991D118D4B00B179A2 /* OrgnizedViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OrgnizedViewController.m; path = OrgnizedView/OrgnizedViewController.m; sourceTree = "<group>"; };
+		9487139A1D118D4B00B179A2 /* OrgnizedViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = OrgnizedViewController.xib; path = OrgnizedView/OrgnizedViewController.xib; sourceTree = "<group>"; };
+		9487139D1D11B20300B179A2 /* OrgnizedItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrgnizedItem.h; sourceTree = "<group>"; };
+		9487139E1D11B20300B179A2 /* OrgnizedItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OrgnizedItem.m; sourceTree = "<group>"; };
+		948884461C83558200508B29 /* LineTableItem.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LineTableItem.xib; sourceTree = "<group>"; };
+		9488844A1C836FC900508B29 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		9488844C1C836FD300508B29 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		948884511C83705900508B29 /* ANImageBitmapRep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANImageBitmapRep.h; sourceTree = "<group>"; };
+		948884521C83705900508B29 /* ANImageBitmapRep.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ANImageBitmapRep.m; sourceTree = "<group>"; };
+		948884531C83705900508B29 /* BitmapContextRep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BitmapContextRep.h; sourceTree = "<group>"; };
+		948884541C83705900508B29 /* BitmapContextRep.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BitmapContextRep.m; sourceTree = "<group>"; };
+		948884561C83705900508B29 /* NSImage+ANImageBitmapRep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSImage+ANImageBitmapRep.h"; sourceTree = "<group>"; };
+		948884571C83705900508B29 /* NSImage+ANImageBitmapRep.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSImage+ANImageBitmapRep.m"; sourceTree = "<group>"; };
+		948884581C83705900508B29 /* OSCommonImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSCommonImage.h; sourceTree = "<group>"; };
+		948884591C83705900508B29 /* OSCommonImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSCommonImage.m; sourceTree = "<group>"; };
+		9488845A1C83705900508B29 /* UIImage+ANImageBitmapRep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ANImageBitmapRep.h"; sourceTree = "<group>"; };
+		9488845B1C83705900508B29 /* UIImage+ANImageBitmapRep.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ANImageBitmapRep.m"; sourceTree = "<group>"; };
+		9488845D1C83705900508B29 /* CGContextCreator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CGContextCreator.h; sourceTree = "<group>"; };
+		9488845E1C83705900508B29 /* CGContextCreator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CGContextCreator.m; sourceTree = "<group>"; };
+		9488845F1C83705900508B29 /* CGImageContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CGImageContainer.h; sourceTree = "<group>"; };
+		948884601C83705900508B29 /* CGImageContainer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CGImageContainer.m; sourceTree = "<group>"; };
+		948884621C83705900508B29 /* BitmapContextManipulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BitmapContextManipulator.h; sourceTree = "<group>"; };
+		948884631C83705900508B29 /* BitmapContextManipulator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BitmapContextManipulator.m; sourceTree = "<group>"; };
+		948884641C83705900508B29 /* BitmapCropManipulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BitmapCropManipulator.h; sourceTree = "<group>"; };
+		948884651C83705900508B29 /* BitmapCropManipulator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BitmapCropManipulator.m; sourceTree = "<group>"; };
+		948884661C83705900508B29 /* BitmapDrawManipulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BitmapDrawManipulator.h; sourceTree = "<group>"; };
+		948884671C83705900508B29 /* BitmapDrawManipulator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BitmapDrawManipulator.m; sourceTree = "<group>"; };
+		948884681C83705900508B29 /* BitmapRotationManipulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BitmapRotationManipulator.h; sourceTree = "<group>"; };
+		948884691C83705900508B29 /* BitmapRotationManipulator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BitmapRotationManipulator.m; sourceTree = "<group>"; };
+		9488846A1C83705900508B29 /* BitmapScaleManipulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BitmapScaleManipulator.h; sourceTree = "<group>"; };
+		9488846B1C83705900508B29 /* BitmapScaleManipulator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BitmapScaleManipulator.m; sourceTree = "<group>"; };
+		9488846C1C83705900508B29 /* BGRSLoupeLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGRSLoupeLayer.h; sourceTree = "<group>"; };
+		9488846D1C83705900508B29 /* BGRSLoupeLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGRSLoupeLayer.m; sourceTree = "<group>"; };
+		9488846E1C83705900508B29 /* RSColorFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RSColorFunctions.h; sourceTree = "<group>"; };
+		9488846F1C83705900508B29 /* RSColorFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RSColorFunctions.m; sourceTree = "<group>"; };
+		948884701C83705900508B29 /* RSColorPickerState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RSColorPickerState.h; sourceTree = "<group>"; };
+		948884711C83705900508B29 /* RSColorPickerState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RSColorPickerState.m; sourceTree = "<group>"; };
+		948884721C83705900508B29 /* RSColorPickerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RSColorPickerView.h; sourceTree = "<group>"; };
+		948884731C83705900508B29 /* RSColorPickerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RSColorPickerView.m; sourceTree = "<group>"; };
+		948884741C83705900508B29 /* RSGenerateOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RSGenerateOperation.h; sourceTree = "<group>"; };
+		948884751C83705900508B29 /* RSGenerateOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RSGenerateOperation.m; sourceTree = "<group>"; };
+		948884761C83705900508B29 /* RSSelectionLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RSSelectionLayer.h; sourceTree = "<group>"; };
+		948884771C83705900508B29 /* RSSelectionLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RSSelectionLayer.m; sourceTree = "<group>"; };
+		948884781C83705900508B29 /* RSBrightnessSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RSBrightnessSlider.h; sourceTree = "<group>"; };
+		948884791C83705900508B29 /* RSBrightnessSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RSBrightnessSlider.m; sourceTree = "<group>"; };
+		9488847A1C83705900508B29 /* RSOpacitySlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RSOpacitySlider.h; sourceTree = "<group>"; };
+		9488847B1C83705900508B29 /* RSOpacitySlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RSOpacitySlider.m; sourceTree = "<group>"; };
+		9488847C1C83705900508B29 /* TestColorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestColorViewController.h; sourceTree = "<group>"; };
+		9488847D1C83705900508B29 /* TestColorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestColorViewController.m; sourceTree = "<group>"; };
 		94A6E5E81C32CB5800992580 /* TabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarController.h; sourceTree = "<group>"; };
 		94A6E5E91C32CB5800992580 /* TabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TabBarController.m; sourceTree = "<group>"; };
 		94C447DC1C2B0DA10055E820 /* PNLineChartView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNLineChartView.h; sourceTree = "<group>"; };
@@ -319,6 +415,15 @@
 		94D143071C2E8E5500FD0317 /* ZSYPopoverListView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZSYPopoverListView.m; sourceTree = "<group>"; };
 		94D1430B1C2EA2BB00FD0317 /* selection_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = selection_normal.png; sourceTree = "<group>"; };
 		94D1430C1C2EA2BB00FD0317 /* selection_selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = selection_selected.png; sourceTree = "<group>"; };
+		94DB54CE1C55321B0038C332 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SettingsViewController.h; path = StockListener/Settings/SettingsViewController.h; sourceTree = "<group>"; };
+		94DB54CF1C55321B0038C332 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SettingsViewController.m; path = StockListener/Settings/SettingsViewController.m; sourceTree = "<group>"; };
+		94DB54D01C55321B0038C332 /* SettingsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = SettingsViewController.xib; path = StockListener/Settings/SettingsViewController.xib; sourceTree = "<group>"; };
+		94DB54D51C5650D60038C332 /* ConfigHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConfigHelper.h; sourceTree = "<group>"; };
+		94DB54D61C5650D60038C332 /* ConfigHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConfigHelper.m; sourceTree = "<group>"; };
+		94DB54D81C57BB990038C332 /* stock_list.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stock_list.png; sourceTree = "<group>"; };
+		94DB54DA1C57BDD10038C332 /* stock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stock.png; sourceTree = "<group>"; };
+		94DB54DC1C57C1BF0038C332 /* calculator.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = calculator.png; sourceTree = "<group>"; };
+		94DB54DE1C57C79C0038C332 /* setting.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = setting.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -326,6 +431,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9488844D1C836FD300508B29 /* CoreGraphics.framework in Frameworks */,
+				9488844B1C836FC900508B29 /* QuartzCore.framework in Frameworks */,
 				946E5E2B1C1D53EB00CA896E /* libTheAmazingAudioEngine.a in Frameworks */,
 				946E5E191C1D318E00CA896E /* Accelerate.framework in Frameworks */,
 				940CC1E21C09BEA400F84ADB /* AVFoundation.framework in Frameworks */,
@@ -334,13 +441,6 @@
 				940CC1E01C09BE9A00F84ADB /* AudioToolbox.framework in Frameworks */,
 				940CC1DE1C09BE9200F84ADB /* CFNetwork.framework in Frameworks */,
 				94029B7D1C08E3C6004B5C81 /* libz.1.2.5.tbd in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		945DF5D91C074A0C00C81F31 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -372,10 +472,12 @@
 		94029B731C08D9D6004B5C81 /* NetworkConnection */ = {
 			isa = PBXGroup;
 			children = (
-				9482E24D1C441B3C004AB1EC /* GetWeeksStockValue.h */,
-				9482E24E1C441B3C004AB1EC /* GetWeeksStockValue.m */,
 				94029B741C08D9D6004B5C81 /* ServerConnectionBase.h */,
 				94029B751C08D9D6004B5C81 /* ServerConnectionBase.m */,
+				948568341C46896800489784 /* SearchStockByKeyword.h */,
+				948568351C46896800489784 /* SearchStockByKeyword.m */,
+				9482E24D1C441B3C004AB1EC /* GetWeeksStockValue.h */,
+				9482E24E1C441B3C004AB1EC /* GetWeeksStockValue.m */,
 				94029B761C08D9D6004B5C81 /* GetStockValueTask.h */,
 				94029B771C08D9D6004B5C81 /* GetStockValueTask.m */,
 				944DCFF31C3AB36300476A3F /* GetTodayStockValue.h */,
@@ -480,6 +582,10 @@
 		940CC2251C0AEA2700F84ADB /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				94DB54DE1C57C79C0038C332 /* setting.png */,
+				94DB54DC1C57C1BF0038C332 /* calculator.png */,
+				94DB54DA1C57BDD10038C332 /* stock.png */,
+				94DB54D81C57BB990038C332 /* stock_list.png */,
 				94D1430B1C2EA2BB00FD0317 /* selection_normal.png */,
 				94D1430C1C2EA2BB00FD0317 /* selection_selected.png */,
 				9405DA191C2AD337008C89FD /* test.data */,
@@ -523,6 +629,9 @@
 		945DF5BA1C074A0B00C81F31 = {
 			isa = PBXGroup;
 			children = (
+				9488844E1C83705900508B29 /* ColorPicker */,
+				9488844C1C836FD300508B29 /* CoreGraphics.framework */,
+				9488844A1C836FC900508B29 /* QuartzCore.framework */,
 				944DCFFE1C3AD64F00476A3F /* json */,
 				94D143051C2E8E5500FD0317 /* ZSYPopoverListView */,
 				94C447DB1C2B0DA10055E820 /* PNLineChart */,
@@ -545,8 +654,11 @@
 				94029B6B1C08D844004B5C81 /* Worker */,
 				940CC2251C0AEA2700F84ADB /* Resources */,
 				946E5DDE1C17239B00CA896E /* DB */,
+				948568391C46A9DD00489784 /* BuySellHistory */,
 				9482E22D1C423950004AB1EC /* StockDetailView */,
+				94DB54CB1C55314E0038C332 /* Settings */,
 				946E5DDA1C17230B00CA896E /* StockMainView */,
+				948713921D118CA500B179A2 /* OrgnizedView */,
 				945DF5C51C074A0C00C81F31 /* StockListener */,
 				945DF5DF1C074A0C00C81F31 /* StockListenerTests */,
 				945DF5C41C074A0C00C81F31 /* Products */,
@@ -557,7 +669,6 @@
 			isa = PBXGroup;
 			children = (
 				945DF5C31C074A0C00C81F31 /* StockListener.app */,
-				945DF5DC1C074A0C00C81F31 /* StockListenerTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -626,6 +737,10 @@
 				946E5DE31C172A1A00CA896E /* StockInfo.m */,
 				946E5DE51C1738E300CA896E /* StockRefresher.h */,
 				946E5DE61C1738E300CA896E /* StockRefresher.m */,
+				94DB54D51C5650D60038C332 /* ConfigHelper.h */,
+				94DB54D61C5650D60038C332 /* ConfigHelper.m */,
+				9487139D1D11B20300B179A2 /* OrgnizedItem.h */,
+				9487139E1D11B20300B179A2 /* OrgnizedItem.m */,
 			);
 			name = DB;
 			path = StockListener/DB;
@@ -745,6 +860,10 @@
 		9482E22D1C423950004AB1EC /* StockDetailView */ = {
 			isa = PBXGroup;
 			children = (
+				942A47E81C4D4C07006A8FA0 /* KLineSettingViewController.h */,
+				942A47E91C4D4C07006A8FA0 /* KLineSettingViewController.m */,
+				942A47EA1C4D4C07006A8FA0 /* KLineSettingViewController.xib */,
+				948884461C83558200508B29 /* LineTableItem.xib */,
 				9482E24A1C43C5E7004AB1EC /* KLineViewController.h */,
 				9482E24B1C43C5E7004AB1EC /* KLineViewController.m */,
 				9482E2471C43C225004AB1EC /* KDJViewController.h */,
@@ -765,9 +884,125 @@
 				9482E2331C423950004AB1EC /* StockKDJViewController.h */,
 				9482E2341C423950004AB1EC /* StockKDJViewController.m */,
 				9482E2351C423950004AB1EC /* StockKDJViewController.xib */,
+				942A47E11C4BF860006A8FA0 /* CalculateAVOL.h */,
+				942A47E21C4BF860006A8FA0 /* CalculateAVOL.m */,
 			);
 			name = StockDetailView;
 			path = StockListener/StockDetailView;
+			sourceTree = "<group>";
+		};
+		948568391C46A9DD00489784 /* BuySellHistory */ = {
+			isa = PBXGroup;
+			children = (
+				942A47DA1C46B4F2006A8FA0 /* BuySellHistoryViewController.h */,
+				942A47DB1C46B4F2006A8FA0 /* BuySellHistoryViewController.m */,
+				942A47DC1C46B4F2006A8FA0 /* BuySellHistoryViewController.xib */,
+				942A47DF1C482017006A8FA0 /* BuySellItemView.xib */,
+			);
+			name = BuySellHistory;
+			sourceTree = "<group>";
+		};
+		948713921D118CA500B179A2 /* OrgnizedView */ = {
+			isa = PBXGroup;
+			children = (
+				948713981D118D4B00B179A2 /* OrgnizedViewController.h */,
+				948713991D118D4B00B179A2 /* OrgnizedViewController.m */,
+				9487139A1D118D4B00B179A2 /* OrgnizedViewController.xib */,
+				945F55E81D12F0E000BDB01C /* OrgnizedViewUpdator.h */,
+				945F55E91D12F0E000BDB01C /* OrgnizedViewUpdator.m */,
+			);
+			name = OrgnizedView;
+			path = StockListener;
+			sourceTree = "<group>";
+		};
+		9488844E1C83705900508B29 /* ColorPicker */ = {
+			isa = PBXGroup;
+			children = (
+				9488844F1C83705900508B29 /* ColorPickerClasses */,
+				948884781C83705900508B29 /* RSBrightnessSlider.h */,
+				948884791C83705900508B29 /* RSBrightnessSlider.m */,
+				9488847A1C83705900508B29 /* RSOpacitySlider.h */,
+				9488847B1C83705900508B29 /* RSOpacitySlider.m */,
+				9488847C1C83705900508B29 /* TestColorViewController.h */,
+				9488847D1C83705900508B29 /* TestColorViewController.m */,
+			);
+			name = ColorPicker;
+			path = StockListener/ColorPicker;
+			sourceTree = "<group>";
+		};
+		9488844F1C83705900508B29 /* ColorPickerClasses */ = {
+			isa = PBXGroup;
+			children = (
+				948884501C83705900508B29 /* ANImageBitmapRep */,
+				9488846C1C83705900508B29 /* BGRSLoupeLayer.h */,
+				9488846D1C83705900508B29 /* BGRSLoupeLayer.m */,
+				9488846E1C83705900508B29 /* RSColorFunctions.h */,
+				9488846F1C83705900508B29 /* RSColorFunctions.m */,
+				948884701C83705900508B29 /* RSColorPickerState.h */,
+				948884711C83705900508B29 /* RSColorPickerState.m */,
+				948884721C83705900508B29 /* RSColorPickerView.h */,
+				948884731C83705900508B29 /* RSColorPickerView.m */,
+				948884741C83705900508B29 /* RSGenerateOperation.h */,
+				948884751C83705900508B29 /* RSGenerateOperation.m */,
+				948884761C83705900508B29 /* RSSelectionLayer.h */,
+				948884771C83705900508B29 /* RSSelectionLayer.m */,
+			);
+			path = ColorPickerClasses;
+			sourceTree = "<group>";
+		};
+		948884501C83705900508B29 /* ANImageBitmapRep */ = {
+			isa = PBXGroup;
+			children = (
+				948884511C83705900508B29 /* ANImageBitmapRep.h */,
+				948884521C83705900508B29 /* ANImageBitmapRep.m */,
+				948884531C83705900508B29 /* BitmapContextRep.h */,
+				948884541C83705900508B29 /* BitmapContextRep.m */,
+				948884551C83705900508B29 /* Compatibility */,
+				9488845C1C83705900508B29 /* CoreGraphics */,
+				948884611C83705900508B29 /* Manipulators */,
+			);
+			path = ANImageBitmapRep;
+			sourceTree = "<group>";
+		};
+		948884551C83705900508B29 /* Compatibility */ = {
+			isa = PBXGroup;
+			children = (
+				948884561C83705900508B29 /* NSImage+ANImageBitmapRep.h */,
+				948884571C83705900508B29 /* NSImage+ANImageBitmapRep.m */,
+				948884581C83705900508B29 /* OSCommonImage.h */,
+				948884591C83705900508B29 /* OSCommonImage.m */,
+				9488845A1C83705900508B29 /* UIImage+ANImageBitmapRep.h */,
+				9488845B1C83705900508B29 /* UIImage+ANImageBitmapRep.m */,
+			);
+			path = Compatibility;
+			sourceTree = "<group>";
+		};
+		9488845C1C83705900508B29 /* CoreGraphics */ = {
+			isa = PBXGroup;
+			children = (
+				9488845D1C83705900508B29 /* CGContextCreator.h */,
+				9488845E1C83705900508B29 /* CGContextCreator.m */,
+				9488845F1C83705900508B29 /* CGImageContainer.h */,
+				948884601C83705900508B29 /* CGImageContainer.m */,
+			);
+			path = CoreGraphics;
+			sourceTree = "<group>";
+		};
+		948884611C83705900508B29 /* Manipulators */ = {
+			isa = PBXGroup;
+			children = (
+				948884621C83705900508B29 /* BitmapContextManipulator.h */,
+				948884631C83705900508B29 /* BitmapContextManipulator.m */,
+				948884641C83705900508B29 /* BitmapCropManipulator.h */,
+				948884651C83705900508B29 /* BitmapCropManipulator.m */,
+				948884661C83705900508B29 /* BitmapDrawManipulator.h */,
+				948884671C83705900508B29 /* BitmapDrawManipulator.m */,
+				948884681C83705900508B29 /* BitmapRotationManipulator.h */,
+				948884691C83705900508B29 /* BitmapRotationManipulator.m */,
+				9488846A1C83705900508B29 /* BitmapScaleManipulator.h */,
+				9488846B1C83705900508B29 /* BitmapScaleManipulator.m */,
+			);
+			path = Manipulators;
 			sourceTree = "<group>";
 		};
 		94C447DB1C2B0DA10055E820 /* PNLineChart */ = {
@@ -792,6 +1027,16 @@
 			path = StockListener/ZSYPopoverListView;
 			sourceTree = "<group>";
 		};
+		94DB54CB1C55314E0038C332 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				94DB54CE1C55321B0038C332 /* SettingsViewController.h */,
+				94DB54CF1C55321B0038C332 /* SettingsViewController.m */,
+				94DB54D01C55321B0038C332 /* SettingsViewController.xib */,
+			);
+			name = Settings;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -813,24 +1058,6 @@
 			productReference = 945DF5C31C074A0C00C81F31 /* StockListener.app */;
 			productType = "com.apple.product-type.application";
 		};
-		945DF5DB1C074A0C00C81F31 /* StockListenerTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 945DF5E91C074A0C00C81F31 /* Build configuration list for PBXNativeTarget "StockListenerTests" */;
-			buildPhases = (
-				945DF5D81C074A0C00C81F31 /* Sources */,
-				945DF5D91C074A0C00C81F31 /* Frameworks */,
-				945DF5DA1C074A0C00C81F31 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				945DF5DE1C074A0C00C81F31 /* PBXTargetDependency */,
-			);
-			name = StockListenerTests;
-			productName = StockListenerTests;
-			productReference = 945DF5DC1C074A0C00C81F31 /* StockListenerTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -842,11 +1069,6 @@
 				TargetAttributes = {
 					945DF5C21C074A0B00C81F31 = {
 						CreatedOnToolsVersion = 6.3.2;
-						DevelopmentTeam = KTWHB3SHL5;
-					};
-					945DF5DB1C074A0C00C81F31 = {
-						CreatedOnToolsVersion = 6.3.2;
-						TestTargetID = 945DF5C21C074A0B00C81F31;
 					};
 				};
 			};
@@ -870,7 +1092,6 @@
 			projectRoot = "";
 			targets = (
 				945DF5C21C074A0B00C81F31 /* StockListener */,
-				945DF5DB1C074A0C00C81F31 /* StockListenerTests */,
 			);
 		};
 /* End PBXProject section */
@@ -906,31 +1127,34 @@
 			files = (
 				946E5E671C20324400CA896E /* Pause@2x.png in Resources */,
 				940CC2271C0AEA2700F84ADB /* music_default_1.mp3 in Resources */,
+				942A47E01C482017006A8FA0 /* BuySellItemView.xib in Resources */,
+				94DB54DB1C57BDD10038C332 /* stock.png in Resources */,
 				9482E2381C423950004AB1EC /* StockDetailViewController.xib in Resources */,
 				946E5E321C1D931800CA896E /* down.m4a in Resources */,
+				9487139C1D118D4B00B179A2 /* OrgnizedViewController.xib in Resources */,
 				946E5E751C20500500CA896E /* backward.png in Resources */,
+				94DB54D91C57BB990038C332 /* stock_list.png in Resources */,
 				946E5E7C1C208DFE00CA896E /* bg.png in Resources */,
 				94D1430D1C2EA2BB00FD0317 /* selection_normal.png in Resources */,
 				9482E23A1C423950004AB1EC /* StockKDJViewController.xib in Resources */,
 				946E5E661C20324400CA896E /* Pause.png in Resources */,
 				946E5E331C1D931800CA896E /* up.m4a in Resources */,
 				946E5E761C20500500CA896E /* forward.png in Resources */,
+				94DB54D21C55321B0038C332 /* SettingsViewController.xib in Resources */,
+				94DB54DD1C57C1BF0038C332 /* calculator.png in Resources */,
 				946E5DEE1C19DD0500CA896E /* headset.png in Resources */,
 				946E5DE91C18872400CA896E /* StockTableItemView.xib in Resources */,
+				942A47DE1C46B4F2006A8FA0 /* BuySellHistoryViewController.xib in Resources */,
 				945DF5D71C074A0C00C81F31 /* LaunchScreen.xib in Resources */,
+				942A47EC1C4D4C07006A8FA0 /* KLineSettingViewController.xib in Resources */,
 				946E5E681C20324400CA896E /* Play.png in Resources */,
 				9478E8B31C32EE5600087E39 /* StockListViewController.xib in Resources */,
 				946E5E691C20324400CA896E /* Play@2x.png in Resources */,
+				94DB54DF1C57C79C0038C332 /* setting.png in Resources */,
 				945DF5D41C074A0C00C81F31 /* Images.xcassets in Resources */,
+				948884471C83558200508B29 /* LineTableItem.xib in Resources */,
 				9405DA1A1C2AD337008C89FD /* test.data in Resources */,
 				94D1430E1C2EA2BB00FD0317 /* selection_selected.png in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		945DF5DA1C074A0C00C81F31 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -943,27 +1167,39 @@
 			files = (
 				944DD0111C3AD64F00476A3F /* SBJsonWriter.m in Sources */,
 				9482E2361C423950004AB1EC /* CalculateKDJ.m in Sources */,
+				948884841C83705900508B29 /* CGImageContainer.m in Sources */,
+				9488847E1C83705900508B29 /* ANImageBitmapRep.m in Sources */,
 				944DCFF51C3AB36300476A3F /* GetTodayStockValue.m in Sources */,
 				940CC2191C09BFAD00F84ADB /* FSXMLHttpRequest.m in Sources */,
 				940CC2221C0AE6FD00F84ADB /* StockPlayerManagerForFSAudio.m in Sources */,
+				9488848D1C83705900508B29 /* RSColorPickerView.m in Sources */,
 				9478E8B21C32EE5600087E39 /* StockListViewController.m in Sources */,
+				948884921C83705900508B29 /* TestColorViewController.m in Sources */,
 				944DD00C1C3AD64F00476A3F /* NSObject+SBJSON.m in Sources */,
 				940CC2181C09BFAD00F84ADB /* FSPlaylistItem.m in Sources */,
 				940CC20D1C09BFAD00F84ADB /* file_output.cpp in Sources */,
 				94C447E11C2B0DA10055E820 /* PNPlot.m in Sources */,
+				945F55EA1D12F0E000BDB01C /* OrgnizedViewUpdator.m in Sources */,
 				9482E2491C43C225004AB1EC /* KDJViewController.m in Sources */,
 				946E5E7A1C20808500CA896E /* ADTickerLabel.m in Sources */,
 				946E5E721C2034D100CA896E /* CERoundProgressView.m in Sources */,
+				94DB54D11C55321B0038C332 /* SettingsViewController.m in Sources */,
 				940CC21E1C09C12900F84ADB /* Reachability.m in Sources */,
+				948884821C83705900508B29 /* UIImage+ANImageBitmapRep.m in Sources */,
 				9482E2401C424241004AB1EC /* VOLChartViewController.m in Sources */,
+				942A47EB1C4D4C07006A8FA0 /* KLineSettingViewController.m in Sources */,
 				946E5E561C1DE07B00CA896E /* JBBarChartFooterView.m in Sources */,
+				948884851C83705900508B29 /* BitmapContextManipulator.m in Sources */,
 				94029B781C08D9D6004B5C81 /* ServerConnectionBase.m in Sources */,
 				940CC2141C09BFAD00F84ADB /* FSAudioStream.mm in Sources */,
 				9482E2371C423950004AB1EC /* StockDetailViewController.m in Sources */,
 				944DD00E1C3AD64F00476A3F /* SBJSON.m in Sources */,
+				9488848B1C83705900508B29 /* RSColorFunctions.m in Sources */,
 				946E5E591C1DE07B00CA896E /* JBChartInformationView.m in Sources */,
 				946E5E5B1C1DE07B00CA896E /* JBChartTooltipView.m in Sources */,
+				9488848A1C83705900508B29 /* BGRSLoupeLayer.m in Sources */,
 				940CC20B1C09BFAC00F84ADB /* audio_stream.cpp in Sources */,
+				9487139F1D11B20300B179A2 /* OrgnizedItem.m in Sources */,
 				9482E22A1C416657004AB1EC /* GetDaysStockValue.m in Sources */,
 				9482E2431C42D46F004AB1EC /* AVOLChartViewController.m in Sources */,
 				9482E24C1C43C5E7004AB1EC /* KLineViewController.m in Sources */,
@@ -981,53 +1217,58 @@
 				946E5E531C1DE07B00CA896E /* JBBarChartView.m in Sources */,
 				946E5E5A1C1DE07B00CA896E /* JBChartTooltipTipView.m in Sources */,
 				946E5E581C1DE07B00CA896E /* JBChartHeaderView.m in Sources */,
+				948884831C83705900508B29 /* CGContextCreator.m in Sources */,
+				948884901C83705900508B29 /* RSBrightnessSlider.m in Sources */,
+				9487139B1D118D4B00B179A2 /* OrgnizedViewController.m in Sources */,
 				9482E2391C423950004AB1EC /* StockKDJViewController.m in Sources */,
+				948884881C83705900508B29 /* BitmapRotationManipulator.m in Sources */,
 				946E5E711C2034D100CA896E /* CERoundProgressLayer.m in Sources */,
 				940CC2121C09BFAD00F84ADB /* stream_configuration.cpp in Sources */,
 				94029B711C08D844004B5C81 /* KingdaTask.m in Sources */,
 				9482E2461C43BBEF004AB1EC /* FenshiViewController.m in Sources */,
+				948884911C83705900508B29 /* RSOpacitySlider.m in Sources */,
 				94029B721C08D844004B5C81 /* KingdaWorker.m in Sources */,
+				9488848F1C83705900508B29 /* RSSelectionLayer.m in Sources */,
 				944DD0101C3AD64F00476A3F /* SBJsonParser.m in Sources */,
 				940CC2131C09BFAD00F84ADB /* FSAudioController.m in Sources */,
 				940CC20A1C09BFAC00F84ADB /* audio_queue.cpp in Sources */,
+				948884811C83705900508B29 /* OSCommonImage.m in Sources */,
 				946E5E571C1DE07B00CA896E /* JBLineChartFooterView.m in Sources */,
 				94029B791C08D9D6004B5C81 /* GetStockValueTask.m in Sources */,
 				940CC20F1C09BFAD00F84ADB /* http_stream.cpp in Sources */,
 				945DF5C91C074A0C00C81F31 /* main.m in Sources */,
+				948884801C83705900508B29 /* NSImage+ANImageBitmapRep.m in Sources */,
+				942A47E31C4BF860006A8FA0 /* CalculateAVOL.m in Sources */,
 				946E5DDD1C17238600CA896E /* SearchStockController.m in Sources */,
 				944DCFFA1C3AB38E00476A3F /* SyncPoint.m in Sources */,
 				940CC2151C09BFAD00F84ADB /* FSCheckContentTypeRequest.m in Sources */,
+				942A47DD1C46B4F2006A8FA0 /* BuySellHistoryViewController.m in Sources */,
 				940CC2111C09BFAD00F84ADB /* input_stream.cpp in Sources */,
 				940CC2171C09BFAD00F84ADB /* FSParseRssPodcastFeedRequest.m in Sources */,
+				948884861C83705900508B29 /* BitmapCropManipulator.m in Sources */,
 				9482E23D1C423A0A004AB1EC /* BuySellChartViewController.m in Sources */,
+				9488848E1C83705900508B29 /* RSGenerateOperation.m in Sources */,
 				944DCFFD1C3ACEBC00476A3F /* GetFiveDayStockValue.m in Sources */,
 				946E5DE71C1738E300CA896E /* StockRefresher.m in Sources */,
+				9488847F1C83705900508B29 /* BitmapContextRep.m in Sources */,
 				946E5E551C1DE07B00CA896E /* JBLineChartView.m in Sources */,
+				948568361C46896800489784 /* SearchStockByKeyword.m in Sources */,
 				940CC20E1C09BFAD00F84ADB /* file_stream.cpp in Sources */,
 				946E5DE41C172A1A00CA896E /* StockInfo.m in Sources */,
+				94DB54D71C5650D60038C332 /* ConfigHelper.m in Sources */,
 				94A6E5EA1C32CB5800992580 /* TabBarController.m in Sources */,
 				940CC20C1C09BFAD00F84ADB /* caching_stream.cpp in Sources */,
+				948884891C83705900508B29 /* BitmapScaleManipulator.m in Sources */,
+				948884871C83705900508B29 /* BitmapDrawManipulator.m in Sources */,
 				944DD00D1C3AD64F00476A3F /* NSString+SBJSON.m in Sources */,
+				9488848C1C83705900508B29 /* RSColorPickerState.m in Sources */,
 				94029B701C08D844004B5C81 /* MBProgressHUD.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		945DF5D81C074A0C00C81F31 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				945DF5E31C074A0C00C81F31 /* StockListenerTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		945DF5DE1C074A0C00C81F31 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 945DF5C21C074A0B00C81F31 /* StockListener */;
-			targetProxy = 945DF5DD1C074A0C00C81F31 /* PBXContainerItemProxy */;
-		};
 		946E5E2A1C1D53DF00CA896E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = TheAmazingAudioEngine;
@@ -1132,15 +1373,17 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = "";
 				HEADER_SEARCH_PATHS = (
 					"$(SDKROOT)/usr/include/libxml2",
 					"/Users/lgz_software/Documents/iOS_Development/TheAmazingAudioEngine/TheAmazingAudioEngine/**",
 				);
 				INFOPLIST_FILE = StockListener/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "Li-Guangzhen.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.guangzhen.stocklistener;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -1149,52 +1392,18 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = "";
 				HEADER_SEARCH_PATHS = (
 					"$(SDKROOT)/usr/include/libxml2",
 					"/Users/lgz_software/Documents/iOS_Development/TheAmazingAudioEngine/TheAmazingAudioEngine/**",
 				);
 				INFOPLIST_FILE = StockListener/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "Li-Guangzhen.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.guangzhen.stocklistener;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Release;
-		};
-		945DF5EA1C074A0C00C81F31 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = StockListenerTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "Li-Guangzhen.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/StockListener.app/StockListener";
-			};
-			name = Debug;
-		};
-		945DF5EB1C074A0C00C81F31 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = StockListenerTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "Li-Guangzhen.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/StockListener.app/StockListener";
 			};
 			name = Release;
 		};
@@ -1215,15 +1424,6 @@
 			buildConfigurations = (
 				945DF5E71C074A0C00C81F31 /* Debug */,
 				945DF5E81C074A0C00C81F31 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		945DF5E91C074A0C00C81F31 /* Build configuration list for PBXNativeTarget "StockListenerTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				945DF5EA1C074A0C00C81F31 /* Debug */,
-				945DF5EB1C074A0C00C81F31 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

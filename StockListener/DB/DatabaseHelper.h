@@ -17,6 +17,7 @@
 @end
 
 @class StockInfo;
+@class OrgnizedItem;
 
 @interface DatabaseHelper : NSObject
 
@@ -24,6 +25,7 @@
 
 @property (atomic, strong) NSMutableArray* stockList;
 @property (atomic, strong) NSMutableArray* dapanList;
+@property (atomic, strong) NSMutableArray* orgnizedList;
 
 -(void) reloadStockList;
 
@@ -38,8 +40,11 @@
 
 +(DatabaseHelper*) getInstance;
 
--(void) saveToDB;
+-(void) saveToStockDB;
+-(void) saveToOrgnizedDB;
 
 -(void) clearStoredPriceData;
 
+-(void) addOrgnizedItem:(OrgnizedItem*)item;
+-(void) removeOrgnizedItemByIndex:(NSInteger)index;
 @end

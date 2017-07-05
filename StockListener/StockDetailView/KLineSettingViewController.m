@@ -86,6 +86,7 @@
 
     __weak KLineViewController *_weak_self = klineViewController;
     __weak KLineSettingViewController *_self = self;
+    [klineViewController enableGesture];
     [klineViewController setOnScroll:^(NSInteger delta, BOOL finished) {
         float pointerInterval = [_weak_self getPointerInterval];
         NSInteger d = 0;

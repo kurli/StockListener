@@ -22,6 +22,7 @@
 -(id) initWithParentView:(UIView*)view;
 - (void) reload;
 -(void)loadView:(CGRect) rect;
+-(void) removeFromSuperView;
 
 @property (assign, nonatomic) CalculateAVOLType sourceType;
 @property (atomic, strong) NSDictionary* averageVolDic;
