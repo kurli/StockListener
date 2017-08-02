@@ -1,15 +1,18 @@
 {
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "618B8329E81DDDF9CDA45B0531231DA072801337",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
     "93596bd2-0dc3-f74b-bcd7-aa8426d3b99b++8664" : {
 
     }
   },
   "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "618B8329E81DDDF9CDA45B0531231DA072801337" : 9223372036854775807,
     "F1BC4876811AFC3F9EBAC1327B95940A459E2E4A" : 0,
     "93596bd2-0dc3-f74b-bcd7-aa8426d3b99b++8664" : 0
   },
   "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "711923EA-A841-413E-9A74-CB20B9E7C127",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "618B8329E81DDDF9CDA45B0531231DA072801337" : "StockListener\/",
     "F1BC4876811AFC3F9EBAC1327B95940A459E2E4A" : "TheAmazingAudioEngine\/",
     "93596bd2-0dc3-f74b-bcd7-aa8426d3b99b++8664" : "StockListener\/StockListener\/json\/"
   },
@@ -17,6 +20,11 @@
   "DVTSourceControlWorkspaceBlueprintVersion" : 204,
   "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "StockListener.xcodeproj",
   "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/kurli\/StockListener.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "618B8329E81DDDF9CDA45B0531231DA072801337"
+    },
     {
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "svn:\/\/sinofreely.f3322.org\/dlcm",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Subversion",

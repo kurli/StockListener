@@ -1069,6 +1069,7 @@
 				TargetAttributes = {
 					945DF5C21C074A0B00C81F31 = {
 						CreatedOnToolsVersion = 6.3.2;
+						DevelopmentTeam = KTWHB3SHL5;
 					};
 				};
 			};
@@ -1375,7 +1376,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = KTWHB3SHL5;
 				HEADER_SEARCH_PATHS = (
 					"$(SDKROOT)/usr/include/libxml2",
 					"/Users/lgz_software/Documents/iOS_Development/TheAmazingAudioEngine/TheAmazingAudioEngine/**",
@@ -1394,7 +1395,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = KTWHB3SHL5;
 				HEADER_SEARCH_PATHS = (
 					"$(SDKROOT)/usr/include/libxml2",
 					"/Users/lgz_software/Documents/iOS_Development/TheAmazingAudioEngine/TheAmazingAudioEngine/**",

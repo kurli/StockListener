@@ -188,4 +188,8 @@
     [ConfigHelper getInstance].isPlayBackground = switcher.isOn;
 }
 
+- (IBAction)websiteClicked:(id)sender {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://opengrok.club/category/23/stocklistener"]];
+}
+
 @end
