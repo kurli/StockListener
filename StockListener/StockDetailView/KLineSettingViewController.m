@@ -332,10 +332,16 @@
         return;
     }
     
+    // Get last price
+    float price;
+    NSArray *tmpArray = [self.priceArray objectAtIndex:endIndex-1];
+    price = [[tmpArray objectAtIndex:2] floatValue];
+    
     float valuePerPixel = (float)(hh - ll)/(float)klineViewHeight ;
     float extend = valuePerPixel * (AVOL_EXPAND / 2);
     [aVolController setMin:ll-extend];
     [aVolController setMax:hh+extend];
+    [aVolController setCurrentPrice:price/delta];
     [aVolController setAverageVolDic:dic];
     [aVolController reload];
 }

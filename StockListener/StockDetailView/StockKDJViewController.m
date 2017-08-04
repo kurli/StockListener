@@ -440,6 +440,7 @@
     float extend = valuePerPixel * (AVOL_EXPAND / 2);
     [aVolController setMin:ll-extend];
     [aVolController setMax:hh+extend];
+    [aVolController setCurrentPrice:self.stockInfo.price/delta];
     [aVolController setAverageVolDic:dic];
     [aVolController reload];
 }
@@ -475,6 +476,7 @@
     
     [aVolTodayController setMin:ll];
     [aVolTodayController setMax:hh];
+    [aVolTodayController setCurrentPrice:self.stockInfo.price/delta];
     [aVolTodayController setAverageVolDic:dic];
     [aVolTodayController reload];
 }

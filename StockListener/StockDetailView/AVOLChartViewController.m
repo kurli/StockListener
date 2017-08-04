@@ -179,7 +179,23 @@
 
 - (UIColor *)barChartView:(JBBarChartView *)barChartView colorForBarViewAtIndex:(NSUInteger)index
 {
-    return kJBColorBarChartBarRed;
+    float delta = self.max - self.min;
+    float mergeCount = delta / MAX_COUNT;
+    if (mergeCount > 2) {
+        float floatKey = self.min + index*mergeCount;
+        if (floatKey >= self.currentPrice) {
+            return kJBColorBarChartBarGreen;
+        } else {
+            return kJBColorBarChartBarRed;
+        }
+    } else {
+        float key = self.min + index;
+        if (key >= self.currentPrice) {
+            return kJBColorBarChartBarGreen;
+        } else {
+            return kJBColorBarChartBarRed;
+        }
+    }
 }
 
 - (UIColor *)barSelectionColorForBarChartView:(JBBarChartView *)barChartView

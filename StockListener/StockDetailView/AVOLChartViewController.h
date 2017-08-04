@@ -17,6 +17,7 @@
 @property (nonatomic, strong) StockInfo* stockInfo;
 @property (nonatomic, assign) float max;
 @property (nonatomic, assign) float min;
+@property (nonatomic, assign) float currentPrice;
 
 -(void) loadViewVertical:(CGRect) rect;
 -(id) initWithParentView:(UIView*)view;
