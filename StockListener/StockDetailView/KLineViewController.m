@@ -76,6 +76,11 @@
                 weakSelf.onScale(zoom, finished);
             }
         }];
+        [kLineChartView setOnTap:^(BOOL finished) {
+            if (weakSelf.onTap != nil) {
+                weakSelf.onTap(finished);
+            }
+        }];
     }
     return self;
 }

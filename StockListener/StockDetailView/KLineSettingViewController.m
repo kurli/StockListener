@@ -46,6 +46,7 @@
     NSInteger setting;
     
     float klineViewHeight;
+    BOOL autoPlayDrawing;
 }
 
 @property (weak, nonatomic) IBOutlet UISegmentedControl *typeSegmentController;
@@ -66,6 +67,9 @@
 @property (weak, nonatomic) IBOutlet UIButton *dynamicAVOLButton;
 @property (weak, nonatomic) IBOutlet UIButton *stockNameButton;
 @property (weak, nonatomic) IBOutlet UIView *topView;
+@property (weak, nonatomic) IBOutlet UIButton *playButton;
+@property (nonatomic,strong) NSTimer *playerRefreshTimer;
+
 @end
 
 @implementation KLineSettingViewController
@@ -107,6 +111,9 @@
                 endIndex -= d;
             }
         }
+        if (_self.playerRefreshTimer != nil) {
+            [_self pauseAutoKLine];
+        }
     }];
     [klineViewController setOnScale:^(float zoom, BOOL finished) {
         NSInteger maxCount = endIndex - startIndex;
@@ -132,6 +139,11 @@
 //            if (!finished) {
 //                startIndex += d;
 //            }
+        }
+    }];
+    [klineViewController setOnTap:^(BOOL finished) {
+        if (_self.playerRefreshTimer != nil) {
+            [_self pauseAutoKLine];
         }
     }];
     isAVOLDynamic = NO;
@@ -202,7 +214,66 @@
     
     [self typeSegmentChanged:nil];
     [self.stockNameButton setTitle:self.stockInfo.name forState:UIControlStateNormal];
+
+    rect = self.playButton.frame;
+    rect.origin.x = self.view.frame.size.width/2 - rect.size.width/2;
+    [self.playButton setFrame:rect];
+    self.playerRefreshTimer = nil;
 }
+
+
+//////// Auto play START
+- (void) playAutoKLine {
+    // If on the end
+    NSInteger delta = endIndex - startIndex;
+    if (endIndex == [self.priceArray count]) {
+        startIndex = 0;
+        endIndex = startIndex + delta;
+    }
+    self.playerRefreshTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(playRefreshFired) userInfo:nil repeats:YES];
+    [self.playButton setImage:[UIImage imageNamed:@"Pause"] forState:UIControlStateNormal];
+//    [self playRefreshFired];
+}
+
+- (void) pauseAutoKLine {
+    [self.playerRefreshTimer invalidate];
+    [self setPlayerRefreshTimer:nil];
+    [self.playButton setImage:[UIImage imageNamed:@"Play"] forState:UIControlStateNormal];
+}
+
+- (IBAction)onPlayButtonClicked:(id)sender {
+    autoPlayDrawing = NO;
+    if (self.playerRefreshTimer == nil) {
+        [self playAutoKLine];
+    } else {
+        [self pauseAutoKLine];
+    }
+}
+
+- (void) autoPlay {
+    startIndex++;
+    endIndex++;
+    [self refreshKDJ];
+    [self redraw];
+    autoPlayDrawing = YES;
+}
+
+- (void) onCalculateDone {
+    if (self.playerRefreshTimer != nil) {
+        autoPlayDrawing = NO;
+    }
+}
+
+- (void)playRefreshFired {
+    if (endIndex == [self.priceArray count]) {
+        [self pauseAutoKLine];
+        return;
+    }
+    if (autoPlayDrawing == NO) {
+        [self autoPlay];
+    }
+}
+//////// Auto play END
 
 -(void) refreshEditLineButtons {
     if (![klineViewController isEditLine]) {
@@ -221,6 +292,7 @@
 
 - (IBAction)doneButtonClicked:(id)sender {
     [self dismissViewControllerAnimated:YES completion:nil];
+    [self pauseAutoKLine];
 }
 
 -(void) redraw {
@@ -306,6 +378,7 @@
     }
     task.onCompleteBlock = ^(NSDictionary* dic) {
         [self refreshAVOL:l andHighest:h andDic:dic];
+        [self onCalculateDone];
     };
     [[KingdaWorker getInstance] removeSameKindTask:task];
     [task setSourceType:CalculateAVOLTypeHistory];
@@ -589,6 +662,9 @@
 #pragma AVOL setting
 
 -(void) aVolSettingClicked:(id)btn {
+    if (aVolSettingView != nil && [aVolSettingView isShowing]) {
+        return;
+    }
     aVolSettingView = [[ZSYPopoverListView alloc] initWithFrame:CGRectMake(0, 0, 250, 350)];
     aVolSettingView.datasource = self;
     aVolSettingView.titleName.text = @"成本分布设置";

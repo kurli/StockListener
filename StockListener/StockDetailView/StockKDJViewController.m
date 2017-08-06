@@ -33,6 +33,7 @@
 #import "BuySellHistoryViewController.h"
 #import "CalculateAVOL.h"
 #import "ConfigHelper.h"
+#import "KLineSettingViewController.h"
 
 @interface StockKDJViewController (){
     BuySellChartViewController* buySellController;
@@ -102,6 +103,7 @@
     [klineViewController setTenAPrice:self.tenAPrice];
     [klineViewController setTwentyAPrice:self.twentyAPrice];
     [klineViewController setViewController:self];
+    [self initKLineViewGesture];
     
 //    [klineViewController hideInfoButton];
     [fenshiViewController hideInfoButton];
@@ -114,6 +116,37 @@
     kdjViewController.kdjInfo60 = self.kdjInfo60;
     kdjViewController.kdjInfoDay = self.kdjInfoDay;
     kdjViewController.kdjInfoWeek = self.kdjInfoWeek;
+}
+
+-(void) initKLineViewGesture {
+    [klineViewController enableGesture];
+    __weak StockKDJViewController *_self = self;
+    [klineViewController setOnScroll:^(NSInteger delta, BOOL finished) {
+        if (finished) {
+            NSInteger currentIndex = _self.kdjTypeSegment.selectedSegmentIndex;
+            if (delta>0) {
+                currentIndex--;
+            } else {
+                currentIndex++;
+            }
+            NSInteger max = _self.kdjTypeSegment.numberOfSegments;
+            if (currentIndex<0) {
+                [_self.kdjTypeSegment setSelectedSegmentIndex:max-2];
+            }else if (currentIndex >= max-1) {
+                [_self.kdjTypeSegment setSelectedSegmentIndex:0];
+            } else {
+                [_self.kdjTypeSegment setSelectedSegmentIndex:currentIndex];
+            }
+            [_self onKDJTypeChanged:_self.kdjTypeSegment];
+        }
+    }];
+    [klineViewController setOnTap:^(BOOL finished) {
+        if (finished) {
+            KLineSettingViewController* controller = [[KLineSettingViewController alloc] init];
+            [controller setStockInfo:_self.stockInfo];
+            [_self presentViewController:controller animated:YES completion:nil];
+        }
+    }];
 }
 
 -(void) viewWillAppear:(BOOL)animated {

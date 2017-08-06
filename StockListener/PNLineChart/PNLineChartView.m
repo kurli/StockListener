@@ -118,11 +118,22 @@
     
     UIPinchGestureRecognizer *zoom = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleZoom:)];
     [self addGestureRecognizer:zoom];
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
+    [self addGestureRecognizer:tap];
 }
 
 -(void) onHideLongPressFired {
     showLongPress = NO;
     [self setNeedsDisplay];
+}
+
+-(void) handleTap:(UITapGestureRecognizer*)rec {
+    if (rec.state == UIGestureRecognizerStateEnded) {
+        if (self.onTap != nil) {
+            self.onTap(true);
+        }
+    }
 }
 
 -(void) handleZoom:(UIPinchGestureRecognizer*)rec {

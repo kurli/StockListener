@@ -17,6 +17,7 @@
                 <outlet property="dynamicAVOLLabel" destination="Ge4-Rs-pXE" id="Kzy-fv-cKd"/>
                 <outlet property="finishButton" destination="KSu-gn-DwU" id="r8p-Dz-ZW3"/>
                 <outlet property="lineTableView" destination="5Je-Q3-pN4" id="zKU-cH-lw4"/>
+                <outlet property="playButton" destination="4X9-8W-5I5" id="zB6-bT-HsG"/>
                 <outlet property="stockNameButton" destination="cn9-fv-9ac" id="MCa-ZO-Pic"/>
                 <outlet property="topView" destination="u5k-TP-P0S" id="z5e-2u-QeA"/>
                 <outlet property="typeSegmentController" destination="08c-l3-21c" id="4qt-fB-baY"/>
@@ -59,6 +60,14 @@
                             </state>
                             <connections>
                                 <action selector="nameButtonClicked:" destination="-1" eventType="touchUpInside" id="Ay9-WY-MR2"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="4X9-8W-5I5">
+                            <rect key="frame" x="-100" y="19" width="35" height="32"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <state key="normal" image="Play.png"/>
+                            <connections>
+                                <action selector="onPlayButtonClicked:" destination="-1" eventType="touchUpInside" id="SV6-0V-rPh"/>
                             </connections>
                         </button>
                     </subviews>
@@ -132,6 +141,9 @@
             <point key="canvasLocation" x="332.5" y="284.5"/>
         </view>
     </objects>
+    <resources>
+        <image name="Play.png" width="55" height="55"/>
+    </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

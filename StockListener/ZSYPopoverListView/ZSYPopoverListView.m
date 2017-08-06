@@ -21,6 +21,7 @@ static const char * const kZSYPopoverListButtonClickForDone = "kZSYPopoverListBu
 @property (nonatomic, retain) UIButton *doneButton;                             //确定选择按钮
 @property (nonatomic, retain) UIButton *cancelButton;                           //取消选择按钮
 @property (nonatomic, retain) UIControl *controlForDismiss;                     //没有按钮的时候，才会使用这个
+@property (nonatomic, unsafe_unretained) BOOL showing;
 //初始化界面 
 - (void)initTheInterface;
 
@@ -158,6 +159,7 @@ static const char * const kZSYPopoverListButtonClickForDone = "kZSYPopoverListBu
 #pragma mark - Animated Mthod
 - (void)animatedIn
 {
+    self.showing = YES;
     self.transform = CGAffineTransformMakeScale(1.3, 1.3);
     self.alpha = 0;
     [UIView animateWithDuration:.35 animations:^{
@@ -168,6 +170,7 @@ static const char * const kZSYPopoverListButtonClickForDone = "kZSYPopoverListBu
 
 - (void)animatedOut
 {
+    self.showing = NO;
     [UIView animateWithDuration:.35 animations:^{
         self.transform = CGAffineTransformMakeScale(1.3, 1.3);
         self.alpha = 0.0;
@@ -183,8 +186,13 @@ static const char * const kZSYPopoverListButtonClickForDone = "kZSYPopoverListBu
 }
 
 #pragma mark - show or hide self
+- (BOOL) isShowing {
+    return self.showing;
+}
+
 - (void)show
 {
+    self.showing = YES;
     [self refreshTheUserInterface];
     UIWindow *keywindow = [[UIApplication sharedApplication] keyWindow];
     if (self.controlForDismiss)

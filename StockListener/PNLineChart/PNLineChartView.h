@@ -38,6 +38,7 @@
 @property (nonatomic, assign) BOOL      handleLongClick;
 @property (copy) void (^onScroll)(NSInteger delta, BOOL finished);
 @property (copy) void (^onScale)(float delta, BOOL finished);
+@property (copy) void (^onTap)(BOOL finished);
 
 @property (nonatomic, strong) UIColor * horizontalLinesColor;
 

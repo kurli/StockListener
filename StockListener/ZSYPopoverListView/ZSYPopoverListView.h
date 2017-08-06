@@ -32,6 +32,8 @@ typedef void (^ZSYPopoverListViewButtonBlock)();
 
 @property (nonatomic, retain) UILabel *titleName;
 
+- (BOOL) isShowing;
+
 //展示界面
 - (void)show;
 

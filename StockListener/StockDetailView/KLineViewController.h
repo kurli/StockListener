@@ -62,6 +62,7 @@
 @property (nonatomic, strong) StockInfo* stockInfo;
 @property (copy) void (^onScroll)(NSInteger delta, BOOL finished);
 @property (copy) void (^onScale)(float delta, BOOL finished);
+@property (copy) void (^onTap)(BOOL finished);
 
 @property (nonatomic, strong) NSMutableArray* boll_ma;
 @property (nonatomic, strong) NSMutableArray* bool_md;
