@@ -317,7 +317,12 @@
         if (h == 0) {
             h = plot.lineWidth;
         }
-        CGContextFillRect(context, CGRectMake(width, openY, self.pointerInterval, h));
+        if (openY > curY) {
+            CGContextFillRect(context, CGRectMake(width, openY, self.pointerInterval, h));
+        } else {
+            CGContextSetLineWidth(context, plot.lineWidth/2);
+            CGContextStrokeRect(context, CGRectMake(width, openY, self.pointerInterval, h));
+        }
         CGContextStrokePath(context);
     }
     

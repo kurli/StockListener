@@ -75,6 +75,7 @@
     
     [aVolController setMin:ll];
     [aVolController setMax:hh];
+    [aVolController setCurrentPrice:stockInfo.price/delta];
     [aVolController setAverageVolDic:dic];
     [aVolController reload];
 }

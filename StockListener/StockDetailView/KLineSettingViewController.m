@@ -230,7 +230,7 @@
         startIndex = 0;
         endIndex = startIndex + delta;
     }
-    self.playerRefreshTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(playRefreshFired) userInfo:nil repeats:YES];
+    self.playerRefreshTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(playRefreshFired) userInfo:nil repeats:YES];
     [self.playButton setImage:[UIImage imageNamed:@"Pause"] forState:UIControlStateNormal];
 //    [self playRefreshFired];
 }
